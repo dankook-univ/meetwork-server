@@ -1,7 +1,9 @@
 plugins {
     id 'org.springframework.boot' version '2.7.2'
     id 'io.spring.dependency-management' version '1.0.12.RELEASE'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
     id 'java'
+    id 'idea'
 }
 
 group = 'com.github.dankook-univ'
@@ -19,18 +21,69 @@ repositories {
 }
 
 dependencies {
+    // annotation processor
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    // security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // jwt
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    //validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // socket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // data
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'org.postgresql:postgresql'
-    annotationProcessor 'org.projectlombok:lombok'
+
+    // querydsl
+    implementation 'com.querydsl:querydsl-jpa'
+    implementation 'com.querydsl:querydsl-apt:5.0.0'
+
+    // aws
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.239'
+
+    // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+
+    // swagger
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+}
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = '$buildDir/generated/querydsl'
+}
+
+sourceSets {
+    main.java.srcDir '$buildDir/generated/querydsl'
+}
+
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
 }
 
 tasks.named('test') {
