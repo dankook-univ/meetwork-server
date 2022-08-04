@@ -21,6 +21,9 @@ public class MemberController {
     public ResponseEntity<MemberResponse> me(
         @ApiIgnore Authentication authentication
     ) {
-        return ResponseEntity.ok().body(memberService.getMe(authentication.getName()));
+        return ResponseEntity.ok().body(
+            memberService.getMe(authentication.getName())
+                .toResponse()
+        );
     }
 }

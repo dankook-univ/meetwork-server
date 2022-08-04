@@ -2,8 +2,10 @@ package com.github.dankook_univ.meetwork.member.domain;
 
 import com.github.dankook_univ.meetwork.common.domain.Core;
 import com.github.dankook_univ.meetwork.member.infra.http.response.MemberResponse;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,14 +18,15 @@ import org.springframework.util.Assert;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends Core {
 
+    @NotNull
     @NotEmpty
+    @Column(nullable = false)
     private String name;
 
+    @NotNull
     @NotEmpty
+    @Column(nullable = false)
     private String email;
-
-    @NotEmpty
-    private String code;
 
     @Builder
     public Member(String name, String email) {

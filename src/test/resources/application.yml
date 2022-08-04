@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: askup
+    name: meetwork
 
   mvc:
     pathmatch:
@@ -33,3 +33,8 @@ storage:
   region: region
   access-key: accessKey
   secret-key: secretKey
+
+logging:
+  level:
+    #    org.hibernate.SQL: DEBUG
+    org.hibernate.type: trace

@@ -1,16 +1,15 @@
 package com.github.dankook_univ.meetwork.member.infra.http.response;
 
 import com.github.dankook_univ.meetwork.member.domain.Member;
+import java.time.LocalDateTime;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 @Getter
 @NoArgsConstructor
-@Component
 public class MemberResponse {
 
     @NotNull
@@ -25,7 +24,13 @@ public class MemberResponse {
     @NotEmpty
     String email;
 
-    String code;
+    @NotNull
+    @NotEmpty
+    LocalDateTime createAt;
+
+    @NotNull
+    @NotEmpty
+    LocalDateTime updateAt;
 
     @Builder
     public MemberResponse(
@@ -34,6 +39,7 @@ public class MemberResponse {
         this.id = member.getId().toString();
         this.name = member.getName();
         this.email = member.getEmail();
-        this.code = member.getCode();
+        this.createAt = member.getCreatedAt();
+        this.updateAt = member.getUpdatedAt();
     }
 }

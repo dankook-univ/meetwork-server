@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: askup
+    name: meetwork
 
   servlet:
     multipart:
@@ -16,9 +16,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: askup
+    username: meetwork
     password: password
-    url: jdbc:mysql://localhost:3306/askup
+    url: jdbc:mysql://localhost:3306/meetwork
 
   jpa:
     hibernate:
