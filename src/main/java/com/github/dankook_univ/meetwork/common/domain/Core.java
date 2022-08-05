@@ -23,7 +23,7 @@ public class Core {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
+    @Column(columnDefinition = "CHAR(36)")
     private UUID id;
 
     @CreatedDate
