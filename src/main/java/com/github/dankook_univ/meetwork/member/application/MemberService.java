@@ -1,9 +1,9 @@
 package com.github.dankook_univ.meetwork.member.application;
 
-import com.github.dankook_univ.meetwork.member.infra.http.response.MemberResponse;
+import com.github.dankook_univ.meetwork.member.domain.Member;
 
 public interface MemberService {
 
-    MemberResponse getMe(String memberId);
+	Member getById(String memberId);
 
 }
