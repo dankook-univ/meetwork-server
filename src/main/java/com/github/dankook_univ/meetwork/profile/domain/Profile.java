@@ -62,7 +62,7 @@ public class Profile extends Core {
 			this.nickname = nickname.trim().replace(" ", "_");
 		}
 		if (bio != null) {
-			this.bio = bio.trim().replace(" ", "_");
+			this.bio = bio.trim();
 		}
 		if (isAdmin != null) {
 			this.isAdmin = isAdmin;
