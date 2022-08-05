@@ -1,11 +1,13 @@
 package com.github.dankook_univ.meetwork.profile.application;
 
+import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.member.application.MemberServiceImpl;
-import com.github.dankook_univ.meetwork.member.domain.Member;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.exceptions.ExistingNicknameException;
 import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfileException;
-import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileRequest;
+import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfilePermissionException;
+import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
+import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileUpdateRequest;
 import com.github.dankook_univ.meetwork.profile.infra.persistence.ProfileRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,36 +18,49 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ProfileServiceImpl implements ProfileService {
 
-    private final ProfileRepositoryImpl profileRepository;
-    private final MemberServiceImpl memberService;
+	private final ProfileRepositoryImpl profileRepository;
+	private final MemberServiceImpl memberService;
 
-    @Override
-    @Transactional
-    public Profile create(Member member, ProfileRequest request) {
-        Profile existingNickname = profileRepository.getByNickname(request.getNickname())
-            .orElse(null);
-        if (existingNickname != null) {
-            throw new ExistingNicknameException();
-        }
+	@Override
+	public Profile get(String memberId, String eventId) {
+		return profileRepository.getByMemberIdAndEventId(memberId, eventId).orElseThrow(NotFoundProfileException::new);
+	}
 
-        return profileRepository.save(
-            Profile.builder()
-                .member(member)
-                .nickname(request.getNickname())
-                .bio(request.getBio())
-                .isAdmin(request.getIsAdmin())
-                .build()
-        );
-    }
+	@Override
+	@Transactional
+	public Profile create(String memberId, Event event, ProfileCreateRequest request, Boolean isAdmin) {
+		if (profileRepository.getByEventIdAndNickname(event.getId().toString(), request.getNickname()).isPresent()) {
+			throw new ExistingNicknameException();
+		}
 
-    @Override
-    @Transactional
-    public Profile update(Member member, ProfileRequest request) {
-        // eventId와 함께 조회해야함 findByMemberIdAndEventId
-        Profile profile = profileRepository.getByMember(member)
-            .orElseThrow(NotFoundProfileException::new);
+		return profileRepository.save(
+				Profile.builder()
+						.member(memberService.getById(memberId))
+						.event(event)
+						.nickname(request.getNickname())
+						.bio(request.getBio())
+						.isAdmin(isAdmin)
+						.build()
+		);
+	}
 
-        profile.update(request.getNickname(), request.getBio());
-        return profile;
-    }
+	@Override
+	@Transactional
+	public Profile update(String memberId, ProfileUpdateRequest request) {
+		Profile profile = profileRepository.getById(request.getProfileId())
+				.orElseThrow(NotFoundProfileException::new);
+		if (!profile.getMember().getId().toString().equals(memberId)) {
+			throw new NotFoundProfilePermissionException();
+		}
+
+		profile.update(request.getNickname(), request.getBio(), null);
+
+		return profile;
+	}
+
+	@Override
+	@Transactional
+	public void delete(String memberId, String eventId) {
+		profileRepository.delete(memberId, eventId);
+	}
 }

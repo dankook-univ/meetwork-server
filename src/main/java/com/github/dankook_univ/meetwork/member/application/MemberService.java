@@ -4,6 +4,6 @@ import com.github.dankook_univ.meetwork.member.domain.Member;
 
 public interface MemberService {
 
-    Member getMe(String memberId);
+	Member getById(String memberId);
 
 }

@@ -1,71 +1,106 @@
 package com.github.dankook_univ.meetwork.profile.application;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
+import com.github.dankook_univ.meetwork.event.application.EventServiceImpl;
+import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequest;
 import com.github.dankook_univ.meetwork.member.domain.Member;
 import com.github.dankook_univ.meetwork.member.infra.persistence.MemberRepositoryImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
-import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileRequest;
+import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.transaction.Transactional;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 @SpringBootTest
+@Transactional
 public class ProfileServiceImplTest {
 
-    @Autowired
-    ProfileServiceImpl profileService;
+	@Autowired
+	ProfileServiceImpl profileService;
 
-    @Autowired
-    MemberRepositoryImpl memberRepository;
+	@Autowired
+	MemberRepositoryImpl memberRepository;
 
-    private Member beforeCreateMember() {
-        return memberRepository.save(
-            Member.builder()
-                .name("name")
-                .email("meetwork@meetwork.ac.kr")
-                .build()
-        );
-    }
+	@Autowired
+	EventServiceImpl eventService;
 
-    private Profile beforeCreateProfile(String nickname, String bio, Boolean isAdmin) {
-        Member member = beforeCreateMember();
+	@Test
+	@DisplayName("프로필을 생성할 수 있어요.")
+	void create() {
+		Member member = memberRepository.save(
+				Member.builder()
+						.name("name")
+						.email("meetwork@meetwork.kr")
+						.build()
+		);
 
-        return profileService.create(
-            member,
-            ProfileRequest.builder()
-                .nickname(nickname)
-                .bio(bio)
-                .isAdmin(isAdmin)
-                .build()
-        );
+		Profile profile = profileService.create(
+				member.getId().toString(),
+				eventService.create(
+						member.getId().toString(),
+						EventCreateRequest.builder()
+								.name("event")
+								.organizer(
+										ProfileCreateRequest.builder()
+												.nickname("nickname")
+												.bio("bio")
+												.build()
+								).code("code")
+								.build()
+				),
+				ProfileCreateRequest.builder()
+						.nickname("participant_nickname")
+						.bio("participant_bio")
+						.build(),
+				false
+		);
 
-    }
+		assertThat(profile).isNotNull();
+		assertThat(profile).isInstanceOf(Profile.class);
+	}
 
-    @Test
-    @DisplayName("프로필을 생성할 수 있어요.")
-    void create() {
-        Profile profile = beforeCreateProfile("name", "This is bio", false);
+	@Test
+	@DisplayName("프로필을 수정할 수 있어요.")
+	void update() {
+		Member member = memberRepository.save(
+				Member.builder()
+						.name("name")
+						.email("meetwork@meetwork.kr")
+						.build()
+		);
 
-        assertThat(profile).isNotNull();
-        assertThat(profile).isInstanceOf(Profile.class);
-    }
+		Profile profile = profileService.create(
+				member.getId().toString(),
+				eventService.create(
+						member.getId().toString(),
+						EventCreateRequest.builder()
+								.name("event")
+								.organizer(
+										ProfileCreateRequest.builder()
+												.nickname("nickname")
+												.bio("bio")
+												.build()
+								).code("code")
+								.build()
+				),
+				ProfileCreateRequest.builder()
+						.nickname("participant_nickname")
+						.bio("participant_bio")
+						.build(),
+				false
+		);
 
-    @Test
-    @DisplayName("프로필을 수정할 수 있어요.")
-    void update() {
-        Profile profile = beforeCreateProfile("name", "This is bio", false);
+		profile.update(
+				"new nickname",
+				"new bio",
+				false
+		);
 
-        Profile updatedProfile = profileService.update(
-            profile.getMember(),
-            ProfileRequest.builder()
-                .nickname("nickname")
-                .bio("bio2")
-                .build()
-        );
-
-        assertThat(updatedProfile.getNickname()).isEqualTo("nickname");
-        assertThat(updatedProfile.getBio()).isEqualTo("bio2");
-    }
+		assertThat(profile.getNickname()).isEqualTo("new_nickname");
+		assertThat(profile.getBio()).isEqualTo("new_bio");
+	}
 }

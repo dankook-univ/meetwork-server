@@ -1,15 +1,15 @@
 package com.github.dankook_univ.meetwork.profile.infra.persistence;
 
-import com.github.dankook_univ.meetwork.member.domain.Member;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
-import java.util.Optional;
-import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 public interface ProfileJpaRepository extends JpaRepository<Profile, UUID> {
+	Optional<Profile> findByMemberIdAndEventId(UUID memberId, UUID eventId);
 
-    Optional<Profile> getByNickname(String nickname);
+	Optional<Profile> findByEventIdAndNickname(UUID eventId, String nickname);
 
-    Optional<Profile> getByMember(Member member);
-
+	void deleteByMemberIdAndEventId(UUID memberId, UUID eventId);
 }

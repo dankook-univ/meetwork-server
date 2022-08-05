@@ -1,13 +1,16 @@
 package com.github.dankook_univ.meetwork.profile.domain;
 
-import com.github.dankook_univ.meetwork.member.domain.Member;
 import java.util.Optional;
 
 public interface ProfileRepository {
 
-    Optional<Profile> getByNickname(String nickname);
+	Optional<Profile> getById(String profileId);
 
-    Profile save(Profile profile);
+	Optional<Profile> getByMemberIdAndEventId(String memberId, String eventId);
 
-    Optional<Profile> getByMember(Member member);
+	Optional<Profile> getByEventIdAndNickname(String eventId, String nickname);
+
+	Profile save(Profile profile);
+
+	void delete(String memberId, String eventId);
 }
