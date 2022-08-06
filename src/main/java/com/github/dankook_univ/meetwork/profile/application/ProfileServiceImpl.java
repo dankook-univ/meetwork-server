@@ -18,49 +18,56 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ProfileServiceImpl implements ProfileService {
 
-	private final ProfileRepositoryImpl profileRepository;
-	private final MemberServiceImpl memberService;
+    private final ProfileRepositoryImpl profileRepository;
+    private final MemberServiceImpl memberService;
 
-	@Override
-	public Profile get(String memberId, String eventId) {
-		return profileRepository.getByMemberIdAndEventId(memberId, eventId).orElseThrow(NotFoundProfileException::new);
-	}
+    @Override
+    public Profile get(String memberId, String eventId) {
+        return profileRepository.getByMemberIdAndEventId(memberId, eventId)
+            .orElseThrow(NotFoundProfileException::new);
+    }
 
-	@Override
-	@Transactional
-	public Profile create(String memberId, Event event, ProfileCreateRequest request, Boolean isAdmin) {
-		if (profileRepository.getByEventIdAndNickname(event.getId().toString(), request.getNickname()).isPresent()) {
-			throw new ExistingNicknameException();
-		}
+    @Override
+    @Transactional
+    public Profile create(
+        String memberId,
+        Event event,
+        ProfileCreateRequest request,
+        Boolean isAdmin
+    ) {
+        if (profileRepository.getByEventIdAndNickname(event.getId().toString(),
+            request.getNickname()).isPresent()) {
+            throw new ExistingNicknameException();
+        }
 
-		return profileRepository.save(
-				Profile.builder()
-						.member(memberService.getById(memberId))
-						.event(event)
-						.nickname(request.getNickname())
-						.bio(request.getBio())
-						.isAdmin(isAdmin)
-						.build()
-		);
-	}
+        return profileRepository.save(
+            Profile.builder()
+                .member(memberService.getById(memberId))
+                .event(event)
+                .nickname(request.getNickname())
+                .bio(request.getBio())
+                .isAdmin(isAdmin)
+                .build()
+        );
+    }
 
-	@Override
-	@Transactional
-	public Profile update(String memberId, ProfileUpdateRequest request) {
-		Profile profile = profileRepository.getById(request.getProfileId())
-				.orElseThrow(NotFoundProfileException::new);
-		if (!profile.getMember().getId().toString().equals(memberId)) {
-			throw new NotFoundProfilePermissionException();
-		}
+    @Override
+    @Transactional
+    public Profile update(String memberId, ProfileUpdateRequest request) {
+        Profile profile = profileRepository.getById(request.getProfileId())
+            .orElseThrow(NotFoundProfileException::new);
+        if (!profile.getMember().getId().toString().equals(memberId)) {
+            throw new NotFoundProfilePermissionException();
+        }
 
-		profile.update(request.getNickname(), request.getBio(), null);
+        profile.update(request.getNickname(), request.getBio(), null);
 
-		return profile;
-	}
+        return profile;
+    }
 
-	@Override
-	@Transactional
-	public void delete(String memberId, String eventId) {
-		profileRepository.delete(memberId, eventId);
-	}
+    @Override
+    @Transactional
+    public void delete(String memberId, String eventId) {
+        profileRepository.delete(memberId, eventId);
+    }
 }

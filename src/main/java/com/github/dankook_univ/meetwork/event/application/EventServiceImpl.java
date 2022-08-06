@@ -1,5 +1,7 @@
 package com.github.dankook_univ.meetwork.event.application;
 
+import com.github.dankook_univ.meetwork.board.application.BoardServiceImpl;
+import com.github.dankook_univ.meetwork.board.infra.http.request.BoardCreateRequest;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventException;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventPermissionException;
@@ -16,81 +18,93 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class EventServiceImpl implements EventService {
-	private final EventRepositoryImpl eventRepository;
-	private final ProfileServiceImpl profileService;
 
-	@Override
-	public Event get(String memberId, String eventId) {
-		if (profileService.get(memberId, eventId) == null) {
-			throw new NotFoundEventPermissionException();
-		}
+    private final EventRepositoryImpl eventRepository;
+    private final ProfileServiceImpl profileService;
+    private final BoardServiceImpl boardService;
 
-		return getById(eventId);
-	}
+    @Override
+    public Event get(String memberId, String eventId) {
+        if (profileService.get(memberId, eventId) == null) {
+            throw new NotFoundEventPermissionException();
+        }
 
-	@Override
-	@Transactional
-	public Event create(String memberId, EventCreateRequest request) {
-		Event event = eventRepository.save(
-				Event.builder()
-						.name(request.getName())
-						.code(request.getCode())
-						.meetingUrl(request.getMeetingUrl())
-						.build()
-		);
+        return getById(eventId);
+    }
 
-		return event.setOrganizer(
-				profileService.create(
-						memberId,
-						event,
-						request.getOrganizer(),
-						true
-				)
-		);
-	}
+    @Override
+    @Transactional
+    public Event create(String memberId, EventCreateRequest request) {
+        Event event = eventRepository.save(
+            Event.builder()
+                .name(request.getName())
+                .code(request.getCode())
+                .meetingUrl(request.getMeetingUrl())
+                .build()
+        );
 
-	@Override
-	@Transactional
-	public Event update(String memberId, String eventId, EventUpdateRequest request) {
-		Event event = getById(eventId);
-		if (!profileService.get(memberId, eventId).getIsAdmin()) {
-			throw new NotFoundEventPermissionException();
-		}
+        event.setOrganizer(
+            profileService.create(
+                memberId,
+                event,
+                request.getOrganizer(),
+                true
+            )
+        );
 
-		return event.update(request.getName(), request.getCode(), request.getMeetingUrl());
-	}
+        boardService.automaticBoard().forEach((name, isAdmin) ->
+            boardService.create(memberId, BoardCreateRequest.builder()
+                .eventId(event.getId().toString())
+                .name(name)
+                .adminOnly(isAdmin)
+                .build()
+            )
+        );
+        return event;
+    }
 
-	@Override
-	@Transactional
-	public Event join(String memberId, String eventId, ProfileCreateRequest request) {
-		profileService.create(
-				memberId,
-				getById(eventId),
-				request,
-				false
-		);
+    @Override
+    @Transactional
+    public Event update(String memberId, String eventId, EventUpdateRequest request) {
+        Event event = getById(eventId);
+        if (!profileService.get(memberId, eventId).getIsAdmin()) {
+            throw new NotFoundEventPermissionException();
+        }
 
-		return getById(eventId);
-	}
+        return event.update(request.getName(), request.getCode(), request.getMeetingUrl());
+    }
 
-	@Override
-	@Transactional
-	public void secession(String memberId, String eventId) {
-		profileService.delete(memberId, eventId);
-	}
+    @Override
+    @Transactional
+    public Event join(String memberId, String eventId, ProfileCreateRequest request) {
+        profileService.create(
+            memberId,
+            getById(eventId),
+            request,
+            false
+        );
 
-	@Override
-	@Transactional
-	public void delete(String memberId, String eventId) {
-		Event event = getById(eventId);
-		if (!event.getOrganizer().getMember().getId().toString().equals(memberId)) {
-			throw new NotFoundEventPermissionException();
-		}
+        return getById(eventId);
+    }
 
-		eventRepository.delete(eventId);
-	}
+    @Override
+    @Transactional
+    public void secession(String memberId, String eventId) {
+        profileService.delete(memberId, eventId);
+    }
 
-	private Event getById(String eventId) {
-		return eventRepository.getById(eventId).orElseThrow(NotFoundEventException::new);
-	}
+    @Override
+    @Transactional
+    public void delete(String memberId, String eventId) {
+        Event event = getById(eventId);
+        if (!event.getOrganizer().getMember().getId().toString().equals(memberId)) {
+            throw new NotFoundEventPermissionException();
+        }
+
+        eventRepository.delete(eventId);
+    }
+
+    private Event getById(String eventId) {
+        return eventRepository.getById(eventId).orElseThrow(NotFoundEventException::new);
+    }
 }

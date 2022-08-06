@@ -7,11 +7,12 @@ import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileUpdate
 
 public interface ProfileService {
 
-	Profile get(String memberId, String eventId);
+    Profile get(String memberId, String eventId);
 
-	Profile create(String memberId, Event event, ProfileCreateRequest request, Boolean isAdmin);
+    Profile create(String memberId, Event event, ProfileCreateRequest request, Boolean isAdmin);
 
-	Profile update(String memberId, ProfileUpdateRequest request);
+    Profile update(String memberId, ProfileUpdateRequest request);
 
-	void delete(String memberId, String eventId);
+    void delete(String memberId, String eventId);
+
 }
