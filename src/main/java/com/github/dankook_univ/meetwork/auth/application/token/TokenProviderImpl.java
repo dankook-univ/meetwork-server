@@ -4,6 +4,7 @@ import com.github.dankook_univ.meetwork.auth.domain.auth.Auth;
 import com.github.dankook_univ.meetwork.auth.domain.role.Role;
 import com.github.dankook_univ.meetwork.auth.domain.token.Token;
 import com.github.dankook_univ.meetwork.auth.exceptions.NotFoundAuthException;
+import com.github.dankook_univ.meetwork.auth.infra.http.response.TokenResponse;
 import com.github.dankook_univ.meetwork.auth.infra.persistence.AuthRepositoryImpl;
 import com.github.dankook_univ.meetwork.auth.infra.persistence.TokenRepositoryImpl;
 import io.jsonwebtoken.Claims;
@@ -13,6 +14,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -52,7 +54,7 @@ public class TokenProviderImpl implements TokenProvider {
     }
 
     @Override
-    public Token create(Auth auth) {
+    public TokenResponse create(Auth auth) {
         Long currentTime = new Date().getTime();
 
         String accessToken = Jwts.builder()
@@ -74,7 +76,16 @@ public class TokenProviderImpl implements TokenProvider {
             .refreshToken(refreshToken)
             .build();
 
-        return tokenRepository.save(auth.getId().toString(), token, REFRESH_TOKEN_EXPIRE_DATE);
+        tokenRepository.save(auth.getId().toString(), token, REFRESH_TOKEN_EXPIRE_DATE);
+
+        return TokenResponse.builder()
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .accessTokenExpirationDate(
+                new Timestamp(getClaims(accessToken).getExpiration().getTime()).toLocalDateTime())
+            .refreshTokenExpirationDate(
+                new Timestamp(getClaims(refreshToken).getExpiration().getTime()).toLocalDateTime())
+            .build();
     }
 
     @Override
