@@ -4,7 +4,6 @@ import com.github.dankook_univ.meetwork.auth.application.kakao.KakaoServiceImpl;
 import com.github.dankook_univ.meetwork.auth.application.token.TokenProviderImpl;
 import com.github.dankook_univ.meetwork.auth.domain.auth.Auth;
 import com.github.dankook_univ.meetwork.auth.domain.auth.AuthType;
-import com.github.dankook_univ.meetwork.auth.domain.token.Token;
 import com.github.dankook_univ.meetwork.auth.exceptions.ExistingAuthException;
 import com.github.dankook_univ.meetwork.auth.exceptions.InvalidClientException;
 import com.github.dankook_univ.meetwork.auth.exceptions.InvalidTokenException;
@@ -12,6 +11,7 @@ import com.github.dankook_univ.meetwork.auth.exceptions.NotFoundAuthException;
 import com.github.dankook_univ.meetwork.auth.infra.http.request.ReissueRequest;
 import com.github.dankook_univ.meetwork.auth.infra.http.request.SignInRequest;
 import com.github.dankook_univ.meetwork.auth.infra.http.request.SignUpRequest;
+import com.github.dankook_univ.meetwork.auth.infra.http.response.TokenResponse;
 import com.github.dankook_univ.meetwork.auth.infra.persistence.AuthRepositoryImpl;
 import com.github.dankook_univ.meetwork.member.domain.Member;
 import com.github.dankook_univ.meetwork.member.infra.persistence.MemberRepositoryImpl;
@@ -32,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public Token signIn(SignInRequest request) {
+    public TokenResponse signIn(SignInRequest request) {
         Auth auth = authRepository.getByAuthTypeAndClientId(
                 request.getType(),
                 getClientId(request.getType(), request.getToken())
@@ -44,7 +44,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public Token signUp(SignUpRequest request) {
+    public TokenResponse signUp(SignUpRequest request) {
         String clientId = getClientId(request.getType(), request.getToken());
         Auth existingAuth = authRepository.getByAuthTypeAndClientId(request.getType(), clientId)
             .orElse(null);
@@ -70,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Token reissue(ReissueRequest request) {
+    public TokenResponse reissue(ReissueRequest request) {
         if (!tokenProvider.validation(request.getRefreshToken())) {
             throw new InvalidTokenException();
         }
