@@ -9,6 +9,7 @@ import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfilePermis
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileUpdateRequest;
 import com.github.dankook_univ.meetwork.profile.infra.persistence.ProfileRepositoryImpl;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,12 +30,8 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public Profile create(
-        String memberId,
-        Event event,
-        ProfileCreateRequest request,
-        Boolean isAdmin
-    ) {
+    public Profile create(String memberId, Event event, ProfileCreateRequest request,
+        Boolean isAdmin) {
         if (profileRepository.getByEventIdAndNickname(event.getId().toString(),
             request.getNickname()).isPresent()) {
             throw new ExistingNicknameException();
@@ -69,5 +66,15 @@ public class ProfileServiceImpl implements ProfileService {
     @Transactional
     public void delete(String memberId, String eventId) {
         profileRepository.delete(memberId, eventId);
+    }
+
+    @Override
+    public List<Profile> getListByMemberId(String memberId) {
+        return profileRepository.getByMemberId(memberId);
+    }
+
+    @Override
+    public List<Profile> getListByEventId(String eventId) {
+        return profileRepository.getByEventId(eventId);
     }
 }

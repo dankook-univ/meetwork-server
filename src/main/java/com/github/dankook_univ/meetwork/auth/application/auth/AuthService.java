@@ -1,17 +1,17 @@
 package com.github.dankook_univ.meetwork.auth.application.auth;
 
-import com.github.dankook_univ.meetwork.auth.domain.token.Token;
 import com.github.dankook_univ.meetwork.auth.infra.http.request.ReissueRequest;
 import com.github.dankook_univ.meetwork.auth.infra.http.request.SignInRequest;
 import com.github.dankook_univ.meetwork.auth.infra.http.request.SignUpRequest;
+import com.github.dankook_univ.meetwork.auth.infra.http.response.TokenResponse;
 
 public interface AuthService {
 
-    Token signIn(SignInRequest request);
+    TokenResponse signIn(SignInRequest request);
 
-    Token signUp(SignUpRequest request);
+    TokenResponse signUp(SignUpRequest request);
 
-    Token reissue(ReissueRequest request);
+    TokenResponse reissue(ReissueRequest request);
 
     boolean signOut(String memberId);
 }

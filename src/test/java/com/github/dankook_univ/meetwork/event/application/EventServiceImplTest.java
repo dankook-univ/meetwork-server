@@ -3,6 +3,7 @@ package com.github.dankook_univ.meetwork.event.application;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.github.dankook_univ.meetwork.event.domain.Event;
+import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventException;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventPermissionException;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventUpdateRequest;
@@ -12,6 +13,7 @@ import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfileException;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -139,6 +141,106 @@ class EventServiceImplTest {
     }
 
     @Test
+    @DisplayName("내가 참여한 이벤트 목록을 가져올 수 있어요.")
+    public void getList() {
+        Event eventToBeJoined = eventService.create(
+            createMember("name", "meetwork@meetwork.kr").getId().toString(),
+            EventCreateRequest.builder()
+                .name("event")
+                .organizer(
+                    ProfileCreateRequest.builder()
+                        .nickname("nickname")
+                        .bio("bio")
+                        .build()
+                )
+                .code("code")
+                .build()
+        );
+
+        Member member = createMember("participant_name", "participant@meetwork.kr");
+
+        Event joinedEvent = eventService.join(
+            member.getId().toString(),
+            eventToBeJoined.getId().toString(),
+            ProfileCreateRequest.builder()
+                .nickname("participant_nickname")
+                .bio("participant")
+                .build()
+        );
+
+        Event createdEvent = eventService.create(
+            member.getId().toString(),
+            EventCreateRequest.builder()
+                .name("event")
+                .organizer(
+                    ProfileCreateRequest.builder()
+                        .nickname("nickname")
+                        .bio("bio")
+                        .build()
+                )
+                .code("code2")
+                .build()
+        );
+
+        List<Event> list = eventService.getList(member.getId().toString());
+
+        assertThat(list).isNotNull();
+        assertThat(list.size()).isEqualTo(2);
+        assertThat(list.get(0)).isInstanceOf(Event.class);
+        assertThat(list.get(0).getCode()).contains("code");
+
+        assertThat(joinedEvent.getOrganizer().getMember()).isNotEqualTo(member);
+    }
+
+    @Test
+    @DisplayName("참여한 이벤트의 프로필들을 조회할 수 있어요.")
+    public void getMemberList() {
+        Event event = eventService.create(
+            createMember("name", "meetwork@meetwork.kr").getId().toString(),
+            EventCreateRequest.builder()
+                .name("event")
+                .organizer(
+                    ProfileCreateRequest.builder()
+                        .nickname("nickname")
+                        .bio("bio")
+                        .build()
+                )
+                .code("code")
+                .build()
+        );
+
+        Member member = createMember("participant_name", "participant@meetwork.kr");
+        eventService.join(
+            member.getId().toString(),
+            event.getId().toString(),
+            ProfileCreateRequest.builder()
+                .nickname("participant_nickname1")
+                .bio("participant")
+                .build()
+        );
+
+        Member member2 = createMember("participant_name", "participant@meetwork.kr");
+        eventService.join(
+            member2.getId().toString(),
+            event.getId().toString(),
+            ProfileCreateRequest.builder()
+                .nickname("participant_nickname2")
+                .bio("participant")
+                .build()
+        );
+
+        List<Profile> profileList = eventService.getMemberList(member.getId().toString(),
+            event.getId().toString());
+
+        assertThat(event).isNotNull();
+        assertThat(event).isInstanceOf(Event.class);
+
+        assertThat(profileList).isNotNull();
+        assertThat(profileList.get(0)).isInstanceOf(Profile.class);
+        assertThat(profileList.size()).isEqualTo(3);
+    }
+
+    @Test
     @DisplayName("이벤트를 수정할 수 있어요.")
     public void update() {
         Member member = createMember("name", "meetwork@meetwork.kr");
@@ -211,6 +313,112 @@ class EventServiceImplTest {
                     .name("new_name")
                     .code("new_code")
                     .meetingUrl("meeting_url")
+                    .build()
+            );
+        });
+    }
+
+    @Test
+    @DisplayName("이벤트 코드 중복을 확인할 수 있어요.")
+    public void checkExistingCode() {
+        String EVENT_CODE = "code";
+        String MEANINGLESS_EVENT_CODE = "event_code";
+
+        Event event = eventService.create(
+            createMember("name", "meetwork@meetwork.kr").getId().toString(),
+            EventCreateRequest.builder()
+                .name("event")
+                .organizer(
+                    ProfileCreateRequest.builder()
+                        .nickname("nickname")
+                        .bio("bio")
+                        .build()
+                )
+                .code(EVENT_CODE)
+                .build()
+        );
+
+        Boolean expectedTrue = eventService.checkExistingCode(EVENT_CODE);
+        Boolean expectedFalse = eventService.checkExistingCode(MEANINGLESS_EVENT_CODE);
+
+        assertThat(expectedTrue).isTrue();
+        assertThat(expectedFalse).isFalse();
+    }
+
+    @Test
+    @DisplayName("이벤트 코드로 참여할 수 있어요.")
+    public void codeJoin() {
+        String EVENT_CODE = "code";
+
+        Event event = eventService.create(
+            createMember("name", "meetwork@meetwork.kr").getId().toString(),
+            EventCreateRequest.builder()
+                .name("event")
+                .organizer(
+                    ProfileCreateRequest.builder()
+                        .nickname("organizer")
+                        .bio("bio")
+                        .build()
+                )
+                .code(EVENT_CODE)
+                .build()
+        );
+
+        Member member = createMember("participant_name", "participant@meetwork.kr");
+
+        Event joinedEvent = eventService.codeJoin(
+            member.getId().toString(),
+            EVENT_CODE,
+            ProfileCreateRequest.builder()
+                .nickname("joinedMember")
+                .bio("bio")
+                .build()
+        );
+
+        Profile profile = profileService.get(member.getId().toString(), event.getId().toString());
+
+        assertThat(joinedEvent).isNotNull();
+        assertThat(joinedEvent).isInstanceOf(Event.class);
+        assertThat(joinedEvent.getId()).isEqualTo(event.getId());
+
+        assertThat(event.getOrganizer().getId()).isNotEqualTo(member.getId());
+
+        assertThat(profile).isNotNull();
+        assertThat(profile).isInstanceOf(Profile.class);
+        assertThat(profile.getMember().getId()).isEqualTo(member.getId());
+        assertThat(profile.getEvent().getId()).isEqualTo(event.getId());
+
+    }
+
+    @Test
+    @DisplayName("이벤트 코드로 참여에 실패해요.")
+    public void failedCodeJoin() {
+        String EVENT_CODE = "code";
+        String MEANINGLESS_EVENT_CODE = "event_code";
+
+        Event event = eventService.create(
+            createMember("name", "meetwork@meetwork.kr").getId().toString(),
+            EventCreateRequest.builder()
+                .name("event")
+                .organizer(
+                    ProfileCreateRequest.builder()
+                        .nickname("organizer")
+                        .bio("bio")
+                        .build()
+                )
+                .code(EVENT_CODE)
+                .build()
+        );
+
+        Member member = createMember("participant_name", "participant@meetwork.kr");
+
+        Assertions.assertThrows(NotFoundEventException.class, () -> {
+            Event joinedEvent = eventService.codeJoin(
+                member.getId().toString(),
+                MEANINGLESS_EVENT_CODE,
+                ProfileCreateRequest.builder()
+                    .nickname("joinedMember")
+                    .bio("bio")
                     .build()
             );
         });

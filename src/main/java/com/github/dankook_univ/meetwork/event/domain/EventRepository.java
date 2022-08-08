@@ -4,9 +4,11 @@ import java.util.Optional;
 
 public interface EventRepository {
 
-	Optional<Event> getById(String eventId);
+    Optional<Event> getById(String eventId);
 
-	Event save(Event event);
+    Event save(Event event);
 
-	void delete(String eventId);
+    Optional<Event> getByCode(String code);
+
+    void delete(String eventId);
 }

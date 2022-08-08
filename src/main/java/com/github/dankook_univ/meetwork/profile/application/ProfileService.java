@@ -4,6 +4,7 @@ import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileUpdateRequest;
+import java.util.List;
 
 public interface ProfileService {
 
@@ -15,4 +16,7 @@ public interface ProfileService {
 
     void delete(String memberId, String eventId);
 
+    List<Profile> getListByMemberId(String memberId);
+
+    List<Profile> getListByEventId(String eventId);
 }

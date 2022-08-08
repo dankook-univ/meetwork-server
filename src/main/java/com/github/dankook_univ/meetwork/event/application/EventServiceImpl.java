@@ -1,15 +1,17 @@
 package com.github.dankook_univ.meetwork.event.application;
 
-import com.github.dankook_univ.meetwork.board.application.BoardServiceImpl;
-import com.github.dankook_univ.meetwork.board.infra.http.request.BoardCreateRequest;
 import com.github.dankook_univ.meetwork.event.domain.Event;
+import com.github.dankook_univ.meetwork.event.exceptions.ExistingCodeException;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventException;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventPermissionException;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventUpdateRequest;
 import com.github.dankook_univ.meetwork.event.infra.persistence.EventRepositoryImpl;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
+import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +23,6 @@ public class EventServiceImpl implements EventService {
 
     private final EventRepositoryImpl eventRepository;
     private final ProfileServiceImpl profileService;
-    private final BoardServiceImpl boardService;
 
     @Override
     public Event get(String memberId, String eventId) {
@@ -33,8 +34,27 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public List<Event> getList(String memberId) {
+        return profileService.getListByMemberId(memberId)
+            .stream()
+            .map(Profile::getEvent)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Profile> getMemberList(String memberId, String eventId) {
+        profileService.get(memberId, eventId);
+
+        return profileService.getListByEventId(eventId);
+    }
+
+    @Override
     @Transactional
     public Event create(String memberId, EventCreateRequest request) {
+        if (checkExistingCode(request.getCode())) {
+            throw new ExistingCodeException();
+        }
+
         Event event = eventRepository.save(
             Event.builder()
                 .name(request.getName())
@@ -43,7 +63,7 @@ public class EventServiceImpl implements EventService {
                 .build()
         );
 
-        event.setOrganizer(
+        return event.setOrganizer(
             profileService.create(
                 memberId,
                 event,
@@ -51,27 +71,35 @@ public class EventServiceImpl implements EventService {
                 true
             )
         );
-
-        boardService.automaticBoard().forEach((name, isAdmin) ->
-            boardService.create(memberId, BoardCreateRequest.builder()
-                .eventId(event.getId().toString())
-                .name(name)
-                .adminOnly(isAdmin)
-                .build()
-            )
-        );
-        return event;
     }
 
     @Override
     @Transactional
     public Event update(String memberId, String eventId, EventUpdateRequest request) {
+        if (checkExistingCode(request.getCode())) {
+            throw new ExistingCodeException();
+        }
+
         Event event = getById(eventId);
         if (!profileService.get(memberId, eventId).getIsAdmin()) {
             throw new NotFoundEventPermissionException();
         }
 
         return event.update(request.getName(), request.getCode(), request.getMeetingUrl());
+    }
+
+    @Override
+    @Transactional
+    public Boolean checkExistingCode(String code) {
+        return eventRepository.getByCode(code).isPresent();
+    }
+
+    @Override
+    @Transactional
+    public Event codeJoin(String memberId, String code, ProfileCreateRequest request) {
+        Event event = eventRepository.getByCode(code).orElseThrow(NotFoundEventException::new);
+
+        return join(memberId, event.getId().toString(), request);
     }
 
     @Override
