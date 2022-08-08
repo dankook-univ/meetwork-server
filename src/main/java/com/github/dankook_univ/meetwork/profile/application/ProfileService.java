@@ -17,4 +17,6 @@ public interface ProfileService {
     void delete(String memberId, String eventId);
 
     List<Profile> getListByMemberId(String memberId);
+
+    List<Profile> getListByEventId(String eventId);
 }

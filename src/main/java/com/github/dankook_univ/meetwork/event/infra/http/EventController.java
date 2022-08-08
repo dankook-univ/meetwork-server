@@ -5,7 +5,9 @@ import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventUpdateRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.response.EventResponse;
+import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
+import com.github.dankook_univ.meetwork.profile.infra.http.response.ProfileResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -50,6 +52,18 @@ public class EventController {
         );
     }
 
+    @GetMapping("/{eventId}/members")
+    public ResponseEntity<List<ProfileResponse>> getMemberList(
+        @ApiIgnore Authentication authentication,
+        @PathVariable("eventId") @NotBlank String eventId
+    ) {
+        return ResponseEntity.ok().body(
+            eventService.getMemberList(authentication.getName(), eventId)
+                .stream().map(Profile::toResponse)
+                .collect(Collectors.toList())
+        );
+    }
+    
     @PostMapping("/new")
     public ResponseEntity<EventResponse> create(
         @ApiIgnore Authentication authentication,

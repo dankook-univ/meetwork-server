@@ -13,6 +13,8 @@ public interface ProfileRepository {
 
     List<Profile> getByMemberId(String memberId);
 
+    List<Profile> getByEventId(String eventId);
+
     Profile save(Profile profile);
 
     void delete(String memberId, String eventId);

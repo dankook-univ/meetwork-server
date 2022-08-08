@@ -193,6 +193,54 @@ class EventServiceImplTest {
     }
 
     @Test
+    @DisplayName("참여한 이벤트의 프로필들을 조회할 수 있어요.")
+    public void getMemberList() {
+        Event event = eventService.create(
+            createMember("name", "meetwork@meetwork.kr").getId().toString(),
+            EventCreateRequest.builder()
+                .name("event")
+                .organizer(
+                    ProfileCreateRequest.builder()
+                        .nickname("nickname")
+                        .bio("bio")
+                        .build()
+                )
+                .code("code")
+                .build()
+        );
+
+        Member member = createMember("participant_name", "participant@meetwork.kr");
+        eventService.join(
+            member.getId().toString(),
+            event.getId().toString(),
+            ProfileCreateRequest.builder()
+                .nickname("participant_nickname1")
+                .bio("participant")
+                .build()
+        );
+
+        Member member2 = createMember("participant_name", "participant@meetwork.kr");
+        eventService.join(
+            member2.getId().toString(),
+            event.getId().toString(),
+            ProfileCreateRequest.builder()
+                .nickname("participant_nickname2")
+                .bio("participant")
+                .build()
+        );
+
+        List<Profile> profileList = eventService.getMemberList(member.getId().toString(),
+            event.getId().toString());
+
+        assertThat(event).isNotNull();
+        assertThat(event).isInstanceOf(Event.class);
+
+        assertThat(profileList).isNotNull();
+        assertThat(profileList.get(0)).isInstanceOf(Profile.class);
+        assertThat(profileList.size()).isEqualTo(3);
+    }
+
+    @Test
     @DisplayName("이벤트를 수정할 수 있어요.")
     public void update() {
         Member member = createMember("name", "meetwork@meetwork.kr");

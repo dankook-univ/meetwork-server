@@ -15,4 +15,6 @@ public interface ProfileJpaRepository extends JpaRepository<Profile, UUID> {
     void deleteByMemberIdAndEventId(UUID memberId, UUID eventId);
 
     List<Profile> findByMemberId(UUID memberId);
+
+    List<Profile> findByEventId(UUID eventId);
 }

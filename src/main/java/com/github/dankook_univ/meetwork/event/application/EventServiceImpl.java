@@ -42,6 +42,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public List<Profile> getMemberList(String memberId, String eventId) {
+        profileService.get(memberId, eventId);
+
+        return profileService.getListByEventId(eventId);
+    }
+
+    @Override
     @Transactional
     public Event create(String memberId, EventCreateRequest request) {
         if (checkExistingCode(request.getCode())) {

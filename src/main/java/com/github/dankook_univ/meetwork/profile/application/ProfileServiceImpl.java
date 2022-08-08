@@ -72,4 +72,9 @@ public class ProfileServiceImpl implements ProfileService {
     public List<Profile> getListByMemberId(String memberId) {
         return profileRepository.getByMemberId(memberId);
     }
+
+    @Override
+    public List<Profile> getListByEventId(String eventId) {
+        return profileRepository.getByEventId(eventId);
+    }
 }

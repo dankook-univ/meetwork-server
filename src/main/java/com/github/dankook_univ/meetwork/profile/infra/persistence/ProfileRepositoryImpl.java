@@ -36,6 +36,11 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     }
 
     @Override
+    public List<Profile> getByEventId(String eventId) {
+        return profileRepository.findByEventId(UUID.fromString(eventId));
+    }
+
+    @Override
     public Profile save(Profile profile) {
         return profileRepository.save(profile);
     }
