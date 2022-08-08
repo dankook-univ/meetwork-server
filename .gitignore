@@ -41,6 +41,3 @@ env/.env
 
 ### Data ###
 data/
-
-### application.yml ###
-/src/main/resources/application.yml

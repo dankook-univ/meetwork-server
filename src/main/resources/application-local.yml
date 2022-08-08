@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   application:
@@ -27,6 +27,9 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+  config:
+    activate:
+      on-profile: local
 
   redis:
     host: localhost
