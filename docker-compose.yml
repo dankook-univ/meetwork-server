@@ -26,6 +26,21 @@ services:
     networks:
       - meetwork
 
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    container_name: minio
+    environment:
+      MINIO_ROOT_USER: meetwork
+      MINIO_ROOT_PASSWORD: meetworkpass
+    restart: always
+    shm_size: '1gb'
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./data/minio:/data
+
 networks:
   meetwork:
     labels:
