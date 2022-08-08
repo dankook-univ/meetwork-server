@@ -1,6 +1,8 @@
-package com.github.dankook_univ.meetwork.file.infra.minio;
+package com.github.dankook_univ.meetwork.file.application.minio;
 
 import com.github.dankook_univ.meetwork.config.MinioConfig;
+import com.github.dankook_univ.meetwork.file.exceptions.FileUploadFailedException;
+import com.github.dankook_univ.meetwork.file.exceptions.MinioStatObjectException;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class MinioService {
+public class MinioServiceImpl implements MinioService {
 
     private final MinioClient minioClient;
 
@@ -29,9 +31,8 @@ public class MinioService {
                     .build()
             );
             return stat(key);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        } catch (Exception | MinioStatObjectException e) {
+            throw new FileUploadFailedException();
         }
     }
 
@@ -45,12 +46,11 @@ public class MinioService {
             );
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
 
-    public Boolean stat(String key) {
+    public Boolean stat(String key) throws MinioStatObjectException {
         try {
             StatObjectResponse statObjectResponse = minioClient.statObject(
                 StatObjectArgs.builder()
@@ -58,11 +58,9 @@ public class MinioService {
                     .object(key)
                     .build()
             );
-
             return statObjectResponse.size() > 0;
         } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            throw new MinioStatObjectException();
         }
     }
 }
