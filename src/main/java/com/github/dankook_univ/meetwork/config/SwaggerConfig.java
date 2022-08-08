@@ -32,8 +32,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-            .title("meetwork")
-            .description("meetwork api")
+            .title("Meetwork")
+            .description("Meetwork api")
             .version("1.0")
             .build();
     }
