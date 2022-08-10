@@ -40,6 +40,8 @@ public class QProfile extends EntityPathBase<Profile> {
 
     public final StringPath nickname = createString("nickname");
 
+    public final com.github.dankook_univ.meetwork.file.domain.QFile profileImage;
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
@@ -63,6 +65,7 @@ public class QProfile extends EntityPathBase<Profile> {
         super(type, metadata, inits);
         this.event = inits.isInitialized("event") ? new com.github.dankook_univ.meetwork.event.domain.QEvent(forProperty("event"), inits.get("event")) : null;
         this.member = inits.isInitialized("member") ? new com.github.dankook_univ.meetwork.member.domain.QMember(forProperty("member")) : null;
+        this.profileImage = inits.isInitialized("profileImage") ? new com.github.dankook_univ.meetwork.file.domain.QFile(forProperty("profileImage"), inits.get("profileImage")) : null;
     }
 
 }

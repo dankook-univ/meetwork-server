@@ -1,6 +1,9 @@
 package com.github.dankook_univ.meetwork.profile.application;
 
 import com.github.dankook_univ.meetwork.event.domain.Event;
+import com.github.dankook_univ.meetwork.file.application.file.FileServiceImpl;
+import com.github.dankook_univ.meetwork.file.domain.File;
+import com.github.dankook_univ.meetwork.file.domain.FileType;
 import com.github.dankook_univ.meetwork.member.application.MemberServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.exceptions.ExistingNicknameException;
@@ -11,6 +14,7 @@ import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileUpdate
 import com.github.dankook_univ.meetwork.profile.infra.persistence.ProfileRepositoryImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +25,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileRepositoryImpl profileRepository;
     private final MemberServiceImpl memberService;
+    private final FileServiceImpl fileService;
 
     @Override
     public Profile get(String memberId, String eventId) {
@@ -37,7 +42,7 @@ public class ProfileServiceImpl implements ProfileService {
             throw new ExistingNicknameException();
         }
 
-        return profileRepository.save(
+        Profile profile = profileRepository.save(
             Profile.builder()
                 .member(memberService.getById(memberId))
                 .event(event)
@@ -46,6 +51,12 @@ public class ProfileServiceImpl implements ProfileService {
                 .isAdmin(isAdmin)
                 .build()
         );
+
+        if (request.getProfileImage() != null) {
+            File file = fileService.upload(profile, FileType.profile, request.getProfileImage());
+            profile.updateProfileImage(file);
+        }
+        return profile;
     }
 
     @Override
@@ -59,6 +70,16 @@ public class ProfileServiceImpl implements ProfileService {
 
         profile.update(request.getNickname(), request.getBio(), null);
 
+        if (request.getProfileImage() != null) {
+            if (profile.getProfileImage() != null) {
+                fileService.delete(profile.getProfileImage().getId());
+            }
+            File file = fileService.upload(profile, FileType.profile, request.getProfileImage());
+            profile.updateProfileImage(file);
+        }
+        if (request.getIsProfileImageDeleted() && profile.getProfileImage() != null) {
+            fileService.delete(profile.getProfileImage().getId());
+        }
         return profile;
     }
 
@@ -69,12 +90,12 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<Profile> getListByMemberId(String memberId) {
-        return profileRepository.getByMemberId(memberId);
+    public List<Profile> getListByMemberId(String memberId, Pageable pageable) {
+        return profileRepository.getByMemberId(memberId, pageable);
     }
 
     @Override
-    public List<Profile> getListByEventId(String eventId) {
-        return profileRepository.getByEventId(eventId);
+    public List<Profile> getListByEventId(String eventId, Pageable pageable) {
+        return profileRepository.getByEventId(eventId, pageable);
     }
 }

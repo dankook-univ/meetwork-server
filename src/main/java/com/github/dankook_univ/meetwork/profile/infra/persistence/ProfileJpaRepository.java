@@ -1,9 +1,10 @@
 package com.github.dankook_univ.meetwork.profile.infra.persistence;
 
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProfileJpaRepository extends JpaRepository<Profile, UUID> {
@@ -14,7 +15,7 @@ public interface ProfileJpaRepository extends JpaRepository<Profile, UUID> {
 
     void deleteByMemberIdAndEventId(UUID memberId, UUID eventId);
 
-    List<Profile> findByMemberId(UUID memberId);
+    Page<Profile> findByMemberId(UUID memberId, Pageable pageable);
 
-    List<Profile> findByEventId(UUID eventId);
+    Page<Profile> findByEventId(UUID eventId, Pageable pageable);
 }

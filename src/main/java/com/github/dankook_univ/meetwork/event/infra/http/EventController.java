@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -43,27 +44,29 @@ public class EventController {
 
     @GetMapping("/list")
     public ResponseEntity<List<EventResponse>> getList(
-        @ApiIgnore Authentication authentication
+        @ApiIgnore Authentication authentication,
+        @RequestParam(value = "page", required = false, defaultValue = "1") int page
     ) {
         return ResponseEntity.ok().body(
-            eventService.getList(authentication.getName())
+            eventService.getList(authentication.getName(), page)
                 .stream().map(Event::toResponse)
                 .collect(Collectors.toList())
         );
     }
 
-    @GetMapping("/{eventId}/members")
+    @GetMapping("/members/{eventId}")
     public ResponseEntity<List<ProfileResponse>> getMemberList(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @NotBlank String eventId
+        @PathVariable("eventId") @NotBlank String eventId,
+        @RequestParam(value = "page", required = false, defaultValue = "1") int page
     ) {
         return ResponseEntity.ok().body(
-            eventService.getMemberList(authentication.getName(), eventId)
+            eventService.getMemberList(authentication.getName(), eventId, page)
                 .stream().map(Profile::toResponse)
                 .collect(Collectors.toList())
         );
     }
-    
+
     @PostMapping("/new")
     public ResponseEntity<EventResponse> create(
         @ApiIgnore Authentication authentication,
@@ -74,7 +77,7 @@ public class EventController {
         );
     }
 
-    @GetMapping("/{code}")
+    @GetMapping("/check/{code}")
     public ResponseEntity<Boolean> codeJoin(
         @PathVariable("code") @NotBlank String code
     ) {
@@ -83,7 +86,7 @@ public class EventController {
         );
     }
 
-    @GetMapping("/{code}/join")
+    @PatchMapping("/join/{code}")
     public ResponseEntity<EventResponse> codeJoin(
         @ApiIgnore Authentication authentication,
         @PathVariable("code") @NotBlank String code,
@@ -94,7 +97,7 @@ public class EventController {
         );
     }
 
-    @PostMapping("/{eventId}/join")
+    @PostMapping("/join/{eventId}")
     public ResponseEntity<EventResponse> join(
         @ApiIgnore Authentication authentication,
         @PathVariable("eventId") @NotBlank String eventId,
@@ -115,6 +118,16 @@ public class EventController {
             eventService.update(authentication.getName(), eventId, request).toResponse()
         );
     }
+
+    @DeleteMapping("/secession/{eventId}")
+    public ResponseEntity<Boolean> secession(
+        @ApiIgnore Authentication authentication,
+        @PathVariable("eventId") @NotBlank String eventId
+    ) {
+        eventService.secession(authentication.getName(), eventId);
+        return ResponseEntity.ok().body(true);
+    }
+
 
     @DeleteMapping("/{eventId}")
     public ResponseEntity<Boolean> delete(

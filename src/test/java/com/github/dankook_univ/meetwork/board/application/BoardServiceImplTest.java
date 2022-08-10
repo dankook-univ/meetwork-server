@@ -189,8 +189,6 @@ public class BoardServiceImplTest {
 
         Assertions.assertThrows(NotFoundBoardException.class, () -> {
             boardService.get(
-                member.getId().toString(),
-                event.getId().toString(),
                 board.getId().toString()
             );
         });

@@ -7,7 +7,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,20 +28,16 @@ public class SignUpRequest {
     @NotEmpty
     private String email;
 
-    private MultipartFile profileImage;
-
     @Builder
     public SignUpRequest(
         AuthType type,
         String token,
         String name,
-        String email,
-        MultipartFile profileImage
+        String email
     ) {
         this.type = type;
         this.token = token;
         this.name = name;
         this.email = email;
-        this.profileImage = profileImage;
     }
 }

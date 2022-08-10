@@ -3,8 +3,8 @@ package com.github.dankook_univ.meetwork.auth.application.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.github.dankook_univ.meetwork.auth.domain.auth.AuthType;
-import com.github.dankook_univ.meetwork.auth.domain.token.Token;
 import com.github.dankook_univ.meetwork.auth.infra.http.request.SignUpRequest;
+import com.github.dankook_univ.meetwork.auth.infra.http.response.TokenResponse;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ class AuthServiceImplTest {
     @Test
     @DisplayName("회원가입을 할 수 있어요.")
     void signUp() {
-        Token token = authService.signUp(
+        TokenResponse token = authService.signUp(
             SignUpRequest.builder()
                 .type(AuthType.kakao)
                 .token(UUID.randomUUID().toString())
@@ -32,6 +32,6 @@ class AuthServiceImplTest {
         );
 
         assertThat(token).isNotNull();
-        assertThat(token).isInstanceOf(Token.class);
+        assertThat(token).isInstanceOf(TokenResponse.class);
     }
 }

@@ -1,7 +1,7 @@
 package com.github.dankook_univ.meetwork.file.domain;
 
 import com.github.dankook_univ.meetwork.common.domain.Core;
-import com.github.dankook_univ.meetwork.member.domain.Member;
+import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,13 +20,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class File extends Core {
 
-    @ManyToOne(targetEntity = Member.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Profile.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "uploader_id")
-    private Member uploader;
+    private Profile uploader;
 
     @Column(name = "file_key")
     private String key;
-
 
     @Enumerated(EnumType.STRING)
     private FileType type;
@@ -36,7 +35,7 @@ public class File extends Core {
     private String name;
 
     @Builder
-    public File(Member uploader, FileType type, String mime, String name) {
+    public File(Profile uploader, FileType type, String mime, String name) {
         this.uploader = uploader;
         this.key = type + "/" + UUID.randomUUID() + "." + mime;
         this.type = type;

@@ -63,9 +63,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Board get(String memberId, String eventId, String boardId) {
-        profileService.get(memberId, eventId);
-
+    public Board get(String boardId) {
         return getById(boardId);
     }
 
