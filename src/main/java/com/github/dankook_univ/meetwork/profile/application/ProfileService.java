@@ -5,6 +5,7 @@ import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileUpdateRequest;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface ProfileService {
 
@@ -16,7 +17,7 @@ public interface ProfileService {
 
     void delete(String memberId, String eventId);
 
-    List<Profile> getListByMemberId(String memberId);
+    List<Profile> getListByMemberId(String memberId, Pageable pageable);
 
-    List<Profile> getListByEventId(String eventId);
+    List<Profile> getListByEventId(String eventId, Pageable pageable);
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -31,13 +32,13 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     }
 
     @Override
-    public List<Profile> getByMemberId(String memberId) {
-        return profileRepository.findByMemberId(UUID.fromString(memberId));
+    public List<Profile> getByMemberId(String memberId, Pageable pageable) {
+        return profileRepository.findByMemberId(UUID.fromString(memberId), pageable).getContent();
     }
 
     @Override
-    public List<Profile> getByEventId(String eventId) {
-        return profileRepository.findByEventId(UUID.fromString(eventId));
+    public List<Profile> getByEventId(String eventId, Pageable pageable) {
+        return profileRepository.findByEventId(UUID.fromString(eventId), pageable).getContent();
     }
 
     @Override

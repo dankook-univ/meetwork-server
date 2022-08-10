@@ -13,6 +13,7 @@ import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreate
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,18 +35,18 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<Event> getList(String memberId) {
-        return profileService.getListByMemberId(memberId)
+    public List<Event> getList(String memberId, int page) {
+        return profileService.getListByMemberId(memberId, PageRequest.of(page - 1, 15))
             .stream()
             .map(Profile::getEvent)
             .collect(Collectors.toList());
     }
 
     @Override
-    public List<Profile> getMemberList(String memberId, String eventId) {
+    public List<Profile> getMemberList(String memberId, String eventId, int page) {
         profileService.get(memberId, eventId);
 
-        return profileService.getListByEventId(eventId);
+        return profileService.getListByEventId(eventId, PageRequest.of(page - 1, 15));
     }
 
     @Override
@@ -76,13 +77,13 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public Event update(String memberId, String eventId, EventUpdateRequest request) {
-        if (checkExistingCode(request.getCode())) {
-            throw new ExistingCodeException();
-        }
-
         Event event = getById(eventId);
         if (!profileService.get(memberId, eventId).getIsAdmin()) {
             throw new NotFoundEventPermissionException();
+        }
+
+        if (request.getCode() != null && checkExistingCode(request.getCode())) {
+            throw new ExistingCodeException();
         }
 
         return event.update(request.getName(), request.getCode(), request.getMeetingUrl());

@@ -57,7 +57,7 @@ public class Board extends Core {
 
     public Board update(String name, Boolean adminOnly) {
         if (name != null) {
-            this.name = name;
+            this.name = name.trim();
         }
         if (adminOnly != null) {
             this.adminOnly = adminOnly;

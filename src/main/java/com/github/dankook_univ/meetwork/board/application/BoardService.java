@@ -11,7 +11,7 @@ public interface BoardService {
 
     Board update(String memberId, String boardId, BoardUpdateRequest request);
 
-    Board get(String memberId, String eventId, String boardId);
+    Board get(String boardId);
 
     List<Board> getList(String memberId, String eventId);
 

@@ -182,7 +182,7 @@ class EventServiceImplTest {
                 .build()
         );
 
-        List<Event> list = eventService.getList(member.getId().toString());
+        List<Event> list = eventService.getList(member.getId().toString(), 1);
 
         assertThat(list).isNotNull();
         assertThat(list.size()).isEqualTo(2);
@@ -193,7 +193,7 @@ class EventServiceImplTest {
     }
 
     @Test
-    @DisplayName("참여한 이벤트의 프로필들을 조회할 수 있어요.")
+    @DisplayName("참여한 이벤트의 참여자 목록을 조회할 수 있어요.")
     public void getMemberList() {
         Event event = eventService.create(
             createMember("name", "meetwork@meetwork.kr").getId().toString(),
@@ -229,8 +229,10 @@ class EventServiceImplTest {
                 .build()
         );
 
-        List<Profile> profileList = eventService.getMemberList(member.getId().toString(),
-            event.getId().toString());
+        List<Profile> profileList = eventService.getMemberList(
+            member.getId().toString(),
+            event.getId().toString(),
+            1);
 
         assertThat(event).isNotNull();
         assertThat(event).isInstanceOf(Event.class);
@@ -422,6 +424,48 @@ class EventServiceImplTest {
                     .build()
             );
         });
+    }
+
+    @Test
+    @DisplayName("이벤트에서 나갈 수 있어요.")
+    public void secession() {
+        Member organizer = createMember("name", "meetwork@meetwork.kr");
+        Event event = eventService.create(
+            organizer.getId().toString(),
+            EventCreateRequest.builder()
+                .name("event")
+                .organizer(
+                    ProfileCreateRequest.builder()
+                        .nickname("nickname")
+                        .bio("bio")
+                        .build()
+                )
+                .code("code")
+                .build()
+        );
+
+        Member participant = createMember("participant_name", "participant@meetwork.kr");
+        Event joinedEvent = eventService.join(
+            participant.getId().toString(),
+            event.getId().toString(),
+            ProfileCreateRequest.builder()
+                .nickname("participant_nickname")
+                .bio("participant")
+                .build()
+        );
+        List<Profile> joinedList = eventService.getMemberList(
+            organizer.getId().toString(),
+            event.getId().toString(),
+            1);
+
+        eventService.secession(participant.getId().toString(), event.getId().toString());
+        List<Profile> secessionList = eventService.getMemberList(
+            organizer.getId().toString(),
+            event.getId().toString(),
+            1);
+
+        assertThat(joinedList.size()).isEqualTo(2);
+        assertThat(secessionList.size()).isEqualTo(1);
     }
 
     @Test

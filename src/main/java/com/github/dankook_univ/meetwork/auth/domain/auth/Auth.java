@@ -34,7 +34,7 @@ public class Auth extends Core {
     private String clientId;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn()
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder

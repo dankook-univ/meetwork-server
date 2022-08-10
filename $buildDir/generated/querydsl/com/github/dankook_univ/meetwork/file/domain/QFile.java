@@ -41,7 +41,7 @@ public class QFile extends EntityPathBase<File> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public final com.github.dankook_univ.meetwork.member.domain.QMember uploader;
+    public final com.github.dankook_univ.meetwork.profile.domain.QProfile uploader;
 
     public QFile(String variable) {
         this(File.class, forVariable(variable), INITS);
@@ -61,7 +61,7 @@ public class QFile extends EntityPathBase<File> {
 
     public QFile(Class<? extends File> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.uploader = inits.isInitialized("uploader") ? new com.github.dankook_univ.meetwork.member.domain.QMember(forProperty("uploader")) : null;
+        this.uploader = inits.isInitialized("uploader") ? new com.github.dankook_univ.meetwork.profile.domain.QProfile(forProperty("uploader"), inits.get("uploader")) : null;
     }
 
 }

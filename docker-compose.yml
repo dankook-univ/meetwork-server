@@ -6,7 +6,7 @@ services:
     container_name: postgres
     restart: always
     volumes:
-      - ./data/postgresql:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     environment:
       - TZ=Asia/Seoul
     env_file:
@@ -40,6 +40,10 @@ services:
       - "9001:9001"
     volumes:
       - ./data/minio:/data
+
+volumes:
+  pgdata:
+    external: true
 
 networks:
   meetwork:

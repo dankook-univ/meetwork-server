@@ -5,7 +5,7 @@ import com.github.dankook_univ.meetwork.file.application.minio.MinioServiceImpl;
 import com.github.dankook_univ.meetwork.file.domain.File;
 import com.github.dankook_univ.meetwork.file.domain.FileType;
 import com.github.dankook_univ.meetwork.file.infra.persistence.FileRepositoryImpl;
-import com.github.dankook_univ.meetwork.member.domain.Member;
+import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import java.io.InputStream;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -22,19 +22,23 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public File upload(Member uploader, FileType fileType, MultipartFile file) {
-        File entity = fileRepository.save(File.builder()
-            .uploader(uploader)
-            .type(fileType)
-            .mime(
-                file.getOriginalFilename() == null
-                    ? "jpeg"
-                    : file.getOriginalFilename().substring(
-                        file.getOriginalFilename().lastIndexOf(".") + 1
-                    )
-            )
-            .name(file.getOriginalFilename())
-            .build()
+    public File upload(Profile uploader, FileType fileType, MultipartFile file) {
+        File entity = fileRepository.save(
+            File.builder()
+                .uploader(uploader)
+                .type(fileType)
+                .mime(
+                    file.getOriginalFilename() == null
+                        ? "jpeg"
+                        : file.getOriginalFilename().substring(
+                            file.getOriginalFilename().lastIndexOf(".") + 1
+                        )
+                )
+                .name(file.getOriginalFilename()
+                    .replaceAll("￦￦.", "")
+                    .replaceAll("/", "")
+                    .replaceAll("￦￦￦￦", ""))
+                .build()
         );
 
         try {
