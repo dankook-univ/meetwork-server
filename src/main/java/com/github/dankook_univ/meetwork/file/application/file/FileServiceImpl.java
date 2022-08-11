@@ -20,7 +20,6 @@ public class FileServiceImpl implements FileService {
 
     final private MinioServiceImpl minioService;
 
-
     @Override
     public File upload(Profile uploader, FileType fileType, MultipartFile file) {
         File entity = fileRepository.save(
