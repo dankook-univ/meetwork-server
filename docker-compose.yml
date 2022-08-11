@@ -6,7 +6,7 @@ services:
     container_name: postgres
     restart: always
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql/data
     environment:
       - TZ=Asia/Seoul
     env_file:
@@ -17,7 +17,8 @@ services:
       - meetwork
 
   redis:
-    image: redis:5
+    image: redis:6
+    container_name: redis
     volumes:
       - ./data/redis:/data
     command: redis-server --requirepass password --port 6379
@@ -28,11 +29,10 @@ services:
 
   minio:
     image: minio/minio
-    command: server /data --console-address ":9001"
     container_name: minio
-    environment:
-      MINIO_ROOT_USER: meetwork
-      MINIO_ROOT_PASSWORD: meetworkpass
+    command: server --address ":9000" --console-address ":9001" /meetwork
+    env_file:
+      - ./env/.env
     restart: always
     shm_size: '1gb'
     ports:
@@ -40,10 +40,6 @@ services:
       - "9001:9001"
     volumes:
       - ./data/minio:/data
-
-volumes:
-  pgdata:
-    external: true
 
 networks:
   meetwork:
