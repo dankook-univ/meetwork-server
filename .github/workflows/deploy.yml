@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - ci/actions # for ci test
 
 env:
   DOCKER_NAME: meetwork
