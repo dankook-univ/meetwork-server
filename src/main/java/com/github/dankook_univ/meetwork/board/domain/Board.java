@@ -46,12 +46,7 @@ public class Board extends Core {
 
     public BoardResponse toResponse() {
         return BoardResponse.builder()
-            .id(this.getId())
-            .createdAt(this.getCreatedAt())
-            .updatedAt(this.getUpdatedAt())
-            .event(this.getEvent().toResponse())
-            .name(this.name)
-            .adminOnly(this.adminOnly)
+            .board(this)
             .build();
     }
 

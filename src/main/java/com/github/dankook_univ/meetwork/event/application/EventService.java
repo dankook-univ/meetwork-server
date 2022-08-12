@@ -25,6 +25,8 @@ public interface EventService {
 
     Event join(String memberId, String eventId, ProfileCreateRequest request);
 
+    Profile getMyProfile(String memberId, String eventId);
+
     void secession(String memberId, String eventId);
 
     void delete(String memberId, String eventId);

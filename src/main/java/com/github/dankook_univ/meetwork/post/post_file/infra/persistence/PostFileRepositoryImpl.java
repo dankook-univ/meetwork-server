@@ -19,8 +19,8 @@ public class PostFileRepositoryImpl implements PostFileRepository {
     }
 
     @Override
-    public List<PostFile> getByPostId(UUID postId) {
-        return postFileRepository.findByPostId(postId);
+    public List<PostFile> getByPostId(String postId) {
+        return postFileRepository.findByPostId(UUID.fromString(postId));
     }
 
     @Override

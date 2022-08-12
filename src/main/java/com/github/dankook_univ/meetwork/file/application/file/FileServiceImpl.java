@@ -7,7 +7,6 @@ import com.github.dankook_univ.meetwork.file.domain.FileType;
 import com.github.dankook_univ.meetwork.file.infra.persistence.FileRepositoryImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import java.io.InputStream;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,7 +52,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void delete(UUID fileId) {
+    public void delete(String fileId) {
         fileRepository.getById(fileId).ifPresent(file -> minioService.delete(file.getKey()));
         fileRepository.delete(fileId);
     }

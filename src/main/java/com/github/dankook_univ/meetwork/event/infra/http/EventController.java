@@ -8,6 +8,7 @@ import com.github.dankook_univ.meetwork.event.infra.http.response.EventResponse;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import com.github.dankook_univ.meetwork.profile.infra.http.response.ProfileResponse;
+import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -32,6 +33,7 @@ public class EventController {
 
     private final EventServiceImpl eventService;
 
+    @ApiOperation(value = "이벤트 조회", notes = "이벤트를 조회할 수 있어요.")
     @GetMapping("/{eventId}")
     public ResponseEntity<EventResponse> get(
         @ApiIgnore Authentication authentication,
@@ -42,6 +44,7 @@ public class EventController {
         );
     }
 
+    @ApiOperation(value = "이벤트 목록 조회", notes = "이벤트 목록을 조회할 수 있어요.")
     @GetMapping("/list")
     public ResponseEntity<List<EventResponse>> getList(
         @ApiIgnore Authentication authentication,
@@ -54,6 +57,18 @@ public class EventController {
         );
     }
 
+    @ApiOperation(value = "이벤트의 내 프로필 가져오기", notes = "이벤트에 참여한 내 프로필을 가져올 수 있어요.")
+    @GetMapping("/me/{eventId}")
+    public ResponseEntity<ProfileResponse> getMyProfile(
+        @ApiIgnore Authentication authentication,
+        @PathVariable("eventId") @NotBlank String eventId
+    ) {
+        return ResponseEntity.ok().body(
+            eventService.getMyProfile(authentication.getName(), eventId).toResponse()
+        );
+    }
+
+    @ApiOperation(value = "이벤트 참여 프로필 목록 조회", notes = "이벤트에 참여한 회원들의 프로필을 조회할 수 있어요.")
     @GetMapping("/members/{eventId}")
     public ResponseEntity<List<ProfileResponse>> getMemberList(
         @ApiIgnore Authentication authentication,
@@ -67,6 +82,7 @@ public class EventController {
         );
     }
 
+    @ApiOperation(value = "이벤트 생성", notes = "이벤트를 생성할 수 있어요.")
     @PostMapping("/new")
     public ResponseEntity<EventResponse> create(
         @ApiIgnore Authentication authentication,
@@ -77,8 +93,9 @@ public class EventController {
         );
     }
 
+    @ApiOperation(value = "이벤트 코드 중복 확인", notes = "이벤트 코드가 중복되는지 검사해요.")
     @GetMapping("/check/{code}")
-    public ResponseEntity<Boolean> codeJoin(
+    public ResponseEntity<Boolean> checkCode(
         @PathVariable("code") @NotBlank String code
     ) {
         return ResponseEntity.ok().body(
@@ -86,8 +103,9 @@ public class EventController {
         );
     }
 
+    @ApiOperation(value = "코드로 이벤트 참여하기", notes = "이벤트의 코드로 이벤트에 참여할 수 있어요.")
     @PatchMapping("/join/{code}")
-    public ResponseEntity<EventResponse> codeJoin(
+    public ResponseEntity<EventResponse> joinCode(
         @ApiIgnore Authentication authentication,
         @PathVariable("code") @NotBlank String code,
         @Valid ProfileCreateRequest request
@@ -97,8 +115,9 @@ public class EventController {
         );
     }
 
+    @ApiOperation(value = "이벤트아이디로 이벤트 참여하기", notes = "이벤트의 아이디로 이벤트에 참여할 수 있어요.")
     @PostMapping("/join/{eventId}")
-    public ResponseEntity<EventResponse> join(
+    public ResponseEntity<EventResponse> joinEvent(
         @ApiIgnore Authentication authentication,
         @PathVariable("eventId") @NotBlank String eventId,
         @Valid ProfileCreateRequest request
@@ -108,6 +127,8 @@ public class EventController {
         );
     }
 
+
+    @ApiOperation(value = "이벤트 수정", notes = "이벤트를 수정할 수 있어요.")
     @PatchMapping("/{eventId}")
     public ResponseEntity<EventResponse> update(
         @ApiIgnore Authentication authentication,
@@ -119,6 +140,7 @@ public class EventController {
         );
     }
 
+    @ApiOperation(value = "이벤트 나가기", notes = "참가했던 이벤트에서 나갈 수 있어요.")
     @DeleteMapping("/secession/{eventId}")
     public ResponseEntity<Boolean> secession(
         @ApiIgnore Authentication authentication,
@@ -129,6 +151,7 @@ public class EventController {
     }
 
 
+    @ApiOperation(value = "이벤트 삭제", notes = "주최자는 이벤트를 삭제할 수 있어요.")
     @DeleteMapping("/{eventId}")
     public ResponseEntity<Boolean> delete(
         @ApiIgnore Authentication authentication,

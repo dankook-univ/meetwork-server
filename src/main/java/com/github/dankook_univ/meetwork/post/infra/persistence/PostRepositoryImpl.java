@@ -21,13 +21,13 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Optional<Post> getById(UUID postId) {
-        return postRepository.findById(postId);
+    public Optional<Post> getById(String postId) {
+        return postRepository.findById(UUID.fromString(postId));
     }
 
     @Override
-    public List<Post> getByBoardId(UUID boardId, Pageable pageable) {
-        return postRepository.findByBoardId(boardId, pageable).getContent();
+    public List<Post> getByBoardId(String boardId, Pageable pageable) {
+        return postRepository.findByBoardId(UUID.fromString(boardId), pageable).getContent();
     }
 
     @Override

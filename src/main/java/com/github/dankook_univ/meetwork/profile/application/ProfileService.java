@@ -20,4 +20,6 @@ public interface ProfileService {
     List<Profile> getListByMemberId(String memberId, Pageable pageable);
 
     List<Profile> getListByEventId(String eventId, Pageable pageable);
+
+    Boolean isEventMember(String memberId, String eventId);
 }

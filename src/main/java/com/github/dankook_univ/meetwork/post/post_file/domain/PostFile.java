@@ -27,7 +27,7 @@ public class PostFile extends Core {
     private Post post;
 
     @NotNull
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "file_id")
     private File file;
 

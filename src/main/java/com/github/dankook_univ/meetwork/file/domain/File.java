@@ -1,6 +1,7 @@
 package com.github.dankook_univ.meetwork.file.domain;
 
 import com.github.dankook_univ.meetwork.common.domain.Core;
+import com.github.dankook_univ.meetwork.file.infra.http.response.FileResponse;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -41,5 +42,11 @@ public class File extends Core {
         this.type = type;
         this.mime = mime;
         this.name = name;
+    }
+
+    public FileResponse toResponse() {
+        return FileResponse.builder()
+            .file(this)
+            .build();
     }
 }

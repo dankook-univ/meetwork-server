@@ -12,9 +12,7 @@ import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequ
 import com.github.dankook_univ.meetwork.member.domain.Member;
 import com.github.dankook_univ.meetwork.member.infra.persistence.MemberRepositoryImpl;
 import com.github.dankook_univ.meetwork.post.domain.Post;
-import com.github.dankook_univ.meetwork.post.exceptions.NotFoundPostException;
 import com.github.dankook_univ.meetwork.post.infra.http.request.PostCreateRequest;
-import com.github.dankook_univ.meetwork.post.infra.http.request.PostUpdateRequest;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -54,12 +52,8 @@ public class PostServiceImplTest {
             member.getId().toString(),
             EventCreateRequest.builder()
                 .name("eventName")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("nickname")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code("code")
                 .build()
         );
@@ -131,39 +125,6 @@ public class PostServiceImplTest {
     }
 
     @Test
-    @DisplayName("게시물 수정을 할 수 있어요.")
-    public void update() {
-        Member member = createMember("name", "meetwork@meetwork.kr");
-        Event event = createEvent(member);
-        Board adminOnlyBoard = createBoard(member, event, "소통방", true);
-
-        Post post = postService.create(
-            member.getId().toString(),
-            PostCreateRequest.builder()
-                .title("title")
-                .content("content")
-                .boardId(adminOnlyBoard.getId().toString())
-                .build()
-        );
-
-        Post updatedPost = postService.update(
-            member.getId().toString(),
-            post.getId().toString(),
-            PostUpdateRequest.builder()
-                .title("updatedPost")
-                .build()
-        );
-
-        assertThat(adminOnlyBoard.getAdminOnly()).isTrue();
-        assertThat(post).isNotNull();
-        assertThat(post).isInstanceOf(Post.class);
-
-        assertThat(updatedPost).isNotNull();
-        assertThat(updatedPost).isInstanceOf(Post.class);
-        assertThat(updatedPost.getTitle()).isEqualTo("updatedPost");
-    }
-
-    @Test
     @DisplayName("게시물을 가져올 수 있어요.")
     public void get() {
         Member member = createMember("name", "meetwork@meetwork.kr");
@@ -229,63 +190,4 @@ public class PostServiceImplTest {
         assertThat(list).isNotNull();
         assertThat(list.size()).isEqualTo(2);
     }
-
-    @Test
-    @DisplayName("작성자는 본인의 게시물을 삭제할 수 있어요.")
-    public void delete() {
-        Member member = createMember("name", "meetwork@meetwork.kr");
-        Event event = createEvent(member);
-        Board adminOnlyBoard = createBoard(member, event, "소통방", true);
-
-        Post post = postService.create(
-            member.getId().toString(),
-            PostCreateRequest.builder()
-                .title("title")
-                .content("content")
-                .boardId(adminOnlyBoard.getId().toString())
-                .build()
-        );
-
-        postService.delete(member.getId().toString(), post.getId().toString());
-
-        assertThat(post).isNotNull();
-        Assertions.assertThrows(NotFoundPostException.class, () -> {
-            postService.get(member.getId().toString(), post.getId().toString());
-        });
-    }
-
-    @Test
-    @DisplayName("관리자는 어느 게시물이든 삭제할 수 있어요.")
-    public void deleteWithAdmin() {
-        Member organizer = createMember("name", "meetwork@meetwork.kr");
-        Event event = createEvent(organizer);
-        Board adminOnlyBoard = createBoard(organizer, event, "소통방", false);
-
-        Member participant = createMember("participant", "meetwork@meetwork.kr");
-        eventService.join(
-            participant.getId().toString(),
-            event.getId().toString(),
-            ProfileCreateRequest.builder()
-                .nickname("participant_nickname")
-                .bio("participant")
-                .build()
-        );
-
-        Post post = postService.create(
-            participant.getId().toString(),
-            PostCreateRequest.builder()
-                .title("title")
-                .content("content")
-                .boardId(adminOnlyBoard.getId().toString())
-                .build()
-        );
-
-        postService.delete(organizer.getId().toString(), post.getId().toString());
-
-        assertThat(post).isNotNull();
-        Assertions.assertThrows(NotFoundPostException.class, () -> {
-            postService.get(organizer.getId().toString(), post.getId().toString());
-        });
-    }
-
 }

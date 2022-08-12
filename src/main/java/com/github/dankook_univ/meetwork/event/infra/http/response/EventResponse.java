@@ -1,21 +1,34 @@
 package com.github.dankook_univ.meetwork.event.infra.http.response;
 
+import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.profile.infra.http.response.ProfileResponse;
-import lombok.*;
-
 import java.time.LocalDateTime;
-import java.util.UUID;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor
 public class EventResponse {
-	UUID id;
-	LocalDateTime createdAt;
-	LocalDateTime updatedAt;
-	String name;
-	ProfileResponse organizer;
-	String code;
-	String meetingUrl;
+
+    String id;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
+    String name;
+    ProfileResponse organizer;
+    String code;
+    String meetingUrl;
+
+    @Builder
+    public EventResponse(
+        Event event
+    ) {
+        this.id = event.getId().toString();
+        this.name = event.getName();
+        this.organizer = event.getOrganizer().toResponse();
+        this.code = event.getCode();
+        this.meetingUrl = event.getMeetingUrl();
+        this.createdAt = event.getCreatedAt();
+        this.updatedAt = event.getUpdatedAt();
+    }
 }

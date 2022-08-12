@@ -121,6 +121,11 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public Profile getMyProfile(String memberId, String eventId) {
+        return profileService.get(memberId, eventId);
+    }
+
+    @Override
     @Transactional
     public void secession(String memberId, String eventId) {
         profileService.delete(memberId, eventId);
