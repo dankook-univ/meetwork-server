@@ -68,7 +68,11 @@ public class EventServiceImpl implements EventService {
             profileService.create(
                 memberId,
                 event,
-                request.getOrganizer(),
+                ProfileCreateRequest.builder()
+                    .nickname(request.getOrganizerNickname())
+                    .bio(request.getOrganizerBio())
+                    .profileImage(request.getOrganizerProfileImage())
+                    .build(),
                 true
             )
         );

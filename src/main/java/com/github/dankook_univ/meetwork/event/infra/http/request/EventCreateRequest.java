@@ -1,10 +1,13 @@
 package com.github.dankook_univ.meetwork.event.infra.http.request;
 
-import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
-import lombok.*;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Builder
@@ -17,11 +20,17 @@ public class EventCreateRequest {
 	String name;
 
 	@NotNull
-	ProfileCreateRequest organizer;
-
-	@NotNull
 	@NotEmpty
 	String code;
 
 	String meetingUrl;
+
+	@NotNull
+	@NotEmpty
+	String organizerNickname;
+
+	String organizerBio;
+
+	MultipartFile organizerProfileImage;
+
 }
