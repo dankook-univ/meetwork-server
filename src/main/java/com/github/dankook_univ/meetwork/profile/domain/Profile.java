@@ -44,7 +44,6 @@ public class Profile extends Core {
     @Column(nullable = false)
     private String nickname;
 
-    @NotEmpty
     @Column
     private String bio;
 

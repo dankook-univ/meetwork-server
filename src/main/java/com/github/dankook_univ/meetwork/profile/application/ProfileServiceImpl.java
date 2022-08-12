@@ -34,6 +34,11 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public Profile getById(String profileId) {
+        return profileRepository.getById(profileId).orElseThrow(NotFoundProfileException::new);
+    }
+
+    @Override
     @Transactional
     public Profile create(String memberId, Event event, ProfileCreateRequest request,
         Boolean isAdmin) {
