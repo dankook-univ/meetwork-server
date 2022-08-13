@@ -123,6 +123,24 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return room;
     }
 
+    @Override
+    public ChatRoom join(String memberId, String roomId) {
+        ChatRoom room = chatRoomRepository.getById(roomId)
+            .orElseThrow(NotFoundChatRoomException::new);
+        Profile profile = profileService.get(memberId, room.getEvent().getId().toString());
+
+        room.appendParticipant(
+            chatParticipantRepository.create(
+                ChatParticipant.builder()
+                    .room(room)
+                    .member(profile)
+                    .build()
+            )
+        );
+
+        return room;
+    }
+
     public void shouldParticipating(
         String memberId, String roomId
     ) throws NotParticipatedMemberException {
@@ -130,9 +148,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             .orElseThrow(NotFoundChatRoomException::new);
         Profile participant = profileService.get(memberId, room.getEvent().getId().toString());
 
-        if (chatParticipantRepository.getByParticipantIdAndRoomId(
-            participant.getId().toString(),
-            roomId).isEmpty()
+        if (
+            chatParticipantRepository.getByParticipantIdAndRoomId(
+                participant.getId().toString(),
+                roomId
+            ).isEmpty()
         ) {
             throw new NotParticipatedMemberException();
         }

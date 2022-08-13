@@ -34,7 +34,7 @@ class ChatMessageServiceImplTest {
     private EventServiceImpl eventService;
     @Autowired
     private MemberRepositoryImpl memberRepository;
-    
+
     private Member createMember(String name, String email) {
         return memberRepository.save(
             Member.builder()
@@ -70,7 +70,7 @@ class ChatMessageServiceImplTest {
 
     @Test
     @DisplayName("채팅방 메시지를 생성할 수 있어요.")
-    public void CreateChatMessage() throws NotParticipatedMemberException {
+    public void createChatMessage() throws NotParticipatedMemberException {
         Member member = createMember("name", "email");
         Event event = createEvent(member);
         ChatRoom room = createChatRoom(member, event);
@@ -87,7 +87,7 @@ class ChatMessageServiceImplTest {
 
     @Test
     @DisplayName("채팅방 메시지 생성에 실패해요.")
-    public void CreateChatMessageWithFailed() throws NotParticipatedMemberException {
+    public void createChatMessageWithFailed() throws NotParticipatedMemberException {
         Member member = createMember("name", "meetwork@meetwork.kr");
         Event event = createEvent(member);
         ChatRoom room = createChatRoom(member, event);

@@ -98,6 +98,16 @@ public class ChatController {
         );
     }
 
+    @PostMapping("/{eventId/{roomId}/join")
+    public ResponseEntity<ChatRoomResponse> joinChatRoom(
+        @ApiIgnore Authentication authentication,
+        @PathVariable("roomId") String roomId
+    ) {
+        return ResponseEntity.ok().body(
+            chatRoomService.join(authentication.getName(), roomId).toResponse()
+        );
+    }
+
     @PostMapping("/{eventId}/{roomId}/message/new")
     public ResponseEntity<ChatMessageResponse> sendMessage(
         @ApiIgnore Authentication authentication,

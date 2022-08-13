@@ -62,7 +62,7 @@ class ChatRoomServiceImplTest {
 
     @Test
     @DisplayName("채팅방을 생성할 수 있어요.")
-    public void CreateChatRoom() {
+    public void createChatRoom() {
         Member member = createMember("name", "meetwork@meetwork.kr");
         Event event = createEvent(member);
 
@@ -83,7 +83,7 @@ class ChatRoomServiceImplTest {
 
     @Test
     @DisplayName("채팅방 생성에 실패해요. (중복 이름)")
-    public void CreateChatRoomWithFailed() {
+    public void createChatRoomWithFailed() {
         Member member = createMember("name", "meetwork@meetwork.kr");
         Event event = createEvent(member);
 
@@ -116,8 +116,47 @@ class ChatRoomServiceImplTest {
     }
 
     @Test
+    @DisplayName("채팅방에 참여할 수 있어요.")
+    public void joinChatRoom() {
+        Member member = createMember("name", "meetwork@meetwork.kr");
+        Event event = createEvent(member);
+
+        ChatRoom room = chatRoomService.create(
+            member.getId().toString(),
+            ChatRoomCreateRequest.builder()
+                .name("name")
+                .eventId(event.getId().toString())
+                .isPrivate(true)
+                .build()
+        );
+
+        assertThat(room.getParticipants().size()).isEqualTo(1);
+
+        Member other = createMember("other", "other@meetwork.kr");
+        eventService.join(
+            other.getId().toString(),
+            event.getId().toString(),
+            ProfileCreateRequest.builder()
+                .nickname("other_nickname")
+                .bio("other_bio")
+                .build()
+        );
+
+        ChatRoom joinedRoom = chatRoomService.join(
+            other.getId().toString(),
+            room.getId().toString()
+        );
+
+        assertThat(joinedRoom).isNotNull().isInstanceOf(ChatRoom.class);
+        assertThat(joinedRoom).isEqualTo(room);
+
+        assertThat(joinedRoom.getParticipants().size()).isEqualTo(2);
+    }
+
+
+    @Test
     @DisplayName("채팅방을 생성과 함께 초대할 수 있어요.")
-    public void CreateChatRoomWithInviteMembers() {
+    public void createChatRoomWithInviteMembers() {
         Member member = createMember("name", "meetwork@meetwork.kr");
         Event event = createEvent(member);
 
@@ -161,20 +200,18 @@ class ChatRoomServiceImplTest {
 
     @Test
     @DisplayName("공개된 모든 채팅방을 조회할 수 있어요.")
-    public void GetChatRooms() {
+    public void getChatRooms() {
         Member member = createMember("name", "meetwork@meetwork.kr");
         Event event = createEvent(member);
 
-        IntStream.range(0, 10).forEach(index -> {
-            chatRoomService.create(
-                member.getId().toString(),
-                ChatRoomCreateRequest.builder()
-                    .name("name-" + index)
-                    .eventId(event.getId().toString())
-                    .isPrivate(index % 2 == 0)
-                    .build()
-            );
-        });
+        IntStream.range(0, 10).forEach(index -> chatRoomService.create(
+            member.getId().toString(),
+            ChatRoomCreateRequest.builder()
+                .name("name-" + index)
+                .eventId(event.getId().toString())
+                .isPrivate(index % 2 == 0)
+                .build()
+        ));
 
         List<ChatRoom> rooms = chatRoomService.getChatRoomList(
             member.getId().toString(),
@@ -205,20 +242,18 @@ class ChatRoomServiceImplTest {
 
     @Test
     @DisplayName("참여중인 채팅방을 조회할 수 있어요.")
-    public void GetParticipatedChatRooms() {
+    public void getParticipatedChatRooms() {
         Member member = createMember("name", "meetwork@meetwork.kr");
         Event event = createEvent(member);
 
-        IntStream.range(0, 10).forEach(index -> {
-            chatRoomService.create(
-                member.getId().toString(),
-                ChatRoomCreateRequest.builder()
-                    .name("name-" + index)
-                    .eventId(event.getId().toString())
-                    .isPrivate(index % 2 == 0)
-                    .build()
-            );
-        });
+        IntStream.range(0, 10).forEach(index -> chatRoomService.create(
+            member.getId().toString(),
+            ChatRoomCreateRequest.builder()
+                .name("name-" + index)
+                .eventId(event.getId().toString())
+                .isPrivate(index % 2 == 0)
+                .build()
+        ));
 
         List<ChatRoom> rooms = chatRoomService.getParticipatedChatRoomList(
             member.getId().toString(),
@@ -249,7 +284,7 @@ class ChatRoomServiceImplTest {
 
     @Test
     @DisplayName("채팅방을 조회할 수 있어요.")
-    public void GetChatRoom() throws NotParticipatedMemberException {
+    public void getChatRoom() throws NotParticipatedMemberException {
         Member member = createMember("name", "meetwork@meetwork.kr");
         Event event = createEvent(member);
 
@@ -273,7 +308,7 @@ class ChatRoomServiceImplTest {
 
     @Test
     @DisplayName("채팅방 조회에 실패해요.")
-    public void GetChatRoomWithFailed() {
+    public void getChatRoomWithFailed() {
         Member member = createMember("name", "meetwork@meetwork.kr");
         Event event = createEvent(member);
 

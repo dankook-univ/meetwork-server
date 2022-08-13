@@ -14,10 +14,13 @@ public interface ChatRoomService {
 
     ChatRoom getChatRoom(String memberId, String roomId) throws NotParticipatedMemberException;
 
-    List<Profile> getParticipants(String memberId, String roomId)
-        throws NotParticipatedMemberException;
+    List<Profile> getParticipants(
+        String memberId, String roomId
+    ) throws NotParticipatedMemberException;
 
     ChatRoom create(String memberId, ChatRoomCreateRequest request);
+
+    ChatRoom join(String memberId, String roomId);
 
     void shouldParticipating(String memberId, String roomId) throws NotParticipatedMemberException;
 }
