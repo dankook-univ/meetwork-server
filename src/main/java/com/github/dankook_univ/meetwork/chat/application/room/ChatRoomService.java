@@ -1,4 +1,4 @@
-package com.github.dankook_univ.meetwork.chat.application;
+package com.github.dankook_univ.meetwork.chat.application.room;
 
 import com.github.dankook_univ.meetwork.chat.domain.room.ChatRoom;
 import com.github.dankook_univ.meetwork.chat.exceptions.NotParticipatedMemberException;
@@ -14,4 +14,6 @@ public interface ChatRoomService {
     ChatRoom getChatRoom(String memberId, String roomId) throws NotParticipatedMemberException;
 
     ChatRoom create(String memberId, ChatRoomCreateRequest request);
+
+    void shouldParticipating(String memberId, String roomId) throws NotParticipatedMemberException;
 }

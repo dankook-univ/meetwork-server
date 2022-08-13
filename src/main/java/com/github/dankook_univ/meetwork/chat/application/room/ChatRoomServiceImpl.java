@@ -1,4 +1,4 @@
-package com.github.dankook_univ.meetwork.chat.application;
+package com.github.dankook_univ.meetwork.chat.application.room;
 
 import com.github.dankook_univ.meetwork.chat.domain.participant.ChatParticipant;
 import com.github.dankook_univ.meetwork.chat.domain.room.ChatRoom;
@@ -112,7 +112,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return room;
     }
 
-    private void shouldParticipating(
+    public void shouldParticipating(
         String memberId, String roomId
     ) throws NotParticipatedMemberException {
         ChatRoom room = chatRoomRepository.getById(roomId)

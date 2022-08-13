@@ -1,4 +1,4 @@
-package com.github.dankook_univ.meetwork.chat.application;
+package com.github.dankook_univ.meetwork.chat.application.room;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
