@@ -1,6 +1,7 @@
 package com.github.dankook_univ.meetwork.chat.domain.message;
 
 import com.github.dankook_univ.meetwork.chat.domain.room.ChatRoom;
+import com.github.dankook_univ.meetwork.chat.infra.http.response.ChatMessageResponse;
 import com.github.dankook_univ.meetwork.common.domain.Core;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import javax.persistence.Entity;
@@ -33,5 +34,11 @@ public class ChatMessage extends Core {
         this.room = room;
         this.sender = sender;
         this.message = message;
+    }
+
+    public ChatMessageResponse toResponse() {
+        return ChatMessageResponse.builder()
+            .message(this)
+            .build();
     }
 }

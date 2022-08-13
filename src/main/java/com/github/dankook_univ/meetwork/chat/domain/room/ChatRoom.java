@@ -2,6 +2,7 @@ package com.github.dankook_univ.meetwork.chat.domain.room;
 
 import com.github.dankook_univ.meetwork.chat.domain.message.ChatMessage;
 import com.github.dankook_univ.meetwork.chat.domain.participant.ChatParticipant;
+import com.github.dankook_univ.meetwork.chat.infra.http.response.ChatRoomResponse;
 import com.github.dankook_univ.meetwork.common.domain.Core;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
@@ -49,5 +50,11 @@ public class ChatRoom extends Core {
 
     public void appendParticipant(ChatParticipant participant) {
         participants.add(participant);
+    }
+
+    public ChatRoomResponse toResponse() {
+        return ChatRoomResponse.builder()
+            .room(this)
+            .build();
     }
 }

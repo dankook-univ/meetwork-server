@@ -15,6 +15,11 @@ public class ChatParticipantRepositoryImpl implements ChatParticipantRepository 
     private final ChatParticipantJpaRepository chatParticipantJpaRepository;
 
     @Override
+    public List<ChatParticipant> getByRoomId(String roomId) {
+        return chatParticipantJpaRepository.findByRoomId(UUID.fromString(roomId));
+    }
+
+    @Override
     public List<ChatParticipant> getByParticipantId(String participantId) {
         return chatParticipantJpaRepository.findByMemberId(UUID.fromString(participantId));
     }

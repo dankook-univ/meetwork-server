@@ -37,12 +37,16 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         ChatRoom room = chatRoomService.getChatRoom(memberId, roomId);
         Profile profile = profileService.get(memberId, room.getEvent().getId().toString());
 
-        return chatMessageRepository.save(
+        ChatMessage chatMessage = chatMessageRepository.save(
             ChatMessage.builder()
                 .room(room)
                 .sender(profile)
                 .message(message)
                 .build()
         );
+
+        room.appendMessage(chatMessage);
+
+        return chatMessage;
     }
 }

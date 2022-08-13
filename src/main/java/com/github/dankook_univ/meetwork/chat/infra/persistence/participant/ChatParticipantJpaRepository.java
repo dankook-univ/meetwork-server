@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ChatParticipantJpaRepository extends JpaRepository<ChatParticipant, UUID> {
 
+    List<ChatParticipant> findByRoomId(UUID roomId);
+
     List<ChatParticipant> findByMemberId(UUID participantId);
 
     Optional<ChatParticipant> findByMemberIdAndRoomId(UUID participantId, UUID roomId);

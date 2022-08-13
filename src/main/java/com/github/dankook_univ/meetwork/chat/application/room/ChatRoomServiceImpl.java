@@ -67,6 +67,17 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
+    public List<Profile> getParticipants(
+        String memberId, String roomId
+    ) throws NotParticipatedMemberException {
+        shouldParticipating(memberId, roomId);
+
+        return chatParticipantRepository.getByRoomId(roomId).stream()
+            .map(ChatParticipant::getMember)
+            .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public ChatRoom create(String memberId, ChatRoomCreateRequest request) {
         if (chatRoomRepository.getByName(request.getName()).isPresent()) {
