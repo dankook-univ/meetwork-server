@@ -52,12 +52,8 @@ class EventServiceImplTest {
             member.getId().toString(),
             EventCreateRequest.builder()
                 .name("event")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("nickname")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code("code")
                 .build()
         );
@@ -78,12 +74,8 @@ class EventServiceImplTest {
             createMember("name", "meetwork@meetwork.kr").getId().toString(),
             EventCreateRequest.builder()
                 .name("event")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("nickname")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code("code")
                 .build()
         );
@@ -122,12 +114,8 @@ class EventServiceImplTest {
             member.getId().toString(),
             EventCreateRequest.builder()
                 .name("event")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("nickname")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code("code")
                 .build()
         );
@@ -147,12 +135,8 @@ class EventServiceImplTest {
             createMember("name", "meetwork@meetwork.kr").getId().toString(),
             EventCreateRequest.builder()
                 .name("event")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("nickname")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code("code")
                 .build()
         );
@@ -172,12 +156,8 @@ class EventServiceImplTest {
             member.getId().toString(),
             EventCreateRequest.builder()
                 .name("event")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("nickname")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code("code2")
                 .build()
         );
@@ -199,12 +179,8 @@ class EventServiceImplTest {
             createMember("name", "meetwork@meetwork.kr").getId().toString(),
             EventCreateRequest.builder()
                 .name("event")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("nickname")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code("code")
                 .build()
         );
@@ -251,12 +227,8 @@ class EventServiceImplTest {
             member.getId().toString(),
             EventCreateRequest.builder()
                 .name("event")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("nickname")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code("code")
                 .build()
         );
@@ -286,12 +258,8 @@ class EventServiceImplTest {
             createMember("name", "meetwork@meetwork.kr").getId().toString(),
             EventCreateRequest.builder()
                 .name("event")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("nickname")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code("code")
                 .build()
         );
@@ -330,12 +298,8 @@ class EventServiceImplTest {
             createMember("name", "meetwork@meetwork.kr").getId().toString(),
             EventCreateRequest.builder()
                 .name("event")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("nickname")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code(EVENT_CODE)
                 .build()
         );
@@ -356,12 +320,8 @@ class EventServiceImplTest {
             createMember("name", "meetwork@meetwork.kr").getId().toString(),
             EventCreateRequest.builder()
                 .name("event")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("organizer")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code(EVENT_CODE)
                 .build()
         );
@@ -402,12 +362,8 @@ class EventServiceImplTest {
             createMember("name", "meetwork@meetwork.kr").getId().toString(),
             EventCreateRequest.builder()
                 .name("event")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("organizer")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code(EVENT_CODE)
                 .build()
         );
@@ -434,12 +390,8 @@ class EventServiceImplTest {
             organizer.getId().toString(),
             EventCreateRequest.builder()
                 .name("event")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("nickname")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code("code")
                 .build()
         );
@@ -477,12 +429,8 @@ class EventServiceImplTest {
             member.getId().toString(),
             EventCreateRequest.builder()
                 .name("event")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("nickname")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code("code")
                 .build()
         );
@@ -506,12 +454,8 @@ class EventServiceImplTest {
             createMember("name", "meetwork@meetwork.kr").getId().toString(),
             EventCreateRequest.builder()
                 .name("event")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("nickname")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code("code")
                 .build()
         );

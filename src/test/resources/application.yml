@@ -27,14 +27,13 @@ spring:
   redis:
     host: localhost
     port: 6379
-    password: password
 
 minio:
   endpoint: http://localhost:9001
   bucket: meetwork
   access_key: meetwork
   secret_key: meetworkpass
-  
+
 jwt:
   secret: ZGFua29vay11bml2LmFza3VwLXNlcnZlci5qd3Quc2VjcmV0c3xkYW5rb29rLXVuaXYuYXNrdXAtc2VydmVyLmp3dC5zZWNyZXRzCg==
 

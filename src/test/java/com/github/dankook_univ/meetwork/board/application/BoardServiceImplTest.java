@@ -49,12 +49,8 @@ public class BoardServiceImplTest {
             member.getId().toString(),
             EventCreateRequest.builder()
                 .name(name)
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("nickname")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code("code")
                 .build()
         );
