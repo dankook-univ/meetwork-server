@@ -54,12 +54,8 @@ public class PostServiceImplTest {
             member.getId().toString(),
             EventCreateRequest.builder()
                 .name("eventName")
-                .organizer(
-                    ProfileCreateRequest.builder()
-                        .nickname("nickname")
-                        .bio("bio")
-                        .build()
-                )
+                .organizerNickname("nickname")
+                .organizerBio("bio")
                 .code("code")
                 .build()
         );

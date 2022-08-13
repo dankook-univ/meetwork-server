@@ -1,6 +1,6 @@
 package com.github.dankook_univ.meetwork.chat.infra.http.request;
 
-import java.util.ArrayList;
+import java.util.List;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
@@ -21,5 +21,5 @@ public class ChatRoomCreateRequest {
     @NotNull
     Boolean isPrivate;
 
-    ArrayList<String> participantIds;
+    List<String> participantIds;
 }

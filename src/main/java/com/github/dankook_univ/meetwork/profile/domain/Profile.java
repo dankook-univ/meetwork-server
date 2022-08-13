@@ -52,8 +52,14 @@ public class Profile extends Core {
     private Boolean isAdmin = false;
 
     @Builder
-    public Profile(Member member, Event event, File profileImage, String nickname, String bio,
-        Boolean isAdmin) {
+    public Profile(
+        Member member,
+        Event event,
+        File profileImage,
+        String nickname,
+        String bio,
+        Boolean isAdmin
+    ) {
         Assert.notNull(member, "member must not be null");
         Assert.notNull(event, "event must not be null");
         Assert.hasText(nickname, "nickname must not be empty");
