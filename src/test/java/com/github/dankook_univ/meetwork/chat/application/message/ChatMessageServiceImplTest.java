@@ -34,8 +34,7 @@ class ChatMessageServiceImplTest {
     private EventServiceImpl eventService;
     @Autowired
     private MemberRepositoryImpl memberRepository;
-
-
+    
     private Member createMember(String name, String email) {
         return memberRepository.save(
             Member.builder()

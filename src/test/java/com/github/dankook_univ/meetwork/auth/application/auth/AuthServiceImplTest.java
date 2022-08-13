@@ -5,13 +5,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.github.dankook_univ.meetwork.auth.domain.auth.AuthType;
 import com.github.dankook_univ.meetwork.auth.infra.http.request.SignUpRequest;
 import com.github.dankook_univ.meetwork.auth.infra.http.response.TokenResponse;
+import com.github.dankook_univ.meetwork.config.EmbeddedRedisConfig;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
+@Import(EmbeddedRedisConfig.class)
 @SpringBootTest
 @Transactional
 class AuthServiceImplTest {
