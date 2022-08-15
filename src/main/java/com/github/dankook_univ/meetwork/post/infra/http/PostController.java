@@ -62,4 +62,24 @@ public class PostController {
                 .collect(Collectors.toList())
         );
     }
+
+    @PatchMapping("/{postId}")
+    public ResponseEntity<PostResponse> update(
+        @ApiIgnore Authentication authentication,
+        @PathVariable("postId") @NotBlank String postId,
+        @Valid PostUpdateRequest request
+    ) {
+        return ResponseEntity.ok().body(
+            postService.update(authentication.getName(), postId, request).toResponse()
+        );
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Boolean> delete(
+        @ApiIgnore Authentication authentication,
+        @PathVariable("postId") @NotBlank String postId
+    ) {
+        postService.delete(authentication.getName(), postId);
+        return ResponseEntity.ok().body(true);
+    }
 }

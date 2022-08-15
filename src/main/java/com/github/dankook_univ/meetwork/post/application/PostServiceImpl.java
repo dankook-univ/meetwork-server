@@ -4,18 +4,16 @@ import com.github.dankook_univ.meetwork.board.application.BoardServiceImpl;
 import com.github.dankook_univ.meetwork.board.domain.Board;
 import com.github.dankook_univ.meetwork.board.exceptions.NotFoundBoardPermissionException;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventPermissionException;
-import com.github.dankook_univ.meetwork.file.application.file.FileServiceImpl;
-import com.github.dankook_univ.meetwork.file.domain.FileType;
 import com.github.dankook_univ.meetwork.post.domain.Post;
 import com.github.dankook_univ.meetwork.post.exceptions.NotFoundPostException;
+import com.github.dankook_univ.meetwork.post.exceptions.NotFoundPostPermissionException;
 import com.github.dankook_univ.meetwork.post.infra.http.request.PostCreateRequest;
+import com.github.dankook_univ.meetwork.post.infra.http.request.PostUpdateRequest;
 import com.github.dankook_univ.meetwork.post.infra.persistence.PostRepositoryImpl;
-import com.github.dankook_univ.meetwork.post.post_file.domain.PostFile;
-import com.github.dankook_univ.meetwork.post.post_file.infra.persistence.PostFileRepositoryImpl;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -29,8 +27,6 @@ public class PostServiceImpl implements PostService {
     private final PostRepositoryImpl postRepository;
     private final ProfileServiceImpl profileService;
     private final BoardServiceImpl boardService;
-    private final FileServiceImpl fileService;
-    private final PostFileRepositoryImpl postFileRepository;
 
     @Override
     @Transactional
@@ -41,7 +37,7 @@ public class PostServiceImpl implements PostService {
             throw new NotFoundBoardPermissionException();
         }
 
-        Post post = postRepository.save(
+        return postRepository.save(
             Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -49,18 +45,23 @@ public class PostServiceImpl implements PostService {
                 .board(board)
                 .build()
         );
-        if (request.getFiles() != null) {
-            request.getFiles().forEach((file) ->
-                post.addFile(
-                    postFileRepository.save(
-                        PostFile.builder()
-                            .post(post)
-                            .file(fileService.upload(profile, FileType.post, file))
-                            .build()
-                    ))
-            );
+    }
+
+    @Override
+    @Transactional
+    public Post update(String memberId, String postId, PostUpdateRequest request) {
+        Post post = postRepository.getById(postId).orElseThrow(NotFoundPostException::new);
+        Board board = boardService.get(post.getBoard().getId().toString());
+        Profile profile = profileService.get(memberId, board.getEvent().getId().toString());
+
+        if (board.getAdminOnly() && !profile.getIsAdmin()) {
+            throw new NotFoundBoardPermissionException();
         }
-        return post;
+        if (!Objects.equals(profile.getId().toString(), post.getWriter().getId().toString())) {
+            throw new NotFoundPostPermissionException();
+        }
+
+        return post.update(request.getTitle(), request.getContent());
     }
 
     @Override
@@ -76,7 +77,7 @@ public class PostServiceImpl implements PostService {
             throw new NotFoundEventPermissionException();
         }
 
-        return injectFilesIntoPost(post);
+        return post;
     }
 
     @Override
@@ -91,15 +92,22 @@ public class PostServiceImpl implements PostService {
             throw new NotFoundEventPermissionException();
         }
 
-        List<Post> list = postRepository.getByBoardId(boardId, PageRequest.of(page - 1, 15));
-        return list.stream().map(this::injectFilesIntoPost).collect(Collectors.toList());
+        return postRepository.getByBoardId(boardId, PageRequest.of(page - 1, 15));
     }
 
-    private Post injectFilesIntoPost(Post post) {
-        List<PostFile> postFiles = postFileRepository.getByPostId(post.getId().toString());
-        if (postFiles != null) {
-            postFiles.forEach(post::addFile);
+    @Override
+    @Transactional
+    public void delete(String memberId, String postId) {
+        Post post = postRepository.getById(postId).orElseThrow(NotFoundPostException::new);
+        Profile profile = profileService.get(
+            memberId,
+            post.getBoard().getEvent().getId().toString()
+        );
+
+        if (post.getWriter() == profile || profile.getIsAdmin()) {
+            postRepository.delete(post);
+        } else {
+            throw new NotFoundPostPermissionException();
         }
-        return post;
     }
 }

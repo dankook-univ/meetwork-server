@@ -53,7 +53,7 @@ public class ProfileServiceImpl implements ProfileService {
         );
 
         if (request.getProfileImage() != null) {
-            File file = fileService.upload(profile, FileType.profile, request.getProfileImage());
+            File file = fileService.upload(memberId, FileType.profile, request.getProfileImage());
             profile.updateProfileImage(file);
         }
         return profile;
@@ -74,7 +74,7 @@ public class ProfileServiceImpl implements ProfileService {
             if (profile.getProfileImage() != null) {
                 fileService.delete(profile.getProfileImage().getId().toString());
             }
-            File file = fileService.upload(profile, FileType.profile, request.getProfileImage());
+            File file = fileService.upload(memberId, FileType.profile, request.getProfileImage());
             profile.updateProfileImage(file);
         }
         if (request.getIsProfileImageDeleted() && profile.getProfileImage() != null) {

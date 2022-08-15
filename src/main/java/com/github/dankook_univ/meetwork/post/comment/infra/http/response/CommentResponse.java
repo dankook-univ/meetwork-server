@@ -1,4 +1,4 @@
-package com.github.dankook_univ.meetwork.post.comment.infra.http;
+package com.github.dankook_univ.meetwork.post.comment.infra.http.response;
 
 import com.github.dankook_univ.meetwork.post.comment.domain.Comment;
 import com.github.dankook_univ.meetwork.profile.infra.http.response.ProfileResponse;

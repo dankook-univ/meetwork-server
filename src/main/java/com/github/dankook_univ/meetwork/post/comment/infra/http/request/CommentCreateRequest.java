@@ -1,4 +1,4 @@
-package com.github.dankook_univ.meetwork.post.infra.http.request;
+package com.github.dankook_univ.meetwork.post.comment.infra.http.request;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -12,11 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-public class PostCreateRequest {
-
-    @NotNull
-    @NotEmpty
-    String title;
+public class CommentCreateRequest {
 
     @NotNull
     @NotEmpty
@@ -24,5 +20,5 @@ public class PostCreateRequest {
 
     @NotNull
     @NotEmpty
-    String boardId;
+    String postId;
 }

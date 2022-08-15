@@ -1,7 +1,7 @@
 package com.github.dankook_univ.meetwork.post.comment.domain;
 
 import com.github.dankook_univ.meetwork.common.domain.Core;
-import com.github.dankook_univ.meetwork.post.comment.infra.http.CommentResponse;
+import com.github.dankook_univ.meetwork.post.comment.infra.http.response.CommentResponse;
 import com.github.dankook_univ.meetwork.post.domain.Post;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import javax.annotation.Nullable;

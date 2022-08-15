@@ -2,6 +2,7 @@ package com.github.dankook_univ.meetwork.file.domain;
 
 import com.github.dankook_univ.meetwork.common.domain.Core;
 import com.github.dankook_univ.meetwork.file.infra.http.response.FileResponse;
+import com.github.dankook_univ.meetwork.member.domain.Member;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -23,7 +24,7 @@ public class File extends Core {
 
     @ManyToOne(targetEntity = Profile.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "uploader_id")
-    private Profile uploader;
+    private Member uploader;
 
     @Column(name = "file_key")
     private String key;
@@ -36,7 +37,7 @@ public class File extends Core {
     private String name;
 
     @Builder
-    public File(Profile uploader, FileType type, String mime, String name) {
+    public File(Member uploader, FileType type, String mime, String name) {
         this.uploader = uploader;
         this.key = type + "/" + UUID.randomUUID() + "." + mime;
         this.type = type;

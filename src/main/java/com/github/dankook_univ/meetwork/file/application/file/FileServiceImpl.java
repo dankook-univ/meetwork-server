@@ -4,8 +4,9 @@ package com.github.dankook_univ.meetwork.file.application.file;
 import com.github.dankook_univ.meetwork.file.application.minio.MinioServiceImpl;
 import com.github.dankook_univ.meetwork.file.domain.File;
 import com.github.dankook_univ.meetwork.file.domain.FileType;
+import com.github.dankook_univ.meetwork.file.exceptions.NotSupportedFileFormatException;
 import com.github.dankook_univ.meetwork.file.infra.persistence.FileRepositoryImpl;
-import com.github.dankook_univ.meetwork.profile.domain.Profile;
+import com.github.dankook_univ.meetwork.member.application.MemberServiceImpl;
 import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,24 +16,29 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
 
-    final private FileRepositoryImpl fileRepository;
+    private final FileRepositoryImpl fileRepository;
 
-    final private MinioServiceImpl minioService;
+    private final MinioServiceImpl minioService;
+
+    private final MemberServiceImpl memberService;
 
     @Override
-    public File upload(Profile uploader, FileType fileType, MultipartFile file) {
-        File entity = fileRepository.save(
+    public File upload(String memberId, FileType fileType, MultipartFile multipartFile) {
+        String mime = multipartFile.getOriginalFilename() == null
+            ? "jpeg"
+            : multipartFile.getOriginalFilename().substring(
+                multipartFile.getOriginalFilename().lastIndexOf(".") + 1).toLowerCase();
+        if (!"gif".equals(mime) && !"jpg".equals(mime) && !"png".equals(mime) && !"jpeg".equals(
+            mime)) {
+            throw new NotSupportedFileFormatException();
+        }
+
+        File file = fileRepository.save(
             File.builder()
-                .uploader(uploader)
+                .uploader(memberService.getById(memberId))
                 .type(fileType)
-                .mime(
-                    file.getOriginalFilename() == null
-                        ? "jpeg"
-                        : file.getOriginalFilename().substring(
-                            file.getOriginalFilename().lastIndexOf(".") + 1
-                        )
-                )
-                .name(file.getOriginalFilename()
+                .mime(mime)
+                .name(multipartFile.getOriginalFilename()
                     .replaceAll("￦￦.", "")
                     .replaceAll("/", "")
                     .replaceAll("￦￦￦￦", ""))
@@ -40,15 +46,15 @@ public class FileServiceImpl implements FileService {
         );
 
         try {
-            InputStream inputStream = file.getInputStream();
-            if (!minioService.upload(entity.getKey(), inputStream, file.getSize(),
-                entity.getMime())) {
-                entity = null;
+            InputStream inputStream = multipartFile.getInputStream();
+            if (!minioService.upload(file.getKey(), inputStream, multipartFile.getSize(),
+                file.getMime())) {
+                file = null;
             }
         } catch (Exception e) {
-            entity = null;
+            file = null;
         }
-        return entity;
+        return file;
     }
 
     @Override
