@@ -5,6 +5,7 @@ import com.github.dankook_univ.meetwork.common.domain.Core;
 import com.github.dankook_univ.meetwork.post.comment.domain.Comment;
 import com.github.dankook_univ.meetwork.post.infra.http.response.PostResponse;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
@@ -28,28 +29,24 @@ import org.springframework.util.Assert;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends Core {
 
+    @OneToMany(targetEntity = Comment.class, mappedBy = "post", cascade = CascadeType.ALL)
+    @OrderBy("updatedAt asc")
+    private final List<Comment> comments = new ArrayList<>();
     @NotNull
     @NotEmpty
     @Column(nullable = false)
     private String title;
-
     @NotNull
     @NotEmpty
     @Column(nullable = false)
     private String content;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id")
     private Profile writer;
-
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    @OrderBy("updatedAt asc")
-    private List<Comment> comments;
 
     @Builder
     public Post(String title, String content, Profile writer, Board board) {
@@ -78,5 +75,9 @@ public class Post extends Core {
             this.content = content.trim();
         }
         return this;
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
     }
 }

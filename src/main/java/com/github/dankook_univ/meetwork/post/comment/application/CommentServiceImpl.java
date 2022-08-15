@@ -20,28 +20,32 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class CommentServiceImpl implements CommentService {
 
-    private CommentRepositoryImpl commentRepository;
+    private final CommentRepositoryImpl commentRepository;
 
-    private ProfileServiceImpl profileService;
+    private final ProfileServiceImpl profileService;
 
-    private PostServiceImpl postService;
+    private final PostServiceImpl postService;
 
     @Override
     @Transactional
     public Comment create(String memberId, CommentCreateRequest request) {
         Post post = postService.get(memberId, request.getPostId());
-
         Profile profile = profileService.get(
             memberId,
             post.getBoard().getEvent().getId().toString()
         );
-        return commentRepository.save(
+
+        Comment comment = commentRepository.save(
             Comment.builder()
                 .writer(profile)
                 .content(request.getContent())
                 .post(post)
                 .build()
         );
+
+        post.addComment(comment);
+
+        return comment;
     }
 
     @Override

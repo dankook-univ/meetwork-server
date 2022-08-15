@@ -27,7 +27,7 @@ public class Comment extends Core {
     private Profile writer;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Post.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
 

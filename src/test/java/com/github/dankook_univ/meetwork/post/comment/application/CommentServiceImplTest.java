@@ -95,8 +95,7 @@ public class CommentServiceImplTest {
                 .build()
         );
 
-        assertThat(comment).isNotNull();
-        assertThat(comment).isInstanceOf(Comment.class);
+        assertThat(comment).isNotNull().isInstanceOf(Comment.class);
         assertThat(comment.getContent()).isEqualTo("comment");
 
         assertThat(post.getComments().size()).isEqualTo(1);
