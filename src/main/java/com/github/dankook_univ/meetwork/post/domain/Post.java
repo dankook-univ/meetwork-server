@@ -80,4 +80,8 @@ public class Post extends Core {
     public void addComment(Comment comment) {
         comments.add(comment);
     }
+
+    public void deleteComment(Comment comment) {
+        comments.remove(comment);
+    }
 }

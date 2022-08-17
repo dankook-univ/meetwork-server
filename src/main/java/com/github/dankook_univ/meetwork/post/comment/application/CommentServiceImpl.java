@@ -76,6 +76,7 @@ public class CommentServiceImpl implements CommentService {
         );
 
         if (profile == comment.getWriter() || profile.getIsAdmin()) {
+            comment.getPost().deleteComment(comment);
             commentRepository.delete(comment);
         } else {
             throw new NotFoundCommentPermissionException();

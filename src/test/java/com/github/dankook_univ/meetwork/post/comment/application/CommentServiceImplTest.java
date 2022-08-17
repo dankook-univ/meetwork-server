@@ -13,6 +13,7 @@ import com.github.dankook_univ.meetwork.member.infra.persistence.MemberRepositor
 import com.github.dankook_univ.meetwork.post.application.PostServiceImpl;
 import com.github.dankook_univ.meetwork.post.comment.domain.Comment;
 import com.github.dankook_univ.meetwork.post.comment.infra.http.request.CommentCreateRequest;
+import com.github.dankook_univ.meetwork.post.comment.infra.http.request.CommentUpdateRequest;
 import com.github.dankook_univ.meetwork.post.domain.Post;
 import com.github.dankook_univ.meetwork.post.infra.http.request.PostCreateRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -101,5 +102,74 @@ public class CommentServiceImplTest {
         assertThat(post.getComments().size()).isEqualTo(1);
         assertThat(post.getComments().get(0)).isEqualTo(comment);
         assertThat(post.getComments().get(0).getContent()).isEqualTo("comment");
+    }
+
+    @Test
+    @DisplayName("댓글을 수정할 수 있어요.")
+    public void update() {
+        Member member = createMember("name", "meetwork@meetwork.kr");
+        Event event = createEvent(member);
+        Board adminOnlyBoard = createBoard(member, event, "소통방", true);
+
+        Post post = postService.create(
+            member.getId().toString(),
+            PostCreateRequest.builder()
+                .title("title")
+                .content("content")
+                .boardId(adminOnlyBoard.getId().toString())
+                .build()
+        );
+
+        Comment comment = commentService.create(
+            member.getId().toString(),
+            CommentCreateRequest.builder()
+                .content("comment")
+                .postId(post.getId().toString())
+                .build()
+        );
+
+        commentService.update(
+            member.getId().toString(),
+            comment.getId().toString(),
+            CommentUpdateRequest.builder()
+                .content("updated comment")
+                .build()
+        );
+
+        assertThat(comment).isNotNull().isInstanceOf(Comment.class);
+        assertThat(comment.getContent()).isEqualTo("updated comment");
+        assertThat(post.getComments().size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("댓글을 삭제할 수 있어요.")
+    public void delete() {
+        Member member = createMember("name", "meetwork@meetwork.kr");
+        Event event = createEvent(member);
+        Board adminOnlyBoard = createBoard(member, event, "소통방", true);
+
+        Post post = postService.create(
+            member.getId().toString(),
+            PostCreateRequest.builder()
+                .title("title")
+                .content("content")
+                .boardId(adminOnlyBoard.getId().toString())
+                .build()
+        );
+
+        Comment comment = commentService.create(
+            member.getId().toString(),
+            CommentCreateRequest.builder()
+                .content("comment")
+                .postId(post.getId().toString())
+                .build()
+        );
+
+        assertThat(comment).isNotNull().isInstanceOf(Comment.class);
+        assertThat(post.getComments().size()).isEqualTo(1);
+
+        commentService.delete(member.getId().toString(), comment.getId().toString());
+
+        assertThat(post.getComments().size()).isEqualTo(0);
     }
 }
