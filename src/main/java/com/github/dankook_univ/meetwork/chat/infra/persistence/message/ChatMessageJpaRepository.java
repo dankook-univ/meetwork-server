@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ChatMessageJpaRepository extends JpaRepository<ChatMessage, UUID> {
 
-    List<ChatMessage> findByRoomId(UUID roomId);
+    List<ChatMessage> findByRoomIdOrderByCreatedAtDesc(UUID roomId);
 }

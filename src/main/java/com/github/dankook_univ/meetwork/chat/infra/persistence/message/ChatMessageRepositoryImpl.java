@@ -15,7 +15,7 @@ public class ChatMessageRepositoryImpl implements ChatMessageRepository {
 
     @Override
     public List<ChatMessage> getByRoomId(String roomId) {
-        return chatMessageJpaRepository.findByRoomId(UUID.fromString(roomId));
+        return chatMessageJpaRepository.findByRoomIdOrderByCreatedAtDesc(UUID.fromString(roomId));
     }
 
     @Override
