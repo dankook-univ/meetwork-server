@@ -6,6 +6,7 @@ import com.github.dankook_univ.meetwork.chat.domain.message.ChatMessage;
 import com.github.dankook_univ.meetwork.chat.domain.room.ChatRoom;
 import com.github.dankook_univ.meetwork.chat.exceptions.NotParticipatedMemberException;
 import com.github.dankook_univ.meetwork.chat.infra.http.request.ChatRoomCreateRequest;
+import com.github.dankook_univ.meetwork.chat.infra.http.request.MessageCreateRequest;
 import com.github.dankook_univ.meetwork.chat.infra.http.response.ChatMessageResponse;
 import com.github.dankook_univ.meetwork.chat.infra.http.response.ChatRoomResponse;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
@@ -115,10 +116,11 @@ public class ChatController {
     public ResponseEntity<ChatMessageResponse> sendMessage(
         @ApiIgnore Authentication authentication,
         @PathVariable("roomId") String roomId,
-        @Valid String message
+        @RequestBody @Valid MessageCreateRequest request
     ) throws NotParticipatedMemberException {
         return ResponseEntity.ok().body(
-            chatMessageService.send(authentication.getName(), roomId, message).toResponse()
+            chatMessageService.send(authentication.getName(), roomId, request.getMessage())
+                .toResponse()
         );
     }
 }
