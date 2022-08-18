@@ -25,5 +25,6 @@ public class MessageResponse {
         this.updatedAt = message.getUpdatedAt();
         this.event = room.getEvent().toResponse();
         this.sender = message.getSender().toResponse();
+        this.message = message.getMessage();
     }
 }
