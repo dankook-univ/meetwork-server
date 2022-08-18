@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
@@ -31,7 +32,7 @@ public class BoardController {
     @PostMapping("/new")
     public ResponseEntity<BoardResponse> create(
         @ApiIgnore Authentication authentication,
-        @Valid BoardCreateRequest request
+        @RequestBody @Valid BoardCreateRequest request
     ) {
         return ResponseEntity.ok().body(
             boardService.create(authentication.getName(), request).toResponse()
@@ -41,8 +42,8 @@ public class BoardController {
     @PatchMapping("/{boardId}")
     public ResponseEntity<BoardResponse> update(
         @ApiIgnore Authentication authentication,
-        @PathVariable("boardId") @NotBlank String boardId,
-        @Valid BoardUpdateRequest request
+        @PathVariable("boardId") @Valid @NotBlank String boardId,
+        @RequestBody @Valid BoardUpdateRequest request
     ) {
         return ResponseEntity.ok().body(
             boardService.update(authentication.getName(), boardId, request).toResponse()
@@ -52,7 +53,7 @@ public class BoardController {
     @GetMapping("/{eventId}")
     public ResponseEntity<List<BoardResponse>> getList(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @NotBlank String eventId
+        @PathVariable("eventId") @Valid @NotBlank String eventId
     ) {
         return ResponseEntity.ok().body(
             boardService.getList(authentication.getName(), eventId)
@@ -65,7 +66,7 @@ public class BoardController {
     @DeleteMapping("/{boardId}")
     public ResponseEntity<Boolean> delete(
         @ApiIgnore Authentication authentication,
-        @PathVariable("boardId") @NotBlank String boardId
+        @PathVariable("boardId") @Valid @NotBlank String boardId
     ) {
         boardService.delete(authentication.getName(), boardId);
         return ResponseEntity.ok().body(true);
