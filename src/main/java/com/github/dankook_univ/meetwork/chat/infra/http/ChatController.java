@@ -12,12 +12,14 @@ import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.infra.http.response.ProfileResponse;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
@@ -92,7 +94,7 @@ public class ChatController {
     public ResponseEntity<ChatRoomResponse> createChatRoom(
         @ApiIgnore Authentication authentication,
         @PathVariable("eventId") String eventId,
-        ChatRoomCreateRequest request
+        @RequestBody @Valid ChatRoomCreateRequest request
     ) {
         return ResponseEntity.ok().body(
             chatRoomService.create(authentication.getName(), eventId, request).toResponse()
@@ -113,7 +115,7 @@ public class ChatController {
     public ResponseEntity<ChatMessageResponse> sendMessage(
         @ApiIgnore Authentication authentication,
         @PathVariable("roomId") String roomId,
-        String message
+        @Valid String message
     ) throws NotParticipatedMemberException {
         return ResponseEntity.ok().body(
             chatMessageService.send(authentication.getName(), roomId, message).toResponse()
