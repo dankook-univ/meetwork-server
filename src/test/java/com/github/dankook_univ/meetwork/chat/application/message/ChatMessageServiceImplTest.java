@@ -60,9 +60,9 @@ class ChatMessageServiceImplTest {
     private ChatRoom createChatRoom(Member member, Event event) {
         return chatRoomService.create(
             member.getId().toString(),
+            event.getId().toString(),
             ChatRoomCreateRequest.builder()
                 .name("name")
-                .eventId(event.getId().toString())
                 .isPrivate(false)
                 .build()
         );

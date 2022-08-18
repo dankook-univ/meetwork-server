@@ -79,12 +79,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     @Transactional
-    public ChatRoom create(String memberId, ChatRoomCreateRequest request) {
-        if (chatRoomRepository.getByName(request.getName()).isPresent()) {
+    public ChatRoom create(String memberId, String eventId, ChatRoomCreateRequest request) {
+        if (chatRoomRepository.getByEventIdAndName(eventId, request.getName()).isPresent()) {
             throw new AlreadyChatRoomNameException();
         }
 
-        Profile profile = profileService.get(memberId, request.getEventId());
+        Profile profile = profileService.get(memberId, eventId);
 
         ChatRoom room = chatRoomRepository.save(
             ChatRoom.builder()

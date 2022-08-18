@@ -25,8 +25,8 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepository {
     }
 
     @Override
-    public Optional<ChatRoom> getByName(String name) {
-        return chatRoomJpaRepository.findByName(name);
+    public Optional<ChatRoom> getByEventIdAndName(String eventId, String name) {
+        return chatRoomJpaRepository.findByEventIdAndName(UUID.fromString(eventId), name);
     }
 
     @Override

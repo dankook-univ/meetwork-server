@@ -18,7 +18,7 @@ public interface ChatRoomService {
         String memberId, String roomId
     ) throws NotParticipatedMemberException;
 
-    ChatRoom create(String memberId, ChatRoomCreateRequest request);
+    ChatRoom create(String memberId, String eventId, ChatRoomCreateRequest request);
 
     ChatRoom join(String memberId, String roomId);
 

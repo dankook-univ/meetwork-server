@@ -91,10 +91,11 @@ public class ChatController {
     @PostMapping("/{eventId}/new")
     public ResponseEntity<ChatRoomResponse> createChatRoom(
         @ApiIgnore Authentication authentication,
+        @PathVariable("eventId") String eventId,
         ChatRoomCreateRequest request
     ) {
         return ResponseEntity.ok().body(
-            chatRoomService.create(authentication.getName(), request).toResponse()
+            chatRoomService.create(authentication.getName(), eventId, request).toResponse()
         );
     }
 

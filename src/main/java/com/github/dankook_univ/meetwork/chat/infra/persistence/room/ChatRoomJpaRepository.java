@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ChatRoomJpaRepository extends JpaRepository<ChatRoom, UUID> {
 
-    Optional<ChatRoom> findByName(String name);
+    Optional<ChatRoom> findByEventIdAndName(UUID eventId, String name);
 
     List<ChatRoom> findByEventId(UUID eventId);
 }

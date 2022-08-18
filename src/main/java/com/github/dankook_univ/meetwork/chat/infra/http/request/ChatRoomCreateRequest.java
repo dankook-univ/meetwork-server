@@ -12,10 +12,6 @@ public class ChatRoomCreateRequest {
 
     @NotEmpty
     @NotNull
-    String eventId;
-
-    @NotEmpty
-    @NotNull
     String name;
 
     @NotNull

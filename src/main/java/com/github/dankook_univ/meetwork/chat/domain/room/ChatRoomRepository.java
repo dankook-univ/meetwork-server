@@ -9,7 +9,7 @@ public interface ChatRoomRepository {
 
     Optional<ChatRoom> getById(String roomId);
 
-    Optional<ChatRoom> getByName(String name);
+    Optional<ChatRoom> getByEventIdAndName(String EventId, String name);
 
     ChatRoom save(ChatRoom room);
 }
