@@ -31,6 +31,9 @@ public class ProfileResponse {
     String bio;
 
     @NotNull
+    Boolean isAdmin;
+
+    @NotNull
     LocalDateTime createdAt;
 
     @NotNull
@@ -47,6 +50,7 @@ public class ProfileResponse {
             profile.getProfileImage() != null ? profile.getProfileImage().toResponse() : null;
         this.nickname = profile.getNickname();
         this.bio = profile.getBio();
+        this.isAdmin = profile.getIsAdmin();
         this.createdAt = profile.getCreatedAt();
         this.updatedAt = profile.getUpdatedAt();
     }
