@@ -8,6 +8,7 @@ import com.github.dankook_univ.meetwork.file.exceptions.NotSupportedFileFormatEx
 import com.github.dankook_univ.meetwork.file.infra.persistence.FileRepositoryImpl;
 import com.github.dankook_univ.meetwork.member.application.MemberServiceImpl;
 import java.io.InputStream;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,9 +28,14 @@ public class FileServiceImpl implements FileService {
         String mime = multipartFile.getOriginalFilename() == null
             ? "jpeg"
             : multipartFile.getOriginalFilename().substring(
-                multipartFile.getOriginalFilename().lastIndexOf(".") + 1).toLowerCase();
-        if (!"gif".equals(mime) && !"jpg".equals(mime) && !"png".equals(mime) && !"jpeg".equals(
-            mime)) {
+                multipartFile.getOriginalFilename().lastIndexOf(".") + 1
+            ).toLowerCase();
+        if (
+            !"gif".equals(mime)
+                && !"jpg".equals(mime)
+                && !"png".equals(mime)
+                && !"jpeg".equals(mime)
+        ) {
             throw new NotSupportedFileFormatException(mime);
         }
 
@@ -38,22 +44,31 @@ public class FileServiceImpl implements FileService {
                 .uploader(memberService.getById(memberId))
                 .type(fileType)
                 .mime(mime)
-                .name(multipartFile.getOriginalFilename()
-                    .replaceAll("￦￦.", "")
-                    .replaceAll("/", "")
-                    .replaceAll("￦￦￦￦", ""))
+                .name(
+                    Objects.requireNonNull(multipartFile.getOriginalFilename())
+                        .replaceAll("\\.", "")
+                        .replaceAll("/", "")
+                        .replaceAll("\\\\", "")
+                )
                 .build()
         );
 
         try {
             InputStream inputStream = multipartFile.getInputStream();
-            if (!minioService.upload(file.getKey(), inputStream, multipartFile.getSize(),
-                file.getMime())) {
+            if (
+                !minioService.upload(
+                    file.getKey(),
+                    inputStream,
+                    multipartFile.getSize(),
+                    file.getMime()
+                )
+            ) {
                 file = null;
             }
         } catch (Exception e) {
             file = null;
         }
+        
         return file;
     }
 
