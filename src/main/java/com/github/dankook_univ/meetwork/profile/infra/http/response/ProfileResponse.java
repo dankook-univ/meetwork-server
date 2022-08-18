@@ -43,7 +43,8 @@ public class ProfileResponse {
     ) {
         this.id = profile.getId().toString();
         this.member = profile.getMember().toResponse();
-        this.profileImage = profile.getProfileImage().toResponse();
+        this.profileImage =
+            profile.getProfileImage() != null ? profile.getProfileImage().toResponse() : null;
         this.nickname = profile.getNickname();
         this.bio = profile.getBio();
         this.createdAt = profile.getCreatedAt();
