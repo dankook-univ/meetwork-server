@@ -1,5 +1,7 @@
 package com.github.dankook_univ.meetwork.event.application;
 
+import com.github.dankook_univ.meetwork.board.application.BoardServiceImpl;
+import com.github.dankook_univ.meetwork.board.infra.http.request.BoardCreateRequest;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.exceptions.ExistingCodeException;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventException;
@@ -24,6 +26,8 @@ public class EventServiceImpl implements EventService {
 
     private final EventRepositoryImpl eventRepository;
     private final ProfileServiceImpl profileService;
+
+    private final BoardServiceImpl boardService;
 
     @Override
     public Event get(String memberId, String eventId) {
@@ -63,8 +67,7 @@ public class EventServiceImpl implements EventService {
                 .meetingUrl(request.getMeetingUrl())
                 .build()
         );
-
-        return event.setOrganizer(
+        event.setOrganizer(
             profileService.create(
                 memberId,
                 event,
@@ -76,6 +79,17 @@ public class EventServiceImpl implements EventService {
                 true
             )
         );
+
+        boardService.automaticBoard().forEach((name, isAdmin) ->
+            boardService.create(memberId, BoardCreateRequest.builder()
+                .name(name)
+                .adminOnly(isAdmin)
+                .eventId(event.getId().toString())
+                .build()
+            )
+        );
+        
+        return event;
     }
 
     @Override
@@ -118,6 +132,11 @@ public class EventServiceImpl implements EventService {
         );
 
         return getById(eventId);
+    }
+
+    @Override
+    public Profile getMyProfile(String memberId, String eventId) {
+        return profileService.get(memberId, eventId);
     }
 
     @Override

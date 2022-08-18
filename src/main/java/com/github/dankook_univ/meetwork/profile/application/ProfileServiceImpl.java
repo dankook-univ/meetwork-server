@@ -58,7 +58,7 @@ public class ProfileServiceImpl implements ProfileService {
         );
 
         if (request.getProfileImage() != null) {
-            File file = fileService.upload(profile, FileType.profile, request.getProfileImage());
+            File file = fileService.upload(memberId, FileType.profile, request.getProfileImage());
             profile.updateProfileImage(file);
         }
         return profile;
@@ -77,13 +77,13 @@ public class ProfileServiceImpl implements ProfileService {
 
         if (request.getProfileImage() != null) {
             if (profile.getProfileImage() != null) {
-                fileService.delete(profile.getProfileImage().getId());
+                fileService.delete(profile.getProfileImage().getId().toString());
             }
-            File file = fileService.upload(profile, FileType.profile, request.getProfileImage());
+            File file = fileService.upload(memberId, FileType.profile, request.getProfileImage());
             profile.updateProfileImage(file);
         }
         if (request.getIsProfileImageDeleted() && profile.getProfileImage() != null) {
-            fileService.delete(profile.getProfileImage().getId());
+            fileService.delete(profile.getProfileImage().getId().toString());
         }
         return profile;
     }
@@ -102,5 +102,10 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public List<Profile> getListByEventId(String eventId, Pageable pageable) {
         return profileRepository.getByEventId(eventId, pageable);
+    }
+
+    @Override
+    public Boolean isEventMember(String memberId, String eventId) {
+        return profileRepository.getByMemberIdAndEventId(memberId, eventId).isPresent();
     }
 }

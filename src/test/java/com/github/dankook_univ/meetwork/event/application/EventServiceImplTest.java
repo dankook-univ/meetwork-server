@@ -383,6 +383,32 @@ class EventServiceImplTest {
     }
 
     @Test
+    @DisplayName("참여한 이벤트의 내 프로필을 가져올 수 있어요.")
+    public void getMyProfile() {
+        Member member = createMember("name", "meetwork@meetwork.kr");
+        Event event = eventService.create(
+            member.getId().toString(),
+            EventCreateRequest.builder()
+                .name("event")
+                .organizerNickname("nickname")
+                .organizerBio("bio")
+                .code("code")
+                .build()
+        );
+
+        Profile profile = eventService.getMyProfile(
+            member.getId().toString(),
+            event.getId().toString()
+        );
+
+        assertThat(profile).isNotNull();
+        assertThat(profile).isInstanceOf(Profile.class);
+
+        assertThat(profile.getMember().getId()).isEqualTo(member.getId());
+        assertThat(profile.getNickname()).isEqualTo("nickname");
+    }
+
+    @Test
     @DisplayName("이벤트에서 나갈 수 있어요.")
     public void secession() {
         Member organizer = createMember("name", "meetwork@meetwork.kr");

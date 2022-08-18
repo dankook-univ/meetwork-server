@@ -10,7 +10,7 @@ public interface PostService {
     Post create(String memberId, PostCreateRequest request);
 
     Post update(String memberId, String postId, PostUpdateRequest request);
-
+    
     Post get(String memberId, String postId);
 
     List<Post> getList(String memberId, String boardId, int page);

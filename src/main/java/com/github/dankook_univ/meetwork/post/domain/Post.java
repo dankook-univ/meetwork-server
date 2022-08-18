@@ -2,17 +2,20 @@ package com.github.dankook_univ.meetwork.post.domain;
 
 import com.github.dankook_univ.meetwork.board.domain.Board;
 import com.github.dankook_univ.meetwork.common.domain.Core;
+import com.github.dankook_univ.meetwork.post.comment.domain.Comment;
 import com.github.dankook_univ.meetwork.post.infra.http.response.PostResponse;
-import com.github.dankook_univ.meetwork.post.post_file.domain.PostFile;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -26,27 +29,24 @@ import org.springframework.util.Assert;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends Core {
 
+    @OneToMany(targetEntity = Comment.class, mappedBy = "post", cascade = CascadeType.ALL)
+    @OrderBy("updatedAt asc")
+    private final List<Comment> comments = new ArrayList<>();
     @NotNull
     @NotEmpty
     @Column(nullable = false)
     private String title;
-
     @NotNull
     @NotEmpty
     @Column(nullable = false)
     private String content;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id")
     private Profile writer;
-
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
-
-    @Transient
-    private List<PostFile> postFile;
 
     @Builder
     public Post(String title, String content, Profile writer, Board board) {
@@ -77,7 +77,11 @@ public class Post extends Core {
         return this;
     }
 
-    public void addFile(PostFile postFile) {
-        this.postFile.add(postFile);
+    public void addComment(Comment comment) {
+        comments.add(comment);
+    }
+
+    public void deleteComment(Comment comment) {
+        comments.remove(comment);
     }
 }

@@ -1,12 +1,11 @@
 package com.github.dankook_univ.meetwork.post.infra.http.response;
 
 import com.github.dankook_univ.meetwork.board.infra.http.response.BoardResponse;
-import com.github.dankook_univ.meetwork.member.infra.http.response.MemberResponse;
+import com.github.dankook_univ.meetwork.post.comment.domain.Comment;
 import com.github.dankook_univ.meetwork.post.domain.Post;
-import com.github.dankook_univ.meetwork.profile.domain.Profile;
+import com.github.dankook_univ.meetwork.profile.infra.http.response.ProfileResponse;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
@@ -19,10 +18,7 @@ public class PostResponse {
 
     @NotNull
     @NotEmpty
-    UUID id;
-
-    @NotNull
-    MemberResponse member;
+    String id;
 
     @NotNull
     @NotEmpty
@@ -33,12 +29,10 @@ public class PostResponse {
     String content;
 
     @NotNull
-    Profile writer;
+    ProfileResponse writer;
 
     @NotNull
     BoardResponse board;
-
-    List<String> fileUrls;
 
     @NotNull
     LocalDateTime createAt;
@@ -46,17 +40,19 @@ public class PostResponse {
     @NotNull
     LocalDateTime updateAt;
 
+    List<Comment> comments;
 
     @Builder
     public PostResponse(
         Post post
     ) {
-        this.id = post.getId();
+        this.id = post.getId().toString();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.writer = post.getWriter();
+        this.writer = post.getWriter().toResponse();
         this.board = post.getBoard().toResponse();
         this.createAt = post.getCreatedAt();
         this.updateAt = post.getUpdatedAt();
+        this.comments = post.getComments();
     }
 }

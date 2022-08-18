@@ -1,21 +1,17 @@
 package com.github.dankook_univ.meetwork.board.infra.http.response;
 
+import com.github.dankook_univ.meetwork.board.domain.Board;
 import com.github.dankook_univ.meetwork.event.infra.http.response.EventResponse;
 import java.time.LocalDateTime;
-import java.util.UUID;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor
 public class BoardResponse {
 
-    UUID id;
+    String id;
 
     LocalDateTime createdAt;
 
@@ -26,4 +22,16 @@ public class BoardResponse {
     String name;
 
     Boolean adminOnly;
+
+    @Builder
+    public BoardResponse(
+        Board board
+    ) {
+        this.id = board.getId().toString();
+        this.name = board.getName();
+        this.event = board.getEvent().toResponse();
+        this.adminOnly = board.getAdminOnly();
+        this.createdAt = board.getCreatedAt();
+        this.updatedAt = board.getUpdatedAt();
+    }
 }

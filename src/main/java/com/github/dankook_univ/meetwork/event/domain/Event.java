@@ -46,13 +46,7 @@ public class Event extends Core {
 
     public EventResponse toResponse() {
         return EventResponse.builder()
-            .id(this.getId())
-            .createdAt(this.getCreatedAt())
-            .updatedAt(this.getUpdatedAt())
-            .name(this.name)
-            .organizer(this.organizer.toResponse())
-            .code(this.code)
-            .meetingUrl(this.meetingUrl)
+            .event(this)
             .build();
     }
 

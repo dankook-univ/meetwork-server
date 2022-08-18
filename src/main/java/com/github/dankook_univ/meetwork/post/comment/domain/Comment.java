@@ -1,6 +1,7 @@
 package com.github.dankook_univ.meetwork.post.comment.domain;
 
 import com.github.dankook_univ.meetwork.common.domain.Core;
+import com.github.dankook_univ.meetwork.post.comment.infra.http.response.CommentResponse;
 import com.github.dankook_univ.meetwork.post.domain.Post;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import javax.annotation.Nullable;
@@ -26,27 +27,22 @@ public class Comment extends Core {
     private Profile writer;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Post.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id", nullable = true)
-    private Comment parent;
 
     @NotNull
     @NotEmpty
     private String content;
 
     @Builder
-    public Comment(Profile writer, Post post, Comment comment, String content) {
+    public Comment(Profile writer, Post post, String content) {
         Assert.notNull(writer, "writer must not be null");
         Assert.notNull(post, "post must not be null");
         Assert.hasText(content, "content must not be null");
 
         this.writer = writer;
         this.post = post;
-        this.parent = comment;
         this.content = content;
     }
 
@@ -57,10 +53,9 @@ public class Comment extends Core {
         return this;
     }
 
-//    public CommentResponse toResponse() {
-//        return CommentResponse
-//            .builder()
-//            .comment(this)
-//            .build();
-//    }
+    public CommentResponse toResponse() {
+        return CommentResponse.builder()
+            .comment(this)
+            .build();
+    }
 }
