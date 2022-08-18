@@ -11,6 +11,8 @@ public interface ProfileService {
 
     Profile get(String memberId, String eventId);
 
+    Profile getById(String profileId);
+
     Profile create(String memberId, Event event, ProfileCreateRequest request, Boolean isAdmin);
 
     Profile update(String memberId, ProfileUpdateRequest request);

@@ -94,6 +94,6 @@ public class ProfileServiceImplTest {
         );
 
         assertThat(profile.getNickname()).isEqualTo("new_nickname");
-        assertThat(profile.getBio()).isEqualTo("new_bio");
+        assertThat(profile.getBio()).isEqualTo("new bio");
     }
 }
