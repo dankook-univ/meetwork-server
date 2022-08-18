@@ -98,7 +98,7 @@ public class ChatController {
         );
     }
 
-    @PostMapping("/{eventId/{roomId}/join")
+    @PostMapping("/{eventId}/{roomId}/join")
     public ResponseEntity<ChatRoomResponse> joinChatRoom(
         @ApiIgnore Authentication authentication,
         @PathVariable("roomId") String roomId
