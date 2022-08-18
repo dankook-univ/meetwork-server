@@ -36,6 +36,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
+    @Transactional
     public ChatMessage send(
         String memberId, String roomId, String message
     ) throws NotParticipatedMemberException {
