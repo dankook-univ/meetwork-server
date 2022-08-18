@@ -5,8 +5,8 @@ import com.github.dankook_univ.meetwork.chat.domain.message.ChatMessage;
 import com.github.dankook_univ.meetwork.chat.domain.participant.ChatParticipant;
 import com.github.dankook_univ.meetwork.chat.domain.room.ChatRoom;
 import com.github.dankook_univ.meetwork.chat.exceptions.NotParticipatedMemberException;
+import com.github.dankook_univ.meetwork.chat.infra.http.response.ChatMessageResponse;
 import com.github.dankook_univ.meetwork.chat.infra.persistence.message.ChatMessageRepositoryImpl;
-import com.github.dankook_univ.meetwork.chat.infra.socket.response.MessageResponse;
 import com.github.dankook_univ.meetwork.member.domain.Member;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
@@ -58,8 +58,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             .map(Member::getId)
             .forEach(targetId -> template.convertAndSend(
                 "/subscribe/chat/" + targetId,
-                MessageResponse.builder()
-                    .room(room)
+                ChatMessageResponse.builder()
                     .message(chatMessage)
                     .build()
             ));
