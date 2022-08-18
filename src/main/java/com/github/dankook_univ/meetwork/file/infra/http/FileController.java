@@ -1,4 +1,4 @@
-package com.github.dankook_univ.meetwork.file.infra.http.response;
+package com.github.dankook_univ.meetwork.file.infra.http;
 
 import com.github.dankook_univ.meetwork.file.application.file.FileServiceImpl;
 import com.github.dankook_univ.meetwork.file.domain.FileType;
@@ -28,7 +28,7 @@ public class FileController {
         @ApiIgnore Authentication authentication,
         @Valid MultipartFile image) {
         return ResponseEntity.ok().body(
-            fileService.upload(authentication.getName(), FileType.post, image).toResponse().url
+            fileService.upload(authentication.getName(), FileType.post, image).toResponse().getUrl()
         );
     }
 
@@ -40,7 +40,7 @@ public class FileController {
         return ResponseEntity.ok().body(
             images.stream().map(
                 (file) -> fileService.upload(authentication.getName(), FileType.post, file)
-                    .toResponse().url).collect(Collectors.toList())
+                    .toResponse().getUrl()).collect(Collectors.toList())
         );
     }
 }

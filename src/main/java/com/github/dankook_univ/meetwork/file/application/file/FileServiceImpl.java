@@ -30,7 +30,7 @@ public class FileServiceImpl implements FileService {
                 multipartFile.getOriginalFilename().lastIndexOf(".") + 1).toLowerCase();
         if (!"gif".equals(mime) && !"jpg".equals(mime) && !"png".equals(mime) && !"jpeg".equals(
             mime)) {
-            throw new NotSupportedFileFormatException();
+            throw new NotSupportedFileFormatException(mime);
         }
 
         File file = fileRepository.save(
