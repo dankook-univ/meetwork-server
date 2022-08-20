@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +33,7 @@ public class PostController {
     @PostMapping("/new")
     public ResponseEntity<PostResponse> create(
         @ApiIgnore Authentication authentication,
-        @Valid PostCreateRequest request
+        @RequestBody @Valid PostCreateRequest request
 
     ) {
         return ResponseEntity.ok().body(
@@ -67,7 +68,7 @@ public class PostController {
     public ResponseEntity<PostResponse> update(
         @ApiIgnore Authentication authentication,
         @PathVariable("postId") @NotBlank String postId,
-        @Valid PostUpdateRequest request
+        @RequestBody @Valid PostUpdateRequest request
     ) {
         return ResponseEntity.ok().body(
             postService.update(authentication.getName(), postId, request).toResponse()

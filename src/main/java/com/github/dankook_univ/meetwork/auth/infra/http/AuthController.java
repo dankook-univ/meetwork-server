@@ -30,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/new")
-    public ResponseEntity<TokenResponse> signUp(SignUpRequest request) {
+    public ResponseEntity<TokenResponse> signUp(@RequestBody SignUpRequest request) {
         return ResponseEntity.ok().body(authService.signUp(request));
     }
 
