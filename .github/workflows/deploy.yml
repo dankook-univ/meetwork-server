@@ -85,8 +85,8 @@ jobs:
           --REDIS_HOST=${{ secrets.REDIS_HOST }} \
           --REDIS_PORT=${{ secrets.REDIS_PORT }} \
           --REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} \
-          --MINIO_ENDPOINT=${{ secrets.MINIO_ENDPOINT }} \
-          --MINIO_BUCKET=${{ secrets.MINIO_BUCKET }} \
-          --MINIO_ACCESS_KEY=${{ secrets.MINIO_ACCESS_KEY }} \
-          --MINIO_SECRET_KEY=${{ secrets.MINIO_SECRET_KEY }} \
+          --STORAGE_END_POINT=${{ secrets.STORAGE_END_POINT }} \
+          --STORAGE_REGION=${{ secrets.STORAGE_REGION }} \
+          --STORAGE_ACCESS_KEY=${{ secrets.STORAGE_ACCESS_KEY }} \
+          --STORAGE_SECRET_KEY=${{ secrets.STORAGE_SECRET_KEY }} \
           --JWT_SECRET=${{ secrets.JWT_SECRET }}

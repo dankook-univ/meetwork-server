@@ -1,10 +1,9 @@
 package com.github.dankook_univ.meetwork.file.infra.http;
 
-import com.github.dankook_univ.meetwork.file.exceptions.FileUploadFailedException;
-import com.github.dankook_univ.meetwork.file.exceptions.MinioStatObjectException;
+import com.github.dankook_univ.meetwork.file.exceptions.FailedToFileDeleteException;
+import com.github.dankook_univ.meetwork.file.exceptions.FailedToFileUploadException;
 import com.github.dankook_univ.meetwork.file.exceptions.NotExistFileException;
 import com.github.dankook_univ.meetwork.file.exceptions.NotSupportedFileFormatException;
-import com.github.dankook_univ.meetwork.profile.exceptions.ExistingNicknameException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,13 +12,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class FileExceptionController {
 
-    @ExceptionHandler(value = FileUploadFailedException.class)
-    public ResponseEntity<String> fileUploadFailedException(FileUploadFailedException exception) {
+    @ExceptionHandler(value = FailedToFileDeleteException.class)
+    public ResponseEntity<String> failedToFileDeleteException(
+        FailedToFileDeleteException exception
+    ) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
-    @ExceptionHandler(value = MinioStatObjectException.class)
-    public ResponseEntity<String> minioStatObjectException(MinioStatObjectException exception) {
+    @ExceptionHandler(value = FailedToFileUploadException.class)
+    public ResponseEntity<String> fileUploadFailedException(FailedToFileUploadException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
@@ -29,7 +30,8 @@ public class FileExceptionController {
     }
 
     @ExceptionHandler(value = NotSupportedFileFormatException.class)
-    public ResponseEntity<String> notSupportedFileFormatException(NotSupportedFileFormatException exception) {
+    public ResponseEntity<String> notSupportedFileFormatException(
+        NotSupportedFileFormatException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 }
