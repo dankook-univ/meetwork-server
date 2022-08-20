@@ -11,6 +11,7 @@
 #### 2. argument 설정하기
 
 ```bash
+--storage.bucket=${bucket}
 --storage.end-point=${end_point}
 --storage.region=${region}
 --storage.access-key=${access-key}

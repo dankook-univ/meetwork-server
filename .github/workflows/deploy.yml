@@ -85,6 +85,7 @@ jobs:
           --REDIS_HOST=${{ secrets.REDIS_HOST }} \
           --REDIS_PORT=${{ secrets.REDIS_PORT }} \
           --REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} \
+          --STORAGE_BUCKET=${{ secrets.STORAGE_BUCKET }} \
           --STORAGE_END_POINT=${{ secrets.STORAGE_END_POINT }} \
           --STORAGE_REGION=${{ secrets.STORAGE_REGION }} \
           --STORAGE_ACCESS_KEY=${{ secrets.STORAGE_ACCESS_KEY }} \
