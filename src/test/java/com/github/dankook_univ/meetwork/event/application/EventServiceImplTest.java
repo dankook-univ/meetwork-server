@@ -7,6 +7,7 @@ import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventException;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventPermissionException;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventUpdateRequest;
+import com.github.dankook_univ.meetwork.event.infra.http.request.ProfileReleaseRequest;
 import com.github.dankook_univ.meetwork.member.domain.Member;
 import com.github.dankook_univ.meetwork.member.infra.persistence.MemberRepositoryImpl;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
@@ -437,6 +438,50 @@ class EventServiceImplTest {
             1);
 
         eventService.secession(participant.getId().toString(), event.getId().toString());
+        List<Profile> secessionList = eventService.getMemberList(
+            organizer.getId().toString(),
+            event.getId().toString(),
+            1);
+
+        assertThat(joinedList.size()).isEqualTo(2);
+        assertThat(secessionList.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("관리자는 이벤트에서 참여자를 방출시킬 수 있어요.")
+    public void release() {
+        Member organizer = createMember("name", "meetwork@meetwork.kr");
+        Event event = eventService.create(
+            organizer.getId().toString(),
+            EventCreateRequest.builder()
+                .name("event")
+                .organizerNickname("nickname")
+                .organizerBio("bio")
+                .code("code")
+                .build()
+        );
+
+        Member participant = createMember("participant_name", "participant@meetwork.kr");
+        Event joinedEvent = eventService.join(
+            participant.getId().toString(),
+            event.getId().toString(),
+            ProfileCreateRequest.builder()
+                .nickname("participant_nickname")
+                .bio("participant")
+                .build()
+        );
+        List<Profile> joinedList = eventService.getMemberList(
+            organizer.getId().toString(),
+            event.getId().toString(),
+            1);
+
+        eventService.release(
+            organizer.getId().toString(),
+            ProfileReleaseRequest.builder()
+                .profileId(participant.getId().toString())
+                .eventId(event.getId().toString())
+                .build());
+
         List<Profile> secessionList = eventService.getMemberList(
             organizer.getId().toString(),
             event.getId().toString(),

@@ -8,9 +8,11 @@ import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventException;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventPermissionException;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventUpdateRequest;
+import com.github.dankook_univ.meetwork.event.infra.http.request.ProfileReleaseRequest;
 import com.github.dankook_univ.meetwork.event.infra.persistence.EventRepositoryImpl;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
+import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfileException;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -88,7 +90,7 @@ public class EventServiceImpl implements EventService {
                 .build()
             )
         );
-        
+
         return event;
     }
 
@@ -142,7 +144,30 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public void secession(String memberId, String eventId) {
+        Boolean isEventMember = profileService.isEventMember(memberId, eventId);
+        if (!isEventMember) {
+            throw new NotFoundProfileException();
+        }
+
         profileService.delete(memberId, eventId);
+    }
+
+    @Override
+    @Transactional
+    public void release(String memberId, ProfileReleaseRequest request) {
+        Profile profile = profileService.get(memberId, request.getEventId());
+        if(!profile.getIsAdmin()){
+            throw new NotFoundEventPermissionException();
+        }
+
+        Boolean isEventMember = profileService.isEventMember(
+            request.getProfileId(),
+            request.getEventId()
+        );
+        if (!isEventMember) {
+            throw new NotFoundProfileException();
+        }
+        profileService.delete(request.getProfileId(), request.getEventId());
     }
 
     @Override

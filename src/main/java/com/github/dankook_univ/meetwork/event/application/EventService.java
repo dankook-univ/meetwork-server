@@ -3,6 +3,7 @@ package com.github.dankook_univ.meetwork.event.application;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventUpdateRequest;
+import com.github.dankook_univ.meetwork.event.infra.http.request.ProfileReleaseRequest;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import java.util.List;
@@ -28,6 +29,8 @@ public interface EventService {
     Profile getMyProfile(String memberId, String eventId);
 
     void secession(String memberId, String eventId);
+
+    void release(String memberId, ProfileReleaseRequest request);
 
     void delete(String memberId, String eventId);
 }
