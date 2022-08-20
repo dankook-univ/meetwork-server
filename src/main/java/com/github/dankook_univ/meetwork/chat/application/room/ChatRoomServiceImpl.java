@@ -129,14 +129,19 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             .orElseThrow(NotFoundChatRoomException::new);
         Profile profile = profileService.get(memberId, room.getEvent().getId().toString());
 
-        room.appendParticipant(
-            chatParticipantRepository.create(
-                ChatParticipant.builder()
-                    .room(room)
-                    .member(profile)
-                    .build()
-            )
-        );
+        if (
+            room.getParticipants().stream()
+                .noneMatch(participant -> participant.getId() == profile.getId())
+        ) {
+            room.appendParticipant(
+                chatParticipantRepository.create(
+                    ChatParticipant.builder()
+                        .room(room)
+                        .member(profile)
+                        .build()
+                )
+            );
+        }
 
         return room;
     }
