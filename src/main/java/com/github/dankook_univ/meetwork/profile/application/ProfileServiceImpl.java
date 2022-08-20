@@ -42,8 +42,11 @@ public class ProfileServiceImpl implements ProfileService {
     @Transactional
     public Profile create(String memberId, Event event, ProfileCreateRequest request,
         Boolean isAdmin) {
-        if (profileRepository.getByEventIdAndNickname(event.getId().toString(),
-            request.getNickname()).isPresent()) {
+        if (
+            profileRepository.getByEventIdAndNickname(
+                event.getId().toString(),
+                request.getNickname()).isPresent()
+        ) {
             throw new ExistingNicknameException();
         }
 

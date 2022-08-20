@@ -7,14 +7,15 @@ import com.github.dankook_univ.meetwork.file.domain.FileType;
 import com.github.dankook_univ.meetwork.file.exceptions.NotSupportedFileFormatException;
 import com.github.dankook_univ.meetwork.file.infra.persistence.FileRepositoryImpl;
 import com.github.dankook_univ.meetwork.member.application.MemberServiceImpl;
-import java.io.InputStream;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FileServiceImpl implements FileService {
 
     private final FileRepositoryImpl fileRepository;
@@ -24,6 +25,7 @@ public class FileServiceImpl implements FileService {
     private final MemberServiceImpl memberService;
 
     @Override
+    @Transactional
     public File upload(String memberId, FileType fileType, MultipartFile multipartFile) {
         String mime = multipartFile.getOriginalFilename() == null
             ? "jpeg"
@@ -54,13 +56,11 @@ public class FileServiceImpl implements FileService {
         );
 
         try {
-            InputStream inputStream = multipartFile.getInputStream();
             if (
                 !minioService.upload(
                     file.getKey(),
-                    inputStream,
-                    multipartFile.getSize(),
-                    file.getMime()
+                    multipartFile.getInputStream(),
+                    multipartFile.getSize()
                 )
             ) {
                 file = null;
@@ -68,11 +68,12 @@ public class FileServiceImpl implements FileService {
         } catch (Exception e) {
             file = null;
         }
-        
+
         return file;
     }
 
     @Override
+    @Transactional
     public void delete(String fileId) {
         fileRepository.getById(fileId).ifPresent(file -> minioService.delete(file.getKey()));
         fileRepository.delete(fileId);
