@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
@@ -23,7 +24,7 @@ public class ProfileController {
     @PatchMapping("/update")
     public ResponseEntity<ProfileResponse> update(
         @ApiIgnore Authentication authentication,
-        @Valid ProfileUpdateRequest request
+        @RequestBody @Valid ProfileUpdateRequest request
     ) {
         return ResponseEntity.ok().body(
             profileService.update(
