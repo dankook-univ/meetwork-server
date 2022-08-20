@@ -8,6 +8,7 @@ import com.github.dankook_univ.meetwork.member.domain.Member;
 import com.github.dankook_univ.meetwork.member.infra.persistence.MemberRepositoryImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
+import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileUpdateRequest;
 import javax.transaction.Transactional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -87,10 +88,14 @@ public class ProfileServiceImplTest {
             false
         );
 
-        profile.update(
-            "new nickname",
-            "new bio",
-            false
+        profileService.update(
+            member.getId().toString(),
+            ProfileUpdateRequest.builder()
+                .profileId(profile.getId().toString())
+                .nickname("new nickname")
+                .bio("new bio")
+                .isProfileImageDeleted(false)
+                .build()
         );
 
         assertThat(profile.getNickname()).isEqualTo("new_nickname");
