@@ -1,9 +1,10 @@
 package com.github.dankook_univ.meetwork.file.application.file;
 
 
-import com.github.dankook_univ.meetwork.file.application.minio.MinioServiceImpl;
+import com.github.dankook_univ.meetwork.file.application.storage.StorageServiceImpl;
 import com.github.dankook_univ.meetwork.file.domain.File;
 import com.github.dankook_univ.meetwork.file.domain.FileType;
+import com.github.dankook_univ.meetwork.file.exceptions.FailedToFileUploadException;
 import com.github.dankook_univ.meetwork.file.exceptions.NotSupportedFileFormatException;
 import com.github.dankook_univ.meetwork.file.infra.persistence.FileRepositoryImpl;
 import com.github.dankook_univ.meetwork.member.application.MemberServiceImpl;
@@ -20,7 +21,7 @@ public class FileServiceImpl implements FileService {
 
     private final FileRepositoryImpl fileRepository;
 
-    private final MinioServiceImpl minioService;
+    private final StorageServiceImpl storageService;
 
     private final MemberServiceImpl memberService;
 
@@ -56,26 +57,18 @@ public class FileServiceImpl implements FileService {
         );
 
         try {
-            if (
-                !minioService.upload(
-                    file.getKey(),
-                    multipartFile.getInputStream(),
-                    multipartFile.getSize()
-                )
-            ) {
-                file = null;
-            }
-        } catch (Exception e) {
-            file = null;
+            storageService.upload(multipartFile, file.getKey());
+            return file;
+        } catch (FailedToFileUploadException e) {
+            fileRepository.delete(file.getId().toString());
+            return null;
         }
-
-        return file;
     }
 
     @Override
     @Transactional
     public void delete(String fileId) {
-        fileRepository.getById(fileId).ifPresent(file -> minioService.delete(file.getKey()));
+        fileRepository.getById(fileId).ifPresent(file -> storageService.delete(file.getKey()));
         fileRepository.delete(fileId);
     }
 }

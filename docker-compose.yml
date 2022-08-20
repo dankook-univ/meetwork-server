@@ -26,20 +26,6 @@ services:
     networks:
       - meetwork
 
-  minio:
-    image: minio/minio
-    container_name: minio
-    command: server --address ":9000" --console-address ":9001" /bucket
-    env_file:
-      - ./env/.env
-    restart: always
-    shm_size: '1gb'
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-    volumes:
-      - ./data/minio:/data
-
 networks:
   meetwork:
     labels:
