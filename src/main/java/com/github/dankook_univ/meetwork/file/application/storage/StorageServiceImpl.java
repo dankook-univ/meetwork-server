@@ -24,7 +24,7 @@ public class StorageServiceImpl implements StorageService {
 
     private final AmazonS3 storage;
 
-    @Value("storage.bucket")
+    @Value("${storage.bucket}")
     private String bucket;
 
     public void upload(MultipartFile file, String key) {
