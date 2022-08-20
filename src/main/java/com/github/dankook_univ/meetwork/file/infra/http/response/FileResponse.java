@@ -18,6 +18,6 @@ public class FileResponse {
         File file
     ) {
         this.id = file.getId().toString();
-        this.url = "http://101.101.211.186:9000/" + file.getKey();
+        this.url = "https://kr.object.ncloudstorage.com/meetwork/" + file.getKey();
     }
 }
