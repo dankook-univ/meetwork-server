@@ -122,7 +122,8 @@ public class BoardServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
-                .build()
+                .build(),
+            false
         );
 
         Board board = boardService.create(

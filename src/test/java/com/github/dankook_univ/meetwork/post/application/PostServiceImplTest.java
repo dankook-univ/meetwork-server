@@ -111,7 +111,8 @@ public class PostServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
-                .build()
+                .build(),
+            false
         );
 
         Assertions.assertThrows(NotFoundBoardPermissionException.class, () -> {
@@ -264,7 +265,8 @@ public class PostServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
-                .build()
+                .build(),
+            false
         );
 
         Post post = postService.create(

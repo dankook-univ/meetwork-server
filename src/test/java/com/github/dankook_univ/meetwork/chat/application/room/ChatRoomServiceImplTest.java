@@ -153,7 +153,8 @@ class ChatRoomServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("other_nickname")
                 .bio("other_bio")
-                .build()
+                .build(),
+            false
         );
 
         ChatRoom joinedRoom = chatRoomService.join(
@@ -186,7 +187,8 @@ class ChatRoomServiceImplTest {
                     ProfileCreateRequest.builder()
                         .nickname("nickname-" + index)
                         .bio("bio-" + index)
-                        .build()
+                        .build(),
+                    false
                 )
             ).mapToObj(
                 (index) -> profileService.get(
@@ -242,7 +244,8 @@ class ChatRoomServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("other_nickname")
                 .bio("other_bio")
-                .build()
+                .build(),
+            false
         );
 
         rooms = chatRoomService.getChatRoomList(
@@ -284,7 +287,8 @@ class ChatRoomServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("other_nickname")
                 .bio("other_bio")
-                .build()
+                .build(),
+            false
         );
 
         rooms = chatRoomService.getParticipatedChatRoomList(
@@ -342,7 +346,8 @@ class ChatRoomServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("other_nickname")
                 .bio("other_bio")
-                .build()
+                .build(),
+            false
         );
 
         Assertions.assertThrows(NotFoundChatRoomException.class,

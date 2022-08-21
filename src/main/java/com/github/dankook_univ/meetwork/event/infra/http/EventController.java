@@ -117,19 +117,6 @@ public class EventController {
         );
     }
 
-    @ApiOperation(value = "이벤트아이디로 이벤트 참여하기", notes = "이벤트의 아이디로 이벤트에 참여할 수 있어요.")
-    @PostMapping("/join/{eventId}")
-    public ResponseEntity<EventResponse> joinEvent(
-        @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @NotBlank String eventId,
-        @RequestBody @Valid ProfileCreateRequest request
-    ) {
-        return ResponseEntity.ok().body(
-            eventService.join(authentication.getName(), eventId, request).toResponse()
-        );
-    }
-
-
     @ApiOperation(value = "이벤트 수정", notes = "이벤트를 수정할 수 있어요.")
     @PatchMapping("/{eventId}")
     public ResponseEntity<EventResponse> update(

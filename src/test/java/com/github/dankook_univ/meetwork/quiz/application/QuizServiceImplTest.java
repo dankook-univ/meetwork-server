@@ -331,7 +331,8 @@ public class QuizServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("participant")
                 .bio("bio")
-                .build()
+                .build(),
+            false
         );
 
         Quiz quiz = quizService.create(
@@ -399,7 +400,8 @@ public class QuizServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("participant1")
                 .bio("bio")
-                .build()
+                .build(),
+            false
         );
         Member participant2 = createMember("participant2", "meetwork@meetwork.kr");
         eventService.join(
@@ -408,7 +410,8 @@ public class QuizServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("participant2")
                 .bio("bio")
-                .build()
+                .build(),
+            false
         );
 
         Quiz quiz = quizService.create(
@@ -500,7 +503,8 @@ public class QuizServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("participant")
                 .bio("bio")
-                .build()
+                .build(),
+            false
         );
 
         Quiz quiz = quizService.create(

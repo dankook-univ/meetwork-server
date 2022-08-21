@@ -100,7 +100,8 @@ class ChatMessageServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("other_nickname")
                 .bio("other_bio")
-                .build()
+                .build(),
+            false
         );
 
         Assertions.assertThrows(NotParticipatedMemberException.class, () -> chatMessageService.send(
