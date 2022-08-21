@@ -19,4 +19,6 @@ public interface ProfileRepository {
     Profile save(Profile profile);
 
     void delete(String memberId, String eventId);
+
+    void deleteAllByEventId(String eventId);
 }

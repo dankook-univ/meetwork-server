@@ -24,7 +24,7 @@ public interface EventService {
 
     Event codeJoin(String memberId, String code, ProfileCreateRequest request);
 
-    Event join(String memberId, String eventId, ProfileCreateRequest request);
+    Event join(String memberId, String eventId, ProfileCreateRequest request, Boolean isAdmin);
 
     Profile getMyProfile(String memberId, String eventId);
 

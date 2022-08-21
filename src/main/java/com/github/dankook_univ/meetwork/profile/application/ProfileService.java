@@ -19,6 +19,8 @@ public interface ProfileService {
 
     void delete(String memberId, String eventId);
 
+    void deleteByEventId(String eventId);
+
     List<Profile> getListByMemberId(String memberId, Pageable pageable);
 
     List<Profile> getListByEventId(String eventId, Pageable pageable);

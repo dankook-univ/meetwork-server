@@ -89,7 +89,8 @@ class EventServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
-                .build()
+                .build(),
+            false
         );
 
         Profile profile = profileService.get(member.getId().toString(), event.getId().toString());
@@ -150,7 +151,8 @@ class EventServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
-                .build()
+                .build(),
+            false
         );
 
         Event createdEvent = eventService.create(
@@ -193,7 +195,8 @@ class EventServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname1")
                 .bio("participant")
-                .build()
+                .build(),
+            false
         );
 
         Member member2 = createMember("participant_name", "participant@meetwork.kr");
@@ -203,7 +206,8 @@ class EventServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname2")
                 .bio("participant")
-                .build()
+                .build(),
+            false
         );
 
         List<Profile> profileList = eventService.getMemberList(
@@ -273,7 +277,8 @@ class EventServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
-                .build()
+                .build(),
+            false
         );
 
         Assertions.assertThrows(NotFoundEventPermissionException.class, () -> {
@@ -430,7 +435,8 @@ class EventServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
-                .build()
+                .build(),
+            false
         );
         List<Profile> joinedList = eventService.getMemberList(
             organizer.getId().toString(),
@@ -469,6 +475,7 @@ class EventServiceImplTest {
                 .nickname("participant_nickname")
                 .bio("participant")
                 .build()
+            , true
         );
         List<Profile> joinedList = eventService.getMemberList(
             organizer.getId().toString(),
@@ -506,12 +513,9 @@ class EventServiceImplTest {
                 .build()
         );
 
-        eventService.delete(
-            member.getId().toString(),
-            event.getId().toString()
-        );
-
         assertThat(event).isNotNull();
+
+        eventService.delete(member.getId().toString(), event.getId().toString());
 
         Assertions.assertThrows(NotFoundProfileException.class, () -> {
             eventService.get(member.getId().toString(), event.getId().toString());
@@ -539,7 +543,8 @@ class EventServiceImplTest {
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
-                .build()
+                .build(),
+            false
         );
 
         Assertions.assertThrows(NotFoundEventPermissionException.class, () -> {
