@@ -4,6 +4,7 @@ import com.github.dankook_univ.meetwork.event.application.EventServiceImpl;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventUpdateRequest;
+import com.github.dankook_univ.meetwork.event.infra.http.request.ProfileReleaseRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.response.EventResponse;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
@@ -116,19 +117,6 @@ public class EventController {
         );
     }
 
-    @ApiOperation(value = "이벤트아이디로 이벤트 참여하기", notes = "이벤트의 아이디로 이벤트에 참여할 수 있어요.")
-    @PostMapping("/join/{eventId}")
-    public ResponseEntity<EventResponse> joinEvent(
-        @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @NotBlank String eventId,
-        @RequestBody @Valid ProfileCreateRequest request
-    ) {
-        return ResponseEntity.ok().body(
-            eventService.join(authentication.getName(), eventId, request).toResponse()
-        );
-    }
-
-
     @ApiOperation(value = "이벤트 수정", notes = "이벤트를 수정할 수 있어요.")
     @PatchMapping("/{eventId}")
     public ResponseEntity<EventResponse> update(
@@ -148,6 +136,16 @@ public class EventController {
         @PathVariable("eventId") @NotBlank String eventId
     ) {
         eventService.secession(authentication.getName(), eventId);
+        return ResponseEntity.ok().body(true);
+    }
+
+    @ApiOperation(value = "이벤트 방출하기", notes = "관리자는 이벤트에서 참가자를 방출시킬 수 있어요.")
+    @PostMapping("/release")
+    public ResponseEntity<Boolean> release(
+        @ApiIgnore Authentication authentication,
+        @RequestBody @Valid ProfileReleaseRequest request
+    ) {
+        eventService.release(authentication.getName(), request);
         return ResponseEntity.ok().body(true);
     }
 

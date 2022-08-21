@@ -10,5 +10,5 @@ public interface EventRepository {
 
     Optional<Event> getByCode(String code);
 
-    void delete(String eventId);
+    void delete(Event event);
 }

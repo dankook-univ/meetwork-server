@@ -18,4 +18,6 @@ public interface ProfileJpaRepository extends JpaRepository<Profile, UUID> {
     Page<Profile> findByMemberId(UUID memberId, Pageable pageable);
 
     Page<Profile> findByEventId(UUID eventId, Pageable pageable);
+
+    void deleteAllByEventId(UUID eventId);
 }

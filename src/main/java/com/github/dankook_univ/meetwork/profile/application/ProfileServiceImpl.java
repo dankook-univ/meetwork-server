@@ -98,6 +98,12 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    @Transactional
+    public void deleteByEventId(String eventId) {
+        profileRepository.deleteAllByEventId(eventId);
+    }
+
+    @Override
     public List<Profile> getListByMemberId(String memberId, Pageable pageable) {
         return profileRepository.getByMemberId(memberId, pageable);
     }

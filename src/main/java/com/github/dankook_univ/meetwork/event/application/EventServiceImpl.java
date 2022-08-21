@@ -1,6 +1,7 @@
 package com.github.dankook_univ.meetwork.event.application;
 
 import com.github.dankook_univ.meetwork.board.application.BoardServiceImpl;
+import com.github.dankook_univ.meetwork.board.domain.Board;
 import com.github.dankook_univ.meetwork.board.infra.http.request.BoardCreateRequest;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.exceptions.ExistingCodeException;
@@ -8,9 +9,11 @@ import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventException;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventPermissionException;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventUpdateRequest;
+import com.github.dankook_univ.meetwork.event.infra.http.request.ProfileReleaseRequest;
 import com.github.dankook_univ.meetwork.event.infra.persistence.EventRepositoryImpl;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
+import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfileException;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,8 +34,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event get(String memberId, String eventId) {
-        if (profileService.get(memberId, eventId) == null) {
-            throw new NotFoundEventPermissionException();
+        if (!profileService.isEventMember(memberId, eventId)) {
+            throw new NotFoundProfileException();
         }
 
         return getById(eventId);
@@ -48,7 +51,9 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<Profile> getMemberList(String memberId, String eventId, int page) {
-        profileService.get(memberId, eventId);
+        if (!profileService.isEventMember(memberId, eventId)) {
+            throw new NotFoundProfileException();
+        }
 
         return profileService.getListByEventId(eventId, PageRequest.of(page - 1, 15));
     }
@@ -88,7 +93,7 @@ public class EventServiceImpl implements EventService {
                 .build()
             )
         );
-        
+
         return event;
     }
 
@@ -117,18 +122,24 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public Event codeJoin(String memberId, String code, ProfileCreateRequest request) {
         Event event = eventRepository.getByCode(code).orElseThrow(NotFoundEventException::new);
-
-        return join(memberId, event.getId().toString(), request);
+        profileService.create(
+            memberId,
+            getById(event.getId().toString()),
+            request,
+            false
+        );
+        return event;
     }
 
     @Override
     @Transactional
-    public Event join(String memberId, String eventId, ProfileCreateRequest request) {
+    public Event join(String memberId, String eventId, ProfileCreateRequest request, Boolean isAdmin
+    ) {
         profileService.create(
             memberId,
             getById(eventId),
             request,
-            false
+            isAdmin
         );
 
         return getById(eventId);
@@ -142,7 +153,30 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public void secession(String memberId, String eventId) {
+        Boolean isEventMember = profileService.isEventMember(memberId, eventId);
+        if (!isEventMember) {
+            throw new NotFoundProfileException();
+        }
+
         profileService.delete(memberId, eventId);
+    }
+
+    @Override
+    @Transactional
+    public void release(String memberId, ProfileReleaseRequest request) {
+        Profile profile = profileService.get(memberId, request.getEventId());
+        if (!profile.getIsAdmin()) {
+            throw new NotFoundEventPermissionException();
+        }
+
+        Boolean isEventMember = profileService.isEventMember(
+            request.getProfileId(),
+            request.getEventId()
+        );
+        if (!isEventMember) {
+            throw new NotFoundProfileException();
+        }
+        profileService.delete(request.getProfileId(), request.getEventId());
     }
 
     @Override
@@ -153,7 +187,11 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundEventPermissionException();
         }
 
-        eventRepository.delete(eventId);
+        List<Board> boards = boardService.getList(memberId, eventId);
+        boards.forEach(board -> boardService.delete(memberId, board.getId().toString()));
+
+        profileService.deleteByEventId(eventId);
+        eventRepository.delete(event);
     }
 
     private Event getById(String eventId) {

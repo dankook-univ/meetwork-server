@@ -7,5 +7,7 @@ public interface MemberRepository {
 
     Optional<Member> getById(UUID memberId);
 
+    Optional<Member> getByEmail(String email);
+
     Member save(Member member);
 }

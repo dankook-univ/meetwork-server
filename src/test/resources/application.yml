@@ -34,3 +34,10 @@ jwt:
 logging:
   level:
     org.hibernate.type: trace
+
+storage:
+  bucket: meetwork
+  end-point: https://kr.object.ncloudstorage.com
+  region: kr-standard
+  access-key: xvbezHVRWRZHFTDp8ORZ
+  secret-key: DcRdI4ahBL48avKV7gYKvxZmqZ2VjOlPVurietKD

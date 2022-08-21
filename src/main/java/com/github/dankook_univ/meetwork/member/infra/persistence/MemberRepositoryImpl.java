@@ -19,6 +19,11 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
+    public Optional<Member> getByEmail(String email) {
+        return memberRepository.getByEmail(email);
+    }
+
+    @Override
     public Member save(Member member) {
         return memberRepository.save(member);
     }

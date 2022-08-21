@@ -19,4 +19,10 @@ public class MemberServiceImpl implements MemberService {
             UUID.fromString(memberId)
         ).orElseThrow(NotFoundMemberException::new);
     }
+
+    @Override
+    public Member getByEmail(String email) {
+        return memberRepository.getByEmail(email)
+            .orElseThrow(NotFoundMemberException::new);
+    }
 }

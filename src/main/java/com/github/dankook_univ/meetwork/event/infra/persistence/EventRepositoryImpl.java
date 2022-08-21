@@ -30,7 +30,7 @@ public class EventRepositoryImpl implements EventRepository {
 
 
     @Override
-    public void delete(String eventId) {
-        eventJpaRepository.deleteById(UUID.fromString(eventId));
+    public void delete(Event event) {
+        eventJpaRepository.delete(event);
     }
 }
