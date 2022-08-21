@@ -170,6 +170,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
+    @Transactional
     public Boolean delete(String memberId, String eventId, String roomId)
         throws NotParticipatedMemberException, NotFoundChatRoomPermissionException {
         shouldParticipating(memberId, roomId);

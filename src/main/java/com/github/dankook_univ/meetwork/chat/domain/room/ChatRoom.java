@@ -23,9 +23,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChatRoom extends Core {
 
-    @OneToMany(targetEntity = ChatMessage.class, mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = ChatMessage.class, mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private final List<ChatMessage> messages = new ArrayList<>();
-    @OneToMany(targetEntity = ChatParticipant.class, mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = ChatParticipant.class, mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private final List<ChatParticipant> participants = new ArrayList<>();
     @ManyToOne(targetEntity = Event.class, fetch = FetchType.LAZY)
     private Event event;

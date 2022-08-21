@@ -9,6 +9,7 @@ import com.github.dankook_univ.meetwork.chat.exceptions.NotFoundChatRoomPermissi
 import com.github.dankook_univ.meetwork.chat.exceptions.NotParticipatedMemberException;
 import com.github.dankook_univ.meetwork.chat.infra.http.request.ChatRoomCreateRequest;
 import com.github.dankook_univ.meetwork.chat.infra.http.request.ChatRoomUpdateRequest;
+import com.github.dankook_univ.meetwork.chat.infra.persistence.room.ChatRoomRepositoryImpl;
 import com.github.dankook_univ.meetwork.event.application.EventServiceImpl;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequest;
@@ -37,6 +38,8 @@ class ChatRoomServiceImplTest {
     private EventServiceImpl eventService;
     @Autowired
     private ProfileServiceImpl profileService;
+    @Autowired
+    private ChatRoomRepositoryImpl chatRoomRepository;
     @Autowired
     private MemberRepositoryImpl memberRepository;
 
@@ -269,6 +272,8 @@ class ChatRoomServiceImplTest {
             event.getId().toString(),
             room.getId().toString()
         )).isTrue();
+
+        assertThat(chatRoomRepository.getById(room.getId().toString()).isPresent()).isFalse();
     }
 
     @Test
