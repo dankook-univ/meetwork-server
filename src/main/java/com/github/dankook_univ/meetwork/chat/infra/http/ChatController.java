@@ -4,8 +4,10 @@ import com.github.dankook_univ.meetwork.chat.application.message.ChatMessageServ
 import com.github.dankook_univ.meetwork.chat.application.room.ChatRoomServiceImpl;
 import com.github.dankook_univ.meetwork.chat.domain.message.ChatMessage;
 import com.github.dankook_univ.meetwork.chat.domain.room.ChatRoom;
+import com.github.dankook_univ.meetwork.chat.exceptions.NotFoundChatRoomPermissionException;
 import com.github.dankook_univ.meetwork.chat.exceptions.NotParticipatedMemberException;
 import com.github.dankook_univ.meetwork.chat.infra.http.request.ChatRoomCreateRequest;
+import com.github.dankook_univ.meetwork.chat.infra.http.request.ChatRoomUpdateRequest;
 import com.github.dankook_univ.meetwork.chat.infra.http.request.MessageCreateRequest;
 import com.github.dankook_univ.meetwork.chat.infra.http.response.ChatMessageResponse;
 import com.github.dankook_univ.meetwork.chat.infra.http.response.ChatRoomResponse;
@@ -17,9 +19,11 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -121,6 +125,29 @@ public class ChatController {
         return ResponseEntity.ok().body(
             chatMessageService.send(authentication.getName(), roomId, request.getMessage())
                 .toResponse()
+        );
+    }
+
+    @PutMapping("/{eventId}/{roomId}")
+    public ResponseEntity<ChatRoomResponse> update(
+        @ApiIgnore Authentication authentication,
+        @PathVariable("eventId") String eventId,
+        @PathVariable("roomId") String roomId,
+        @RequestBody @Valid ChatRoomUpdateRequest request
+    ) throws NotParticipatedMemberException, NotFoundChatRoomPermissionException {
+        return ResponseEntity.ok().body(
+            chatRoomService.update(authentication.getName(), eventId, roomId, request).toResponse()
+        );
+    }
+
+    @DeleteMapping("/{eventId}/{roomId}")
+    public ResponseEntity<Boolean> delete(
+        @ApiIgnore Authentication authentication,
+        @PathVariable("eventId") String eventId,
+        @PathVariable("roomId") String roomId
+    ) throws NotParticipatedMemberException, NotFoundChatRoomPermissionException {
+        return ResponseEntity.ok().body(
+            chatRoomService.delete(authentication.getName(), eventId, roomId)
         );
     }
 }
