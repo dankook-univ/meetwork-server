@@ -169,6 +169,24 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return room;
     }
 
+    @Override
+    public Boolean delete(String memberId, String eventId, String roomId)
+        throws NotParticipatedMemberException, NotFoundChatRoomPermissionException {
+        shouldParticipating(memberId, roomId);
+
+        ChatRoom room = chatRoomRepository.getById(roomId)
+            .orElseThrow(NotFoundChatRoomException::new);
+        Profile profile = profileService.get(memberId, eventId);
+
+        if (!(profile.getIsAdmin() || room.getOrganizer().getId() == profile.getId())) {
+            throw new NotFoundChatRoomPermissionException();
+        }
+
+        chatRoomRepository.deleteById(room.getId().toString());
+
+        return true;
+    }
+
     public void shouldParticipating(
         String memberId, String roomId
     ) throws NotParticipatedMemberException {
