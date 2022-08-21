@@ -4,8 +4,10 @@ import com.github.dankook_univ.meetwork.chat.domain.participant.ChatParticipant;
 import com.github.dankook_univ.meetwork.chat.domain.room.ChatRoom;
 import com.github.dankook_univ.meetwork.chat.exceptions.AlreadyChatRoomNameException;
 import com.github.dankook_univ.meetwork.chat.exceptions.NotFoundChatRoomException;
+import com.github.dankook_univ.meetwork.chat.exceptions.NotFoundChatRoomPermissionException;
 import com.github.dankook_univ.meetwork.chat.exceptions.NotParticipatedMemberException;
 import com.github.dankook_univ.meetwork.chat.infra.http.request.ChatRoomCreateRequest;
+import com.github.dankook_univ.meetwork.chat.infra.http.request.ChatRoomUpdateRequest;
 import com.github.dankook_univ.meetwork.chat.infra.persistence.participant.ChatParticipantRepositoryImpl;
 import com.github.dankook_univ.meetwork.chat.infra.persistence.room.ChatRoomRepositoryImpl;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
@@ -124,6 +126,27 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
+    @Transactional
+    public ChatRoom update(
+        String memberId,
+        String eventId,
+        String roomId,
+        ChatRoomUpdateRequest request
+    ) throws NotParticipatedMemberException, NotFoundChatRoomPermissionException {
+        shouldParticipating(memberId, roomId);
+
+        ChatRoom room = chatRoomRepository.getById(roomId)
+            .orElseThrow(NotFoundChatRoomException::new);
+        Profile profile = profileService.get(memberId, eventId);
+
+        if (!(profile.getIsAdmin() || room.getOrganizer().getId() == profile.getId())) {
+            throw new NotFoundChatRoomPermissionException();
+        }
+
+        return room.update(request.getName(), request.getIsPrivate());
+    }
+
+    @Override
     public ChatRoom join(String memberId, String roomId) {
         ChatRoom room = chatRoomRepository.getById(roomId)
             .orElseThrow(NotFoundChatRoomException::new);
@@ -144,6 +167,24 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         }
 
         return room;
+    }
+
+    @Override
+    public Boolean delete(String memberId, String eventId, String roomId)
+        throws NotParticipatedMemberException, NotFoundChatRoomPermissionException {
+        shouldParticipating(memberId, roomId);
+
+        ChatRoom room = chatRoomRepository.getById(roomId)
+            .orElseThrow(NotFoundChatRoomException::new);
+        Profile profile = profileService.get(memberId, eventId);
+
+        if (!(profile.getIsAdmin() || room.getOrganizer().getId() == profile.getId())) {
+            throw new NotFoundChatRoomPermissionException();
+        }
+
+        chatRoomRepository.deleteById(room.getId().toString());
+
+        return true;
     }
 
     public void shouldParticipating(

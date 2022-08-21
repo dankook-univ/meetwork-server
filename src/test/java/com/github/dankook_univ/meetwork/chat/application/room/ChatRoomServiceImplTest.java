@@ -5,8 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.github.dankook_univ.meetwork.chat.domain.room.ChatRoom;
 import com.github.dankook_univ.meetwork.chat.exceptions.AlreadyChatRoomNameException;
 import com.github.dankook_univ.meetwork.chat.exceptions.NotFoundChatRoomException;
+import com.github.dankook_univ.meetwork.chat.exceptions.NotFoundChatRoomPermissionException;
 import com.github.dankook_univ.meetwork.chat.exceptions.NotParticipatedMemberException;
 import com.github.dankook_univ.meetwork.chat.infra.http.request.ChatRoomCreateRequest;
+import com.github.dankook_univ.meetwork.chat.infra.http.request.ChatRoomUpdateRequest;
 import com.github.dankook_univ.meetwork.event.application.EventServiceImpl;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequest;
@@ -130,6 +132,38 @@ class ChatRoomServiceImplTest {
     }
 
     @Test
+    @DisplayName("채팅방을 수정할 수 있어요.")
+    public void updateChatRoom()
+        throws NotParticipatedMemberException, NotFoundChatRoomPermissionException {
+        Member member = createMember("name", "meetwork@meetwork.kr");
+        Event event = createEvent(member);
+
+        ChatRoom room = chatRoomService.create(
+            member.getId().toString(),
+            event.getId().toString(),
+            ChatRoomCreateRequest.builder()
+                .name("name")
+                .isPrivate(true)
+                .build()
+        );
+
+        ChatRoom newRoom = chatRoomService.update(
+            member.getId().toString(),
+            event.getId().toString(),
+            room.getId().toString(),
+            ChatRoomUpdateRequest.builder()
+                .name("new name")
+                .isPrivate(false)
+                .build()
+        );
+
+        assertThat(newRoom).isNotNull().isInstanceOf(ChatRoom.class);
+
+        assertThat(newRoom.getName()).isEqualTo("new name");
+        assertThat(newRoom.getIsPrivate()).isEqualTo(false);
+    }
+
+    @Test
     @DisplayName("채팅방에 참여할 수 있어요.")
     public void joinChatRoom() {
         Member member = createMember("name", "meetwork@meetwork.kr");
@@ -212,6 +246,29 @@ class ChatRoomServiceImplTest {
         assertThat(room).isInstanceOf(ChatRoom.class);
 
         assertThat(room.getParticipants().size()).isEqualTo(11);
+    }
+
+    @Test
+    @DisplayName("채팅방을 삭제할 수 있어요.")
+    public void deleteChatRoom()
+        throws NotParticipatedMemberException, NotFoundChatRoomPermissionException {
+        Member member = createMember("name", "meetwork@meetwork.kr");
+        Event event = createEvent(member);
+
+        ChatRoom room = chatRoomService.create(
+            member.getId().toString(),
+            event.getId().toString(),
+            ChatRoomCreateRequest.builder()
+                .name("name")
+                .isPrivate(true)
+                .build()
+        );
+
+        assertThat(chatRoomService.delete(
+            member.getId().toString(),
+            event.getId().toString(),
+            room.getId().toString()
+        )).isTrue();
     }
 
     @Test

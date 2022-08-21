@@ -33,4 +33,9 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepository {
     public ChatRoom save(ChatRoom room) {
         return chatRoomJpaRepository.save(room);
     }
+
+    @Override
+    public void deleteById(String roomId) {
+        chatRoomJpaRepository.deleteById(UUID.fromString(roomId));
+    }
 }
