@@ -109,8 +109,9 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<Profile> getListByEventId(String eventId, Pageable pageable) {
-        return profileRepository.getByEventId(eventId, pageable);
+    public List<Profile> getListByEventIdAndAdminOnly(String eventId, Boolean adminOnly,
+        Pageable pageable) {
+        return profileRepository.getByEventIdAndAdminOnly(eventId, adminOnly, pageable);
     }
 
     @Override

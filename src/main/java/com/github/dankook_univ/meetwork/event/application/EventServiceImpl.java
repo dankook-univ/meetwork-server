@@ -50,12 +50,14 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<Profile> getMemberList(String memberId, String eventId, int page) {
+    public List<Profile> getMemberList(String memberId, String eventId, Boolean adminOnly,
+        int page) {
         if (!profileService.isEventMember(memberId, eventId)) {
             throw new NotFoundProfileException();
         }
 
-        return profileService.getListByEventId(eventId, PageRequest.of(page - 1, 15));
+        return profileService.getListByEventIdAndAdminOnly(eventId, adminOnly,
+            PageRequest.of(page - 1, 15));
     }
 
     @Override

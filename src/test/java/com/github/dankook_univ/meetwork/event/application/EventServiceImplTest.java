@@ -196,7 +196,7 @@ class EventServiceImplTest {
                 .nickname("participant_nickname1")
                 .bio("participant")
                 .build(),
-            false
+            true
         );
 
         Member member2 = createMember("participant_name", "participant@meetwork.kr");
@@ -213,14 +213,32 @@ class EventServiceImplTest {
         List<Profile> profileList = eventService.getMemberList(
             member.getId().toString(),
             event.getId().toString(),
+            null,
+            1);
+
+        List<Profile> adminList = eventService.getMemberList(
+            member.getId().toString(),
+            event.getId().toString(),
+            true,
+            1);
+
+        List<Profile> participantList = eventService.getMemberList(
+            member.getId().toString(),
+            event.getId().toString(),
+            false,
             1);
 
         assertThat(event).isNotNull();
         assertThat(event).isInstanceOf(Event.class);
 
         assertThat(profileList).isNotNull();
+        assertThat(adminList).isNotNull();
+        assertThat(participantList).isNotNull();
         assertThat(profileList.get(0)).isInstanceOf(Profile.class);
+
         assertThat(profileList.size()).isEqualTo(3);
+        assertThat(adminList.size()).isEqualTo(2);
+        assertThat(participantList.size()).isEqualTo(1);
     }
 
     @Test
@@ -441,12 +459,14 @@ class EventServiceImplTest {
         List<Profile> joinedList = eventService.getMemberList(
             organizer.getId().toString(),
             event.getId().toString(),
+            null,
             1);
 
         eventService.secession(participant.getId().toString(), event.getId().toString());
         List<Profile> secessionList = eventService.getMemberList(
             organizer.getId().toString(),
             event.getId().toString(),
+            null,
             1);
 
         assertThat(joinedList.size()).isEqualTo(2);
@@ -480,6 +500,7 @@ class EventServiceImplTest {
         List<Profile> joinedList = eventService.getMemberList(
             organizer.getId().toString(),
             event.getId().toString(),
+            null,
             1);
 
         eventService.release(
@@ -492,6 +513,7 @@ class EventServiceImplTest {
         List<Profile> secessionList = eventService.getMemberList(
             organizer.getId().toString(),
             event.getId().toString(),
+            null,
             1);
 
         assertThat(joinedList.size()).isEqualTo(2);

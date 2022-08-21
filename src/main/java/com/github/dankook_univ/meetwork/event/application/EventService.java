@@ -14,7 +14,7 @@ public interface EventService {
 
     List<Event> getList(String memberId, int page);
 
-    List<Profile> getMemberList(String memberId, String eventId, int page);
+    List<Profile> getMemberList(String memberId, String eventId, Boolean adminOnly, int page);
 
     Event create(String memberId, EventCreateRequest request);
 

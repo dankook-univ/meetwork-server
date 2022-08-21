@@ -75,10 +75,11 @@ public class EventController {
     public ResponseEntity<List<ProfileResponse>> getMemberList(
         @ApiIgnore Authentication authentication,
         @PathVariable("eventId") @NotBlank String eventId,
+        @RequestParam(value = "adminOnly", required = false) Boolean adminOnly,
         @RequestParam(value = "page", required = false, defaultValue = "1") int page
     ) {
         return ResponseEntity.ok().body(
-            eventService.getMemberList(authentication.getName(), eventId, page)
+            eventService.getMemberList(authentication.getName(), eventId, adminOnly, page)
                 .stream().map(Profile::toResponse)
                 .collect(Collectors.toList())
         );
