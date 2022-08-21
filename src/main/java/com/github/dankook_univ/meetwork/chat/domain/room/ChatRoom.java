@@ -8,6 +8,7 @@ import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -42,6 +43,17 @@ public class ChatRoom extends Core {
         this.organizer = organizer;
         this.name = name;
         this.isPrivate = isPrivate;
+    }
+
+    public ChatRoom update(@Nullable String name, @Nullable Boolean isPrivate) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (isPrivate != null) {
+            this.isPrivate = isPrivate;
+        }
+
+        return this;
     }
 
     public void appendMessage(ChatMessage message) {

@@ -7,6 +7,7 @@ import com.github.dankook_univ.meetwork.chat.exceptions.AlreadyChatRoomNameExcep
 import com.github.dankook_univ.meetwork.chat.exceptions.NotFoundChatRoomException;
 import com.github.dankook_univ.meetwork.chat.exceptions.NotParticipatedMemberException;
 import com.github.dankook_univ.meetwork.chat.infra.http.request.ChatRoomCreateRequest;
+import com.github.dankook_univ.meetwork.chat.infra.http.request.ChatRoomUpdateRequest;
 import com.github.dankook_univ.meetwork.event.application.EventServiceImpl;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequest;
@@ -127,6 +128,37 @@ class ChatRoomServiceImplTest {
                 .isPrivate(false)
                 .build()
         ));
+    }
+
+    @Test
+    @DisplayName("채팅방을 수정할 수 있어요.")
+    public void updateChatRoom() throws NotParticipatedMemberException {
+        Member member = createMember("name", "meetwork@meetwork.kr");
+        Event event = createEvent(member);
+
+        ChatRoom room = chatRoomService.create(
+            member.getId().toString(),
+            event.getId().toString(),
+            ChatRoomCreateRequest.builder()
+                .name("name")
+                .isPrivate(true)
+                .build()
+        );
+
+        ChatRoom newRoom = chatRoomService.update(
+            member.getId().toString(),
+            event.getId().toString(),
+            room.getId().toString(),
+            ChatRoomUpdateRequest.builder()
+                .name("new name")
+                .isPrivate(false)
+                .build()
+        );
+
+        assertThat(newRoom).isNotNull().isInstanceOf(ChatRoom.class);
+
+        assertThat(newRoom.getName()).isEqualTo("new name");
+        assertThat(newRoom.getIsPrivate()).isEqualTo(false);
     }
 
     @Test
