@@ -2,6 +2,9 @@ package com.github.dankook_univ.meetwork.profile.infra.persistence;
 
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.domain.ProfileRepository;
+import com.github.dankook_univ.meetwork.profile.domain.QProfile;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,6 +17,9 @@ import org.springframework.stereotype.Repository;
 public class ProfileRepositoryImpl implements ProfileRepository {
 
     private final ProfileJpaRepository profileRepository;
+
+    private final JPAQueryFactory queryFactory;
+    private final QProfile profile = QProfile.profile;
 
     @Override
     public Optional<Profile> getById(String profileId) {
@@ -37,8 +43,20 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     }
 
     @Override
-    public List<Profile> getByEventId(String eventId, Pageable pageable) {
-        return profileRepository.findByEventId(UUID.fromString(eventId), pageable).getContent();
+    public List<Profile> getByEventIdAndAdminOnly(
+        String eventId,
+        Boolean adminOnly,
+        Pageable pageable
+    ) {
+        return queryFactory
+            .selectFrom(profile)
+            .where(
+                profile.event.id.eq(UUID.fromString(eventId)),
+                adminOnlyEq(adminOnly)
+            )
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
     }
 
     @Override
@@ -55,6 +73,10 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     @Override
     public void deleteAllByEventId(String eventId) {
         profileRepository.deleteAllByEventId(UUID.fromString(eventId));
+    }
+
+    private BooleanExpression adminOnlyEq(Boolean adminOnly) {
+        return adminOnly != null ? profile.isAdmin.eq(adminOnly) : null;
     }
 }
 

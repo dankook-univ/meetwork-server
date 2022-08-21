@@ -5,6 +5,7 @@ import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventUpdateRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.request.ProfileReleaseRequest;
+import com.github.dankook_univ.meetwork.event.infra.http.request.UpdateAdminRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.response.EventResponse;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
@@ -75,10 +76,11 @@ public class EventController {
     public ResponseEntity<List<ProfileResponse>> getMemberList(
         @ApiIgnore Authentication authentication,
         @PathVariable("eventId") @NotBlank String eventId,
+        @RequestParam(value = "adminOnly", required = false) Boolean adminOnly,
         @RequestParam(value = "page", required = false, defaultValue = "1") int page
     ) {
         return ResponseEntity.ok().body(
-            eventService.getMemberList(authentication.getName(), eventId, page)
+            eventService.getMemberList(authentication.getName(), eventId, adminOnly, page)
                 .stream().map(Profile::toResponse)
                 .collect(Collectors.toList())
         );
@@ -126,6 +128,17 @@ public class EventController {
     ) {
         return ResponseEntity.ok().body(
             eventService.update(authentication.getName(), eventId, request).toResponse()
+        );
+    }
+
+    @ApiOperation(value = "관리자 권한 수정", notes = "관리자의 권한을 변경할 수 있어요.")
+    @PatchMapping("/updateAdmin")
+    public ResponseEntity<Boolean> updateAdmin(
+        @ApiIgnore Authentication authentication,
+        @RequestBody @Valid UpdateAdminRequest request
+    ) {
+        return ResponseEntity.ok().body(
+            eventService.updateAdmin(authentication.getName(), request)
         );
     }
 

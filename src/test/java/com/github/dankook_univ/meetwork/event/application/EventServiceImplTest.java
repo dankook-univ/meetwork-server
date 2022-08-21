@@ -8,6 +8,7 @@ import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventPermission
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventUpdateRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.request.ProfileReleaseRequest;
+import com.github.dankook_univ.meetwork.event.infra.http.request.UpdateAdminRequest;
 import com.github.dankook_univ.meetwork.member.domain.Member;
 import com.github.dankook_univ.meetwork.member.infra.persistence.MemberRepositoryImpl;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
@@ -196,7 +197,7 @@ class EventServiceImplTest {
                 .nickname("participant_nickname1")
                 .bio("participant")
                 .build(),
-            false
+            true
         );
 
         Member member2 = createMember("participant_name", "participant@meetwork.kr");
@@ -213,14 +214,32 @@ class EventServiceImplTest {
         List<Profile> profileList = eventService.getMemberList(
             member.getId().toString(),
             event.getId().toString(),
+            null,
+            1);
+
+        List<Profile> adminList = eventService.getMemberList(
+            member.getId().toString(),
+            event.getId().toString(),
+            true,
+            1);
+
+        List<Profile> participantList = eventService.getMemberList(
+            member.getId().toString(),
+            event.getId().toString(),
+            false,
             1);
 
         assertThat(event).isNotNull();
         assertThat(event).isInstanceOf(Event.class);
 
         assertThat(profileList).isNotNull();
+        assertThat(adminList).isNotNull();
+        assertThat(participantList).isNotNull();
         assertThat(profileList.get(0)).isInstanceOf(Profile.class);
+
         assertThat(profileList.size()).isEqualTo(3);
+        assertThat(adminList.size()).isEqualTo(2);
+        assertThat(participantList.size()).isEqualTo(1);
     }
 
     @Test
@@ -292,6 +311,108 @@ class EventServiceImplTest {
                     .build()
             );
         });
+    }
+
+    @Test
+    @DisplayName("이벤트 관리자 권한을 부여할 수 있어요.")
+    public void updateAdmin() {
+        Member organizer = createMember("organizer", "meetwork@meetwork.kr");
+
+        Event event = eventService.create(
+            organizer.getId().toString(),
+            EventCreateRequest.builder()
+                .name("event")
+                .organizerNickname("nickname")
+                .organizerBio("bio")
+                .code("code")
+                .build()
+        );
+
+        Member participant = createMember("participant", "meetwork@meetwork.kr");
+        eventService.join(
+            participant.getId().toString(),
+            event.getId().toString(),
+            ProfileCreateRequest.builder()
+                .nickname("participant_nickname")
+                .bio("participant")
+                .build(),
+            false);
+
+        Profile participantProfile = profileService.get(
+            participant.getId().toString(),
+            event.getId().toString()
+        );
+
+        assertThat(participantProfile).isNotNull().isInstanceOf(Profile.class);
+        assertThat(participantProfile.getIsAdmin()).isFalse();
+
+        eventService.updateAdmin(
+            organizer.getId().toString(),
+            UpdateAdminRequest.builder()
+                .profileId(participantProfile.getId().toString())
+                .eventId(event.getId().toString())
+                .isAdmin(true)
+                .build()
+        );
+
+        Profile adminProfile = profileService.get(
+            participant.getId().toString(),
+            event.getId().toString()
+        );
+
+        assertThat(adminProfile).isNotNull().isInstanceOf(Profile.class);
+        assertThat(adminProfile.getIsAdmin()).isTrue();
+    }
+
+    @Test
+    @DisplayName("이벤트 관리자 권한을 삭제할 수 있어요.")
+    public void removeAdmin() {
+        Member organizer = createMember("organizer", "meetwork@meetwork.kr");
+
+        Event event = eventService.create(
+            organizer.getId().toString(),
+            EventCreateRequest.builder()
+                .name("event")
+                .organizerNickname("nickname")
+                .organizerBio("bio")
+                .code("code")
+                .build()
+        );
+
+        Member participant = createMember("participant", "meetwork@meetwork.kr");
+        eventService.join(
+            participant.getId().toString(),
+            event.getId().toString(),
+            ProfileCreateRequest.builder()
+                .nickname("participant_nickname")
+                .bio("participant")
+                .build(),
+            true);
+
+        Profile participantProfile = profileService.get(
+            participant.getId().toString(),
+            event.getId().toString()
+        );
+
+        assertThat(participantProfile).isNotNull().isInstanceOf(Profile.class);
+        assertThat(participantProfile.getIsAdmin()).isTrue();
+
+        eventService.updateAdmin(
+            organizer.getId().toString(),
+            UpdateAdminRequest.builder()
+                .profileId(participantProfile.getId().toString())
+                .eventId(event.getId().toString())
+                .isAdmin(false)
+                .build()
+        );
+
+        Profile adminProfile = profileService.get(
+            participant.getId().toString(),
+            event.getId().toString()
+        );
+
+        assertThat(adminProfile).isNotNull().isInstanceOf(Profile.class);
+        assertThat(adminProfile.getIsAdmin()).isFalse();
     }
 
     @Test
@@ -441,12 +562,14 @@ class EventServiceImplTest {
         List<Profile> joinedList = eventService.getMemberList(
             organizer.getId().toString(),
             event.getId().toString(),
+            null,
             1);
 
         eventService.secession(participant.getId().toString(), event.getId().toString());
         List<Profile> secessionList = eventService.getMemberList(
             organizer.getId().toString(),
             event.getId().toString(),
+            null,
             1);
 
         assertThat(joinedList.size()).isEqualTo(2);
@@ -480,6 +603,7 @@ class EventServiceImplTest {
         List<Profile> joinedList = eventService.getMemberList(
             organizer.getId().toString(),
             event.getId().toString(),
+            null,
             1);
 
         eventService.release(
@@ -492,6 +616,7 @@ class EventServiceImplTest {
         List<Profile> secessionList = eventService.getMemberList(
             organizer.getId().toString(),
             event.getId().toString(),
+            null,
             1);
 
         assertThat(joinedList.size()).isEqualTo(2);

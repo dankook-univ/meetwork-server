@@ -10,6 +10,7 @@ import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventPermission
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventCreateRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.request.EventUpdateRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.request.ProfileReleaseRequest;
+import com.github.dankook_univ.meetwork.event.infra.http.request.UpdateAdminRequest;
 import com.github.dankook_univ.meetwork.event.infra.persistence.EventRepositoryImpl;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
@@ -50,12 +51,14 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<Profile> getMemberList(String memberId, String eventId, int page) {
+    public List<Profile> getMemberList(String memberId, String eventId, Boolean adminOnly,
+        int page) {
         if (!profileService.isEventMember(memberId, eventId)) {
             throw new NotFoundProfileException();
         }
 
-        return profileService.getListByEventId(eventId, PageRequest.of(page - 1, 15));
+        return profileService.getListByEventIdAndAdminOnly(eventId, adminOnly,
+            PageRequest.of(page - 1, 15));
     }
 
     @Override
@@ -110,6 +113,20 @@ public class EventServiceImpl implements EventService {
         }
 
         return event.update(request.getName(), request.getCode(), request.getMeetingUrl());
+    }
+
+    @Override
+    @Transactional
+    public Boolean updateAdmin(String memberId, UpdateAdminRequest request) {
+        Event event = getById(request.getEventId());
+        Profile organizer = profileService.get(memberId, request.getEventId());
+        if (event.getOrganizer() != organizer) {
+            throw new NotFoundEventPermissionException();
+        }
+
+        Profile profile = profileService.getById(request.getProfileId());
+        profile.update(null, null, request.getIsAdmin());
+        return true;
     }
 
     @Override

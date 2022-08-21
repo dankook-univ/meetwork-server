@@ -14,7 +14,7 @@ public interface ProfileRepository {
 
     List<Profile> getByMemberId(String memberId, Pageable pageable);
 
-    List<Profile> getByEventId(String eventId, Pageable pageable);
+    List<Profile> getByEventIdAndAdminOnly(String eventId, Boolean adminOnly, Pageable pageable);
 
     Profile save(Profile profile);
 
