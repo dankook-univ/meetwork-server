@@ -10,6 +10,7 @@ import com.github.dankook_univ.meetwork.invitation.infra.http.request.Invitation
 import com.github.dankook_univ.meetwork.invitation.infra.persistence.InvitationRepositoryImpl;
 import com.github.dankook_univ.meetwork.member.application.MemberServiceImpl;
 import com.github.dankook_univ.meetwork.member.domain.Member;
+import com.github.dankook_univ.meetwork.member.exceptions.NotFoundMemberException;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
@@ -40,17 +41,20 @@ public class InvitationServiceImpl implements InvitationService {
         }
 
         Event event = eventService.get(memberId, request.getEventId());
-        request.getInvitationInformations().forEach((i) ->
-            invitationRepository.save(
-                Invitation.builder()
-                    .event(event)
-                    .guest(
-                        memberService.getByEmail(i.getEmail())
-                    )
-                    .isAdmin(i.getIsAdmin())
-                    .build()
-            )
-        );
+        request.getInvitationInformations().stream()
+            .filter((i) -> memberService.getByEmail(i.getEmail()).isPresent())
+            .forEach((i) ->
+                invitationRepository.save(
+                    Invitation.builder()
+                        .event(event)
+                        .guest(
+                            memberService.getByEmail(i.getEmail())
+                                .orElseThrow(NotFoundMemberException::new)
+                        )
+                        .isAdmin(i.getIsAdmin())
+                        .build()
+                )
+            );
         return true;
     }
 

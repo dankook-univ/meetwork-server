@@ -3,6 +3,7 @@ package com.github.dankook_univ.meetwork.member.application;
 import com.github.dankook_univ.meetwork.member.domain.Member;
 import com.github.dankook_univ.meetwork.member.exceptions.NotFoundMemberException;
 import com.github.dankook_univ.meetwork.member.infra.persistence.MemberRepositoryImpl;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member getByEmail(String email) {
-        return memberRepository.getByEmail(email)
-            .orElseThrow(NotFoundMemberException::new);
+    public Optional<Member> getByEmail(String email) {
+        return memberRepository.getByEmail(email);
     }
 }

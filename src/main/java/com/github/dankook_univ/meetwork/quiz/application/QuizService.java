@@ -14,11 +14,13 @@ public interface QuizService {
 
     List<QuizResponse> getList(String memberId, String eventId);
 
-    Quiz get(String memberId, String quizId);
+    List<Question> get(String memberId, String quizId);
 
     List<Question> participant(String memberId, String quizId);
 
     Boolean check(String memberId, QuestionCheckRequest request);
+
+    QuizParticipants myResult(String memberId, String quizId);
 
     List<QuizParticipants> result(String memberId, String quizId);
 

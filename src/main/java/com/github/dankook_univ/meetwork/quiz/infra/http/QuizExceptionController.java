@@ -24,7 +24,7 @@ public class QuizExceptionController {
     @ExceptionHandler(value = NotFoundQuizPermissionException.class)
     public ResponseEntity<String> notFoundQuizPermissionException(
         NotFoundQuizPermissionException exception) {
-        return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION)
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
             .body(exception.getMessage());
     }
 

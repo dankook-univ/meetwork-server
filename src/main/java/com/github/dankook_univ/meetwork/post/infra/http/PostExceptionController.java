@@ -18,7 +18,7 @@ public class PostExceptionController {
     @ExceptionHandler(value = NotFoundPostPermissionException.class)
     public ResponseEntity<String> notFoundPostPermissionException(
         NotFoundPostPermissionException exception) {
-        return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION)
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
             .body(exception.getMessage());
     }
 }
