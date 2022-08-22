@@ -62,6 +62,15 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public Profile getMember(String memberId, String eventId, String profileId) {
+        if (!profileService.isEventMember(memberId, eventId)) {
+            throw new NotFoundProfileException();
+        }
+
+        return profileService.getById(profileId);
+    }
+
+    @Override
     @Transactional
     public Event create(String memberId, EventCreateRequest request) {
         if (checkExistingCode(request.getCode())) {
@@ -75,6 +84,7 @@ public class EventServiceImpl implements EventService {
                 .meetingUrl(request.getMeetingUrl())
                 .build()
         );
+
         event.setOrganizer(
             profileService.create(
                 memberId,
@@ -126,6 +136,7 @@ public class EventServiceImpl implements EventService {
 
         Profile profile = profileService.getById(request.getProfileId());
         profile.update(null, null, request.getIsAdmin());
+
         return true;
     }
 
@@ -139,18 +150,24 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public Event codeJoin(String memberId, String code, ProfileCreateRequest request) {
         Event event = eventRepository.getByCode(code).orElseThrow(NotFoundEventException::new);
+
         profileService.create(
             memberId,
             getById(event.getId().toString()),
             request,
             false
         );
+
         return event;
     }
 
     @Override
     @Transactional
-    public Event join(String memberId, String eventId, ProfileCreateRequest request, Boolean isAdmin
+    public Event join(
+        String memberId,
+        String eventId,
+        ProfileCreateRequest request,
+        Boolean isAdmin
     ) {
         profileService.create(
             memberId,
@@ -193,6 +210,7 @@ public class EventServiceImpl implements EventService {
         if (!isEventMember) {
             throw new NotFoundProfileException();
         }
+
         profileService.delete(request.getProfileId(), request.getEventId());
     }
 

@@ -86,6 +86,19 @@ public class EventController {
         );
     }
 
+    @ApiOperation(value = "이벤트 참여 프로필 조회", notes = "회원들의 프로필을 조회할 수 있어요.")
+    @GetMapping("/member/{eventId}/{memberId}")
+    public ResponseEntity<ProfileResponse> getMember(
+        @ApiIgnore Authentication authentication,
+        @PathVariable("eventId") @NotBlank String eventId,
+        @PathVariable("memberId") @NotBlank String memberId
+    ) {
+        return ResponseEntity.ok().body(
+            eventService.getMember(authentication.getName(), eventId, memberId).toResponse()
+        );
+    }
+
+
     @ApiOperation(value = "이벤트 생성", notes = "이벤트를 생성할 수 있어요.")
     @PostMapping("/new")
     public ResponseEntity<EventResponse> create(
