@@ -103,7 +103,7 @@ public class EventController {
     @PostMapping("/new")
     public ResponseEntity<EventResponse> create(
         @ApiIgnore Authentication authentication,
-        @RequestBody @Valid EventCreateRequest request
+        @Valid EventCreateRequest request
     ) {
         return ResponseEntity.ok().body(
             eventService.create(authentication.getName(), request).toResponse()
@@ -125,7 +125,7 @@ public class EventController {
     public ResponseEntity<EventResponse> joinCode(
         @ApiIgnore Authentication authentication,
         @PathVariable("code") @NotBlank String code,
-        @RequestBody @Valid ProfileCreateRequest request
+        @Valid ProfileCreateRequest request
     ) {
         return ResponseEntity.ok().body(
             eventService.codeJoin(authentication.getName(), code, request).toResponse()
