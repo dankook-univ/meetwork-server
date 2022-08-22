@@ -59,7 +59,7 @@ public class InvitationController {
     public ResponseEntity<Boolean> join(
         @ApiIgnore Authentication authentication,
         @PathVariable("eventId") @NotBlank String eventId,
-        @RequestBody @Valid ProfileCreateRequest request
+        @Valid ProfileCreateRequest request
     ) {
         return ResponseEntity.ok().body(
             invitationService.join(authentication.getName(), eventId, request)
