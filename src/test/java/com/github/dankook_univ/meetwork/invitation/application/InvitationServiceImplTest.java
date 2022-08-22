@@ -73,7 +73,7 @@ public class InvitationServiceImplTest {
                             .isAdmin(true)
                             .build(),
                         InvitationInformation.builder()
-                            .email("himitery0131@meetwork.kr")
+                            .email("nonono@meetwork.kr")
                             .isAdmin(false)
                             .build()
                     )
@@ -90,8 +90,7 @@ public class InvitationServiceImplTest {
         assertThat(participant1InvitationList.size()).isEqualTo(1);
         assertThat(participant1InvitationList.get(0).getIsAdmin()).isTrue();
 
-        assertThat(participant2InvitationList.size()).isEqualTo(1);
-        assertThat(participant2InvitationList.get(0).getIsAdmin()).isFalse();
+        assertThat(participant2InvitationList.size()).isEqualTo(0);
     }
 
     @Test

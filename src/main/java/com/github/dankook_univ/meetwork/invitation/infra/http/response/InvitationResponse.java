@@ -2,7 +2,6 @@ package com.github.dankook_univ.meetwork.invitation.infra.http.response;
 
 import com.github.dankook_univ.meetwork.event.infra.http.response.EventResponse;
 import com.github.dankook_univ.meetwork.invitation.domain.Invitation;
-import com.github.dankook_univ.meetwork.member.infra.http.response.MemberResponse;
 import java.time.LocalDateTime;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,9 +21,6 @@ public class InvitationResponse {
     EventResponse event;
 
     @NotNull
-    MemberResponse member;
-
-    @NotNull
     Boolean isAdmin;
 
     @NotNull
@@ -41,7 +37,6 @@ public class InvitationResponse {
     ) {
         this.id = invitation.getId().toString();
         this.event = invitation.getEvent().toResponse();
-        this.member = invitation.getGuest().toResponse();
         this.isAdmin = invitation.getIsAdmin();
         this.createAt = invitation.getCreatedAt();
         this.updateAt = invitation.getUpdatedAt();

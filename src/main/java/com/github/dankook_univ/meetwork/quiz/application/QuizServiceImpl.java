@@ -78,16 +78,14 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Quiz get(String memberId, String quizId) {
+    public List<Question> get(String memberId, String quizId) {
         Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
-        Boolean isEventMember = profileService.isEventMember(
-            memberId,
-            quiz.getEvent().getId().toString());
-        if (!isEventMember) {
+        Profile profile = profileService.get(memberId, quiz.getEvent().getId().toString());
+        if (!profile.getIsAdmin()) {
             throw new NotFoundQuizPermissionException();
         }
 
-        return quiz;
+        return questionRepository.getByQuizId(quizId);
     }
 
     @Override
@@ -134,6 +132,21 @@ public class QuizServiceImpl implements QuizService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public QuizParticipants myResult(String memberId, String quizId) {
+        Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
+        Profile profile = profileService.get(memberId, quiz.getEvent().getId().toString());
+        QuizParticipants quizParticipants = quizParticipantsRepository.getByProfileIdAndQuizId(
+            profile.getId().toString(),
+            quizId
+        ).orElseThrow(NotFoundQuizParticipantsException::new);
+
+        int ranking = quizParticipantsRepository.getByQuizId(quizId)
+            .indexOf(quizParticipants) + 1;
+
+        return quizParticipants.setRanking(ranking);
     }
 
     @Override

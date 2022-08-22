@@ -18,7 +18,7 @@ public class CommentExceptionController {
     @ExceptionHandler(value = NotFoundCommentPermissionException.class)
     public ResponseEntity<String> notFoundCommentPermissionException(
         NotFoundCommentPermissionException exception) {
-        return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION)
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
             .body(exception.getMessage());
     }
 }

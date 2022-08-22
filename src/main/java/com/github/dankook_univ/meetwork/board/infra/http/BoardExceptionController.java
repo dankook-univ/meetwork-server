@@ -24,7 +24,7 @@ public class BoardExceptionController {
     @ExceptionHandler(value = NotFoundBoardPermissionException.class)
     public ResponseEntity<String> notFoundBoardPermissionException(
         NotFoundBoardPermissionException exception) {
-        return ResponseEntity.status(HttpStatus.NON_AUTHORITATIVE_INFORMATION)
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
             .body(exception.getMessage());
     }
 }

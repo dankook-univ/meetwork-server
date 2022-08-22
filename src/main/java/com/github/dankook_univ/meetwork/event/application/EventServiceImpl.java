@@ -17,6 +17,7 @@ import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfileException;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -118,7 +119,10 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundEventPermissionException();
         }
 
-        if (request.getCode() != null && checkExistingCode(request.getCode())) {
+        if (!Objects.equals(request.getCode(), event.getCode())
+            &&
+            checkExistingCode(request.getCode())
+        ) {
             throw new ExistingCodeException();
         }
 
@@ -225,8 +229,8 @@ public class EventServiceImpl implements EventService {
         List<Board> boards = boardService.getList(memberId, eventId);
         boards.forEach(board -> boardService.delete(memberId, board.getId().toString()));
 
-        profileService.deleteByEventId(eventId);
         eventRepository.delete(event);
+        profileService.deleteByEventId(eventId);
     }
 
     private Event getById(String eventId) {

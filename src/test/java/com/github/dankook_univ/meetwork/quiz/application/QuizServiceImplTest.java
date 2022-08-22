@@ -319,6 +319,72 @@ public class QuizServiceImplTest {
     }
 
     @Test
+    @DisplayName("퀴즈 참여자는 본인의 점수 및 순위를 볼 수 있어요.")
+    public void myResult() {
+        Member admin = createMember("admin", "meetwork@meetwork.kr");
+        Event event = createEvent(admin);
+
+        Member participant = createMember("name", "meetwork@meetwork.kr");
+        eventService.join(
+            participant.getId().toString(),
+            event.getId().toString(),
+            ProfileCreateRequest.builder()
+                .nickname("participant")
+                .bio("bio")
+                .build(),
+            false
+        );
+
+        Quiz quiz = quizService.create(
+            admin.getId().toString(),
+            QuizCreateRequest.builder()
+                .name("quizName")
+                .eventId(event.getId().toString())
+                .questions(
+                    List.of(QuestionCreateRequest.builder()
+                        .content("question")
+                        .answer("answer")
+                        .choice(Arrays.asList("choice1", "choice2", "answer", "choice3"))
+                        .build()))
+                .build());
+        List<Question> question = quizService.participant(
+            admin.getId().toString(),
+            quiz.getId().toString()
+        );
+        quizService.participant(
+            participant.getId().toString(),
+            quiz.getId().toString()
+        );
+
+        Boolean checkTrue = quizService.check(
+            admin.getId().toString(),
+            QuestionCheckRequest.builder()
+                .quizId(quiz.getId().toString())
+                .questionId(question.get(0).getId().toString())
+                .answer("answer").build()
+        );
+
+        Boolean checkFalse = quizService.check(
+            participant.getId().toString(),
+            QuestionCheckRequest.builder()
+                .quizId(quiz.getId().toString())
+                .questionId(question.get(0).getId().toString())
+                .answer("noAnswer").build()
+        );
+
+        QuizParticipants result = quizService.myResult(
+            participant.getId().toString(),
+            quiz.getId().toString()
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(checkTrue).isTrue();
+        assertThat(checkFalse).isFalse();
+        assertThat(result.getCount()).isEqualTo(0);
+        assertThat(result.getRanking()).isEqualTo(2);
+    }
+
+    @Test
     @DisplayName("퀴즈 참여자는 참여자들의 순위를 볼 수 있어요.")
     public void resultWithParticipants() {
         Member admin = createMember("admin", "meetwork@meetwork.kr");
