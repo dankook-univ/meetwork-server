@@ -147,6 +147,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
+    @Transactional
     public ChatRoom join(String memberId, String roomId) {
         ChatRoom room = chatRoomRepository.getById(roomId)
             .orElseThrow(NotFoundChatRoomException::new);
