@@ -14,4 +14,5 @@ public interface InvitationRepository {
 
     void delete(Invitation invitation);
 
+    void deleteByEventId(String eventId);
 }

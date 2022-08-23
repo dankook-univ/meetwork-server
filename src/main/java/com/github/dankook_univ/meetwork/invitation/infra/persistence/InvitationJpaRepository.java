@@ -5,10 +5,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 public interface InvitationJpaRepository extends JpaRepository<Invitation, UUID> {
 
     List<Invitation> getByGuestIdOrderByUpdatedAtDesc(UUID guestId);
 
     Optional<Invitation> getByGuestIdAndEventId(UUID guestId, UUID eventId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("delete from Invitation i where i.event.id = :eventId")
+    void deleteAllByEventId(UUID eventId);
 }

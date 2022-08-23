@@ -15,6 +15,7 @@ import com.github.dankook_univ.meetwork.event.infra.http.request.ProfileReleaseR
 import com.github.dankook_univ.meetwork.event.infra.http.request.UpdateAdminRequest;
 import com.github.dankook_univ.meetwork.event.infra.persistence.EventRepositoryImpl;
 import com.github.dankook_univ.meetwork.file.application.file.FileServiceImpl;
+import com.github.dankook_univ.meetwork.invitation.infra.persistence.InvitationRepositoryImpl;
 import com.github.dankook_univ.meetwork.post.infra.persistence.PostRepositoryImpl;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
@@ -56,6 +57,8 @@ public class EventServiceImpl implements EventService {
     private final ChatParticipantRepositoryImpl chatParticipantRepository;
 
     private final ChatMessageRepositoryImpl chatMessageRepository;
+
+    private final InvitationRepositoryImpl invitationRepository;
 
 
     @Override
@@ -242,6 +245,7 @@ public class EventServiceImpl implements EventService {
         boardService.deleteByEventId(eventId);
         chatRoomRepository.deleteByEventId(eventId);
         quizRepository.deleteByEventId(eventId);
+        invitationRepository.deleteByEventId(eventId);
         eventRepository.delete(event);
         profileService.deleteByEventId(eventId);
     }

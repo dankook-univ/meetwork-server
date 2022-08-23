@@ -35,4 +35,9 @@ public class InvitationRepositoryImpl implements InvitationRepository {
     public void delete(Invitation invitation) {
         invitationRepository.delete(invitation);
     }
+
+    @Override
+    public void deleteByEventId(String eventId) {
+        invitationRepository.deleteAllByEventId(UUID.fromString(eventId));
+    }
 }
