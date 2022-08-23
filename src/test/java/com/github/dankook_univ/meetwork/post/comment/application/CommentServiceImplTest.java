@@ -82,7 +82,6 @@ public class CommentServiceImplTest {
         Post post = postService.create(
             member.getId().toString(),
             PostCreateRequest.builder()
-                .title("title")
                 .content("content")
                 .boardId(adminOnlyBoard.getId().toString())
                 .build()
@@ -114,7 +113,6 @@ public class CommentServiceImplTest {
         Post post = postService.create(
             member.getId().toString(),
             PostCreateRequest.builder()
-                .title("title")
                 .content("content")
                 .boardId(adminOnlyBoard.getId().toString())
                 .build()
@@ -151,7 +149,6 @@ public class CommentServiceImplTest {
         Post post = postService.create(
             member.getId().toString(),
             PostCreateRequest.builder()
-                .title("title")
                 .content("content")
                 .boardId(adminOnlyBoard.getId().toString())
                 .build()

@@ -16,4 +16,6 @@ public interface BoardService {
     List<Board> getList(String memberId, String eventId);
 
     void delete(String memberId, String boardId);
+
+    void deleteByEventId(String eventId);
 }

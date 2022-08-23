@@ -81,7 +81,6 @@ public class PostServiceImplTest {
         Post post = postService.create(
             member.getId().toString(),
             PostCreateRequest.builder()
-                .title("title")
                 .content("content")
                 .boardId(adminOnlyBoard.getId().toString())
                 .build()
@@ -90,7 +89,6 @@ public class PostServiceImplTest {
         assertThat(post).isNotNull();
         assertThat(post).isInstanceOf(Post.class);
 
-        assertThat(post.getTitle()).isEqualTo("title");
         assertThat(post.getWriter().getMember().getId()).isEqualTo(member.getId());
         assertThat(post.getBoard().getId()).isEqualTo(adminOnlyBoard.getId());
 
@@ -119,7 +117,6 @@ public class PostServiceImplTest {
             Post post = postService.create(
                 participant.getId().toString(),
                 PostCreateRequest.builder()
-                    .title("title")
                     .content("content")
                     .boardId(adminOnlyBoard.getId().toString())
                     .build()
@@ -137,7 +134,6 @@ public class PostServiceImplTest {
         Post post = postService.create(
             member.getId().toString(),
             PostCreateRequest.builder()
-                .title("title")
                 .content("content")
                 .boardId(adminOnlyBoard.getId().toString())
                 .build()
@@ -147,7 +143,6 @@ public class PostServiceImplTest {
             member.getId().toString(),
             post.getId().toString(),
             PostUpdateRequest.builder()
-                .title("updatedPost")
                 .build()
         );
 
@@ -157,7 +152,6 @@ public class PostServiceImplTest {
 
         assertThat(updatedPost).isNotNull();
         assertThat(updatedPost).isInstanceOf(Post.class);
-        assertThat(updatedPost.getTitle()).isEqualTo("updatedPost");
     }
 
     @Test
@@ -170,7 +164,6 @@ public class PostServiceImplTest {
         Post post = postService.create(
             member.getId().toString(),
             PostCreateRequest.builder()
-                .title("title")
                 .content("content")
                 .boardId(adminOnlyBoard.getId().toString())
                 .build()
@@ -185,7 +178,6 @@ public class PostServiceImplTest {
         assertThat(finedPost).isInstanceOf(Post.class);
 
         assertThat(finedPost.getId()).isEqualTo(post.getId());
-        assertThat(finedPost.getTitle()).isEqualTo("title");
         assertThat(finedPost.getContent()).isEqualTo("content");
     }
 
@@ -199,7 +191,6 @@ public class PostServiceImplTest {
         Post firstPost = postService.create(
             member.getId().toString(),
             PostCreateRequest.builder()
-                .title("title")
                 .content("content")
                 .boardId(adminOnlyBoard.getId().toString())
                 .build()
@@ -207,7 +198,6 @@ public class PostServiceImplTest {
         Post secondPost = postService.create(
             member.getId().toString(),
             PostCreateRequest.builder()
-                .title("title")
                 .content("content")
                 .boardId(adminOnlyBoard.getId().toString())
                 .build()
@@ -237,7 +227,6 @@ public class PostServiceImplTest {
         Post post = postService.create(
             member.getId().toString(),
             PostCreateRequest.builder()
-                .title("title")
                 .content("content")
                 .boardId(adminOnlyBoard.getId().toString())
                 .build()
@@ -272,7 +261,6 @@ public class PostServiceImplTest {
         Post post = postService.create(
             participant.getId().toString(),
             PostCreateRequest.builder()
-                .title("title")
                 .content("content")
                 .boardId(adminOnlyBoard.getId().toString())
                 .build()

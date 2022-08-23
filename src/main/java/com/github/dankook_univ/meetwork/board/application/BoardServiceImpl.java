@@ -86,6 +86,12 @@ public class BoardServiceImpl implements BoardService {
         boardRepository.delete(boardId);
     }
 
+    @Override
+    @Transactional
+    public void deleteByEventId(String eventId) {
+        boardRepository.deleteByEventId(eventId);
+    }
+
     public Map<String, Boolean> automaticBoard() {
         Map<String, Boolean> list = new LinkedHashMap<String, Boolean>();
         list.put("공지 게시판", true);

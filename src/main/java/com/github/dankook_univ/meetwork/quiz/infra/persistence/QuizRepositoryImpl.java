@@ -70,4 +70,9 @@ public class QuizRepositoryImpl implements QuizRepository {
     public void delete(Quiz quiz) {
         quizRepository.delete(quiz);
     }
+
+    @Override
+    public void deleteByEventId(String eventId) {
+        quizRepository.deleteAllByEventId(UUID.fromString(eventId));
+    }
 }

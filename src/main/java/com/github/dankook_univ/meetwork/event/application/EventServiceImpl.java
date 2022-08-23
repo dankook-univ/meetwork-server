@@ -1,7 +1,6 @@
 package com.github.dankook_univ.meetwork.event.application;
 
 import com.github.dankook_univ.meetwork.board.application.BoardServiceImpl;
-import com.github.dankook_univ.meetwork.board.domain.Board;
 import com.github.dankook_univ.meetwork.board.infra.http.request.BoardCreateRequest;
 import com.github.dankook_univ.meetwork.chat.infra.persistence.room.ChatRoomRepositoryImpl;
 import com.github.dankook_univ.meetwork.event.domain.Event;
@@ -17,14 +16,17 @@ import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfileException;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
+import com.github.dankook_univ.meetwork.quiz.infra.persistence.QuizRepositoryImpl;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -37,6 +39,8 @@ public class EventServiceImpl implements EventService {
     private final BoardServiceImpl boardService;
 
     private final ChatRoomRepositoryImpl chatRoomRepository;
+
+    private final QuizRepositoryImpl quizRepository;
 
     @Override
     public Event get(String memberId, String eventId) {
@@ -230,10 +234,15 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundEventPermissionException();
         }
 
-        List<Board> boards = boardService.getList(memberId, eventId);
-        boards.forEach(board -> boardService.delete(memberId, board.getId().toString()));
-
+        boardService.deleteByEventId(eventId);
+        log.info("board deleted");
         chatRoomRepository.deleteByEventId(eventId);
+        log.info("chatRoom deleted");
+        quizRepository.deleteByEventId(eventId);
+        log.info("quiz deleted");
+        eventRepository.delete(event);
+        log.info("event deleted");
+        profileService.deleteByEventId(eventId);
     }
 
     private Event getById(String eventId) {

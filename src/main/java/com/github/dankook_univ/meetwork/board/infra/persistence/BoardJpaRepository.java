@@ -11,4 +11,6 @@ public interface BoardJpaRepository extends JpaRepository<Board, UUID> {
     Optional<Board> getByEventIdAndName(UUID eventId, String name);
 
     List<Board> findByEventIdOrderByUpdatedAtAsc(UUID eventId);
+
+    void deleteAllByEventId(UUID eventId);
 }

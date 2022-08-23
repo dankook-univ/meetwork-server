@@ -18,4 +18,6 @@ public interface QuizRepository {
     Optional<Quiz> getByName(String name);
 
     void delete(Quiz quiz);
+
+    void deleteByEventId(String eventId);
 }

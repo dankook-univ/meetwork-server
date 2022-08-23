@@ -11,4 +11,6 @@ public interface QuizJpaRepository extends JpaRepository<Quiz, UUID> {
     List<Quiz> getByEventId(UUID eventId);
 
     Optional<Quiz> getByName(String name);
+
+    void deleteAllByEventId(UUID eventId);
 }

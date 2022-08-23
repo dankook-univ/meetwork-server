@@ -38,4 +38,9 @@ public class BoardRepositoryImpl implements BoardRepository {
     public void delete(String boardId) {
         boardRepository.deleteById(UUID.fromString(boardId));
     }
+
+    @Override
+    public void deleteByEventId(String eventId) {
+        boardRepository.deleteAllByEventId(UUID.fromString(eventId));
+    }
 }

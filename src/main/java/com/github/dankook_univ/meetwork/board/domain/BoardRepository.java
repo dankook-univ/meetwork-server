@@ -14,4 +14,6 @@ public interface BoardRepository {
     List<Board> getListByEventId(String eventId);
 
     void delete(String boardId);
+
+    void deleteByEventId(String eventId);
 }
