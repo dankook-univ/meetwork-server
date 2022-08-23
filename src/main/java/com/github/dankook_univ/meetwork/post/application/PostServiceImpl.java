@@ -39,7 +39,6 @@ public class PostServiceImpl implements PostService {
 
         return postRepository.save(
             Post.builder()
-                .title(request.getTitle())
                 .content(request.getContent())
                 .writer(profile)
                 .board(board)
@@ -61,7 +60,7 @@ public class PostServiceImpl implements PostService {
             throw new NotFoundPostPermissionException();
         }
 
-        return post.update(request.getTitle(), request.getContent());
+        return post.update(request.getContent());
     }
 
     @Override

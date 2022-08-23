@@ -12,7 +12,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class PostUpdateRequest {
 
-    String title;
-
     String content;
 }

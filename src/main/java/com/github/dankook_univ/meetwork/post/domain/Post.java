@@ -35,10 +35,6 @@ public class Post extends Core {
     @NotNull
     @NotEmpty
     @Column(nullable = false)
-    private String title;
-    @NotNull
-    @NotEmpty
-    @Column(nullable = false)
     private String content;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id")
@@ -49,13 +45,11 @@ public class Post extends Core {
     private Board board;
 
     @Builder
-    public Post(String title, String content, Profile writer, Board board) {
-        Assert.hasText(title, "title must not be empty");
+    public Post(String content, Profile writer, Board board) {
         Assert.hasText(content, "content must not be empty");
         Assert.notNull(writer, "writer must not be null");
         Assert.notNull(board, "board must not be null");
 
-        this.title = title;
         this.content = content;
         this.board = board;
         this.writer = writer;
@@ -67,10 +61,7 @@ public class Post extends Core {
             .build();
     }
 
-    public Post update(@Nullable String title, @Nullable String content) {
-        if (title != null) {
-            this.title = title.trim();
-        }
+    public Post update(@Nullable String content) {
         if (content != null) {
             this.content = content.trim();
         }

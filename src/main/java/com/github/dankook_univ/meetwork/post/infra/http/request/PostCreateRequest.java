@@ -16,10 +16,6 @@ public class PostCreateRequest {
 
     @NotNull
     @NotEmpty
-    String title;
-
-    @NotNull
-    @NotEmpty
     String content;
 
     @NotNull

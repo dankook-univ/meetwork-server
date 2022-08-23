@@ -24,10 +24,6 @@ public class PostResponse {
 
     @NotNull
     @NotEmpty
-    String title;
-
-    @NotNull
-    @NotEmpty
     String content;
 
     @NotNull
@@ -49,7 +45,6 @@ public class PostResponse {
         Post post
     ) {
         this.id = post.getId().toString();
-        this.title = post.getTitle();
         this.content = post.getContent();
         this.writer = post.getWriter().toResponse();
         this.board = post.getBoard().toResponse();
