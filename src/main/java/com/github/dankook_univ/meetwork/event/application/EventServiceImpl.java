@@ -235,7 +235,7 @@ public class EventServiceImpl implements EventService {
 
         chatRoomRepository.deleteByEventId(eventId);
         eventRepository.delete(event);
-        profileService.deleteByEventId(eventId);
+//        profileService.deleteByEventId(eventId);
     }
 
     private Event getById(String eventId) {
