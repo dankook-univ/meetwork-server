@@ -38,4 +38,9 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepository {
     public void deleteById(String roomId) {
         chatRoomJpaRepository.deleteById(UUID.fromString(roomId));
     }
+
+    @Override
+    public void deleteByEventId(String eventId) {
+        chatRoomJpaRepository.deleteAllByEventId(UUID.fromString(eventId));
+    }
 }

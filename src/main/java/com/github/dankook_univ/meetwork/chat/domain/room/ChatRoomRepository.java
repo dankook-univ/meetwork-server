@@ -14,4 +14,6 @@ public interface ChatRoomRepository {
     ChatRoom save(ChatRoom room);
 
     void deleteById(String roomId);
+
+    void deleteByEventId(String eventId);
 }

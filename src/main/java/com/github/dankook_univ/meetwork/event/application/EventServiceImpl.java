@@ -3,6 +3,7 @@ package com.github.dankook_univ.meetwork.event.application;
 import com.github.dankook_univ.meetwork.board.application.BoardServiceImpl;
 import com.github.dankook_univ.meetwork.board.domain.Board;
 import com.github.dankook_univ.meetwork.board.infra.http.request.BoardCreateRequest;
+import com.github.dankook_univ.meetwork.chat.infra.persistence.room.ChatRoomRepositoryImpl;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.exceptions.ExistingCodeException;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventException;
@@ -30,9 +31,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class EventServiceImpl implements EventService {
 
     private final EventRepositoryImpl eventRepository;
+
     private final ProfileServiceImpl profileService;
 
     private final BoardServiceImpl boardService;
+
+    private final ChatRoomRepositoryImpl chatRoomRepository;
 
     @Override
     public Event get(String memberId, String eventId) {
@@ -229,6 +233,7 @@ public class EventServiceImpl implements EventService {
         List<Board> boards = boardService.getList(memberId, eventId);
         boards.forEach(board -> boardService.delete(memberId, board.getId().toString()));
 
+        chatRoomRepository.deleteByEventId(eventId);
         eventRepository.delete(event);
         profileService.deleteByEventId(eventId);
     }
