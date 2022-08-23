@@ -71,6 +71,11 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     }
 
     @Override
+    public void delete(Profile profile) {
+        profileRepository.delete(profile);
+    }
+
+    @Override
     public void deleteAllByEventId(String eventId) {
         profileRepository.deleteAllByEventId(UUID.fromString(eventId));
     }

@@ -98,6 +98,11 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
+    public void delete(Profile profile) {
+        profileRepository.delete(profile);
+    }
+
+    @Override
     @Transactional
     public void deleteByEventId(String eventId) {
         profileRepository.deleteAllByEventId(eventId);

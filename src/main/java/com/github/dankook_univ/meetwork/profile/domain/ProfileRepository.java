@@ -20,5 +20,7 @@ public interface ProfileRepository {
 
     void delete(String memberId, String eventId);
 
+    void delete(Profile profile);
+
     void deleteAllByEventId(String eventId);
 }

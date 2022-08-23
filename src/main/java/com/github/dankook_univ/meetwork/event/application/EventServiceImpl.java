@@ -215,12 +215,8 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public void secession(String memberId, String eventId) {
-        Boolean isEventMember = profileService.isEventMember(memberId, eventId);
-        if (!isEventMember) {
-            throw new NotFoundProfileException();
-        }
-
-        deleteAll(memberId, eventId);
+        Profile target = profileService.get(memberId, eventId);
+        deleteAll(target);
     }
 
     @Override
@@ -231,15 +227,8 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundEventPermissionException();
         }
 
-        Boolean isEventMember = profileService.isEventMember(
-            request.getMemberId(),
-            request.getEventId()
-        );
-        if (!isEventMember) {
-            throw new NotFoundProfileException();
-        }
-
-        deleteAll(request.getMemberId(), request.getEventId());
+        Profile target = profileService.getById(request.getProfileId());
+        deleteAll(target);
     }
 
     @Override
@@ -261,14 +250,13 @@ public class EventServiceImpl implements EventService {
         return eventRepository.getById(eventId).orElseThrow(NotFoundEventException::new);
     }
 
-    private void deleteAll(String memberId, String eventId) {
-        Profile profile = profileService.get(memberId, eventId);
+    private void deleteAll(Profile profile) {
         fileService.deleteByUploaderId(profile.getMember().getId().toString());
         postRepository.deleteByWriterId(profile.getId().toString());
         quizParticipantsRepository.deleteByProfileId(profile.getId().toString());
         chatParticipantRepository.deleteByMemberId(profile.getId().toString());
         chatMessageRepository.deleteBySenderId(profile.getId().toString());
         chatRoomRepository.deleteByOrganizerId(profile.getId().toString());
-        profileService.delete(memberId, eventId);
+        profileService.delete(profile);
     }
 }

@@ -2,7 +2,6 @@ package com.github.dankook_univ.meetwork.file.application.file;
 
 import com.github.dankook_univ.meetwork.file.domain.File;
 import com.github.dankook_univ.meetwork.file.domain.FileType;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileService {
@@ -11,6 +10,5 @@ public interface FileService {
 
     void delete(String fileId);
 
-    @Transactional
     void deleteByUploaderId(String uploaderId);
 }
