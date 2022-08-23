@@ -39,7 +39,6 @@ public class QuizParticipantsRepositoryImpl implements QuizParticipantsRepositor
 
     @Override
     public void deleteByProfileId(String profileId) {
-        quizParticipantsRepository.getByProfileId(UUID.fromString(profileId))
-            .ifPresent(quizParticipantsRepository::delete);
+        quizParticipantsRepository.deleteAllProfileId(UUID.fromString(profileId));
     }
 }

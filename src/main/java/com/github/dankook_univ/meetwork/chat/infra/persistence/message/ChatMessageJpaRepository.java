@@ -9,5 +9,5 @@ public interface ChatMessageJpaRepository extends JpaRepository<ChatMessage, UUI
 
     List<ChatMessage> findByRoomIdOrderByCreatedAtDesc(UUID roomId);
 
-    void deleteBySenderId(UUID senderId);
+    void deleteAllBySenderId(UUID senderId);
 }

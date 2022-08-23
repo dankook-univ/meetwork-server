@@ -41,6 +41,6 @@ public class ChatParticipantRepositoryImpl implements ChatParticipantRepository 
 
     @Override
     public void deleteByMemberId(String memberId) {
-        chatParticipantJpaRepository.deleteByMemberId(UUID.fromString(memberId));
+        chatParticipantJpaRepository.deleteAllByMemberId(UUID.fromString(memberId));
     }
 }

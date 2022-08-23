@@ -25,6 +25,6 @@ public class ChatMessageRepositoryImpl implements ChatMessageRepository {
 
     @Override
     public void deleteBySenderId(String senderId) {
-        chatMessageJpaRepository.deleteBySenderId(UUID.fromString(senderId));
+        chatMessageJpaRepository.deleteAllBySenderId(UUID.fromString(senderId));
     }
 }

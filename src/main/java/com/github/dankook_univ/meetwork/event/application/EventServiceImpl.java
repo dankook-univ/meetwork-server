@@ -271,9 +271,8 @@ public class EventServiceImpl implements EventService {
         postRepository.deleteByWriterId(profile.getId().toString());
         quizParticipantsRepository.deleteByProfileId(profile.getId().toString());
         chatParticipantRepository.deleteByMemberId(profile.getId().toString());
-        System.out.println("여기까지");
         chatMessageRepository.deleteBySenderId(profile.getId().toString());
-        System.out.println("여기까지22");
+        chatRoomRepository.deleteByOrganizerId(profile.getId().toString());
         profileService.delete(memberId, eventId);
     }
 }

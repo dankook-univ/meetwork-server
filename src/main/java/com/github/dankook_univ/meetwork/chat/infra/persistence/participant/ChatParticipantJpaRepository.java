@@ -14,5 +14,5 @@ public interface ChatParticipantJpaRepository extends JpaRepository<ChatParticip
 
     Optional<ChatParticipant> findByMemberIdAndRoomId(UUID participantId, UUID roomId);
 
-    void deleteByMemberId(UUID memberId);
+    void deleteAllByMemberId(UUID memberId);
 }

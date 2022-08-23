@@ -37,11 +37,11 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public void deleteByWriterId(String writerId) {
-        postRepository.deleteByWriterId(UUID.fromString(writerId));
+        postRepository.deleteAllByWriterId(UUID.fromString(writerId));
     }
 
     @Override
     public void deleteByBoardId(String boardId) {
-        postRepository.deleteByBoardId(UUID.fromString(boardId));
+        postRepository.deleteAllByBoardId(UUID.fromString(boardId));
     }
 }

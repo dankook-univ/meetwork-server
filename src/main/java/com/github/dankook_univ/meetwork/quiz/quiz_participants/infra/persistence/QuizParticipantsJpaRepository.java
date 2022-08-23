@@ -8,11 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface QuizParticipantsJpaRepository extends JpaRepository<QuizParticipants, UUID> {
 
-    Optional<QuizParticipants> getByProfileId(UUID profileId);
-
     Optional<QuizParticipants> findByProfileIdAndQuizId(UUID profileId, UUID quizId);
 
     List<QuizParticipants> findByQuizIdOrderByCountDesc(UUID quizId);
 
     void deleteAllByQuizId(UUID quizId);
+
+    void deleteAllProfileId(UUID profileId);
 }

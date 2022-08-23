@@ -14,10 +14,10 @@ public interface PostJpaRepository extends JpaRepository<Post, UUID> {
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from Post p where p.writer.id = :writerId")
-    void deleteByWriterId(UUID writerId);
+    void deleteAllByWriterId(UUID writerId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from Post p where p.board.id = :boardId")
-    void deleteByBoardId(UUID boardId);
+    void deleteAllByBoardId(UUID boardId);
 
 }
