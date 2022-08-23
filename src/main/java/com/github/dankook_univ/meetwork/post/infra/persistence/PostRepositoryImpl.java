@@ -27,7 +27,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getByBoardId(String boardId, Pageable pageable) {
-        return postRepository.findByBoardId(UUID.fromString(boardId), pageable).getContent();
+        return postRepository.findByBoardIdOrderByUpdatedAtDesc(UUID.fromString(boardId), pageable).getContent();
     }
 
     @Override

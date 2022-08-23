@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface PostJpaRepository extends JpaRepository<Post, UUID> {
 
-    Page<Post> findByBoardId(UUID boardId, Pageable pageable);
+    Page<Post> findByBoardIdOrderByUpdatedAtDesc(UUID boardId, Pageable pageable);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from Post p where p.writer.id = :writerId")

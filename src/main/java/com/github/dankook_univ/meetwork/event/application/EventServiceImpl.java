@@ -251,13 +251,9 @@ public class EventServiceImpl implements EventService {
         }
 
         boardService.deleteByEventId(eventId);
-        log.info("board deleted");
         chatRoomRepository.deleteByEventId(eventId);
-        log.info("chatRoom deleted");
         quizRepository.deleteByEventId(eventId);
-        log.info("quiz deleted");
         eventRepository.delete(event);
-        log.info("event deleted");
         profileService.deleteByEventId(eventId);
     }
 
