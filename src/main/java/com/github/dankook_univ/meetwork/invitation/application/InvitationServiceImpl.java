@@ -7,6 +7,7 @@ import com.github.dankook_univ.meetwork.invitation.domain.Invitation;
 import com.github.dankook_univ.meetwork.invitation.exception.AlreadyEventJoinException;
 import com.github.dankook_univ.meetwork.invitation.exception.NotFoundInvitationException;
 import com.github.dankook_univ.meetwork.invitation.infra.http.request.InvitationCreateRequest;
+import com.github.dankook_univ.meetwork.invitation.infra.http.request.InvitationMemberInformation;
 import com.github.dankook_univ.meetwork.invitation.infra.persistence.InvitationRepositoryImpl;
 import com.github.dankook_univ.meetwork.member.application.MemberServiceImpl;
 import com.github.dankook_univ.meetwork.member.domain.Member;
@@ -15,6 +16,7 @@ import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,20 +43,31 @@ public class InvitationServiceImpl implements InvitationService {
         }
 
         Event event = eventService.get(memberId, request.getEventId());
-        request.getInvitationInformations().stream()
-            .filter((i) -> memberService.getByEmail(i.getEmail()).isPresent())
-            .forEach((i) ->
+
+        List<InvitationMemberInformation> list =
+            request.getInvitationInformations().stream()
+                .filter((it) -> memberService.getByEmail(it.getEmail()).isPresent())
+                .map((it) -> InvitationMemberInformation.builder()
+                    .member(memberService.getByEmail(it.getEmail())
+                        .orElseThrow(NotFoundMemberException::new))
+                    .isAdmin(it.getIsAdmin())
+                    .build()
+                )
+                .collect(Collectors.toList());
+
+        for (InvitationMemberInformation it : list) {
+            if (invitationRepository.getByGuestIdAndEventId(
+                it.getMember().getId().toString(), request.getEventId()
+            ).isEmpty()) {
                 invitationRepository.save(
                     Invitation.builder()
                         .event(event)
-                        .guest(
-                            memberService.getByEmail(i.getEmail())
-                                .orElseThrow(NotFoundMemberException::new)
-                        )
-                        .isAdmin(i.getIsAdmin())
+                        .guest(it.getMember())
+                        .isAdmin(it.getIsAdmin())
                         .build()
-                )
-            );
+                );
+            }
+        }
         return true;
     }
 
