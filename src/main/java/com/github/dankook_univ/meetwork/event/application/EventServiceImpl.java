@@ -234,8 +234,6 @@ public class EventServiceImpl implements EventService {
         boards.forEach(board -> boardService.delete(memberId, board.getId().toString()));
 
         chatRoomRepository.deleteByEventId(eventId);
-        eventRepository.delete(event);
-//        profileService.deleteByEventId(eventId);
     }
 
     private Event getById(String eventId) {
