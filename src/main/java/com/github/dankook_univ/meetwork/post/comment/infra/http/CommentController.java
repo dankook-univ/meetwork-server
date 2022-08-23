@@ -10,9 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
@@ -24,10 +25,10 @@ public class CommentController {
 
     private final CommentServiceImpl commentService;
 
-    @GetMapping("/new")
+    @PostMapping("/new")
     public ResponseEntity<CommentResponse> create(
         @ApiIgnore Authentication authentication,
-        @Valid CommentCreateRequest request
+        @RequestBody @Valid CommentCreateRequest request
     ) {
         return ResponseEntity.ok().body(
             commentService.create(authentication.getName(), request).toResponse());
@@ -37,7 +38,7 @@ public class CommentController {
     public ResponseEntity<CommentResponse> update(
         @ApiIgnore Authentication authentication,
         @PathVariable("commentId") @NotBlank String commentId,
-        @Valid CommentUpdateRequest request
+        @RequestBody @Valid CommentUpdateRequest request
     ) {
         return ResponseEntity.ok().body(
             commentService.update(authentication.getName(), commentId, request).toResponse()
