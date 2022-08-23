@@ -14,5 +14,5 @@ public interface QuizParticipantsJpaRepository extends JpaRepository<QuizPartici
 
     void deleteAllByQuizId(UUID quizId);
 
-    void deleteAllProfileId(UUID profileId);
+    void deleteAllByProfileId(UUID profileId);
 }
