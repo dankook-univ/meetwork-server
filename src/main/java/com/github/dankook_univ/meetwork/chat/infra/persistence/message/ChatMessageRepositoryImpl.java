@@ -22,4 +22,9 @@ public class ChatMessageRepositoryImpl implements ChatMessageRepository {
     public ChatMessage save(ChatMessage message) {
         return chatMessageJpaRepository.save(message);
     }
+
+    @Override
+    public void deleteBySenderId(String senderId) {
+        chatMessageJpaRepository.deleteBySenderId(UUID.fromString(senderId));
+    }
 }

@@ -2,6 +2,8 @@ package com.github.dankook_univ.meetwork.event.application;
 
 import com.github.dankook_univ.meetwork.board.application.BoardServiceImpl;
 import com.github.dankook_univ.meetwork.board.infra.http.request.BoardCreateRequest;
+import com.github.dankook_univ.meetwork.chat.infra.persistence.message.ChatMessageRepositoryImpl;
+import com.github.dankook_univ.meetwork.chat.infra.persistence.participant.ChatParticipantRepositoryImpl;
 import com.github.dankook_univ.meetwork.chat.infra.persistence.room.ChatRoomRepositoryImpl;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.exceptions.ExistingCodeException;
@@ -12,11 +14,14 @@ import com.github.dankook_univ.meetwork.event.infra.http.request.EventUpdateRequ
 import com.github.dankook_univ.meetwork.event.infra.http.request.ProfileReleaseRequest;
 import com.github.dankook_univ.meetwork.event.infra.http.request.UpdateAdminRequest;
 import com.github.dankook_univ.meetwork.event.infra.persistence.EventRepositoryImpl;
+import com.github.dankook_univ.meetwork.file.application.file.FileServiceImpl;
+import com.github.dankook_univ.meetwork.post.infra.persistence.PostRepositoryImpl;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfileException;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import com.github.dankook_univ.meetwork.quiz.infra.persistence.QuizRepositoryImpl;
+import com.github.dankook_univ.meetwork.quiz.quiz_participants.infra.persistence.QuizParticipantsRepositoryImpl;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -41,6 +46,17 @@ public class EventServiceImpl implements EventService {
     private final ChatRoomRepositoryImpl chatRoomRepository;
 
     private final QuizRepositoryImpl quizRepository;
+
+    private final FileServiceImpl fileService;
+
+    private final PostRepositoryImpl postRepository;
+
+    private final QuizParticipantsRepositoryImpl quizParticipantsRepository;
+
+    private final ChatParticipantRepositoryImpl chatParticipantRepository;
+
+    private final ChatMessageRepositoryImpl chatMessageRepository;
+
 
     @Override
     public Event get(String memberId, String eventId) {
@@ -204,7 +220,7 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundProfileException();
         }
 
-        profileService.delete(memberId, eventId);
+        deleteAll(memberId, eventId);
     }
 
     @Override
@@ -216,14 +232,14 @@ public class EventServiceImpl implements EventService {
         }
 
         Boolean isEventMember = profileService.isEventMember(
-            request.getProfileId(),
+            request.getMemberId(),
             request.getEventId()
         );
         if (!isEventMember) {
             throw new NotFoundProfileException();
         }
 
-        profileService.delete(request.getProfileId(), request.getEventId());
+        deleteAll(request.getMemberId(), request.getEventId());
     }
 
     @Override
@@ -247,5 +263,17 @@ public class EventServiceImpl implements EventService {
 
     private Event getById(String eventId) {
         return eventRepository.getById(eventId).orElseThrow(NotFoundEventException::new);
+    }
+
+    private void deleteAll(String memberId, String eventId) {
+        Profile profile = profileService.get(memberId, eventId);
+        fileService.deleteByUploaderId(profile.getMember().getId().toString());
+        postRepository.deleteByWriterId(profile.getId().toString());
+        quizParticipantsRepository.deleteByProfileId(profile.getId().toString());
+        chatParticipantRepository.deleteByMemberId(profile.getId().toString());
+        System.out.println("여기까지");
+        chatMessageRepository.deleteBySenderId(profile.getId().toString());
+        System.out.println("여기까지22");
+        profileService.delete(memberId, eventId);
     }
 }

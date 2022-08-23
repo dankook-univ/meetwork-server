@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ChatMessageJpaRepository extends JpaRepository<ChatMessage, UUID> {
 
     List<ChatMessage> findByRoomIdOrderByCreatedAtDesc(UUID roomId);
+
+    void deleteBySenderId(UUID senderId);
 }

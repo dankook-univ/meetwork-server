@@ -12,4 +12,6 @@ public interface QuizParticipantsRepository {
     List<QuizParticipants> getByQuizId(String quizId);
 
     void delete(String quizId);
+
+    void deleteByProfileId(String profileId);
 }

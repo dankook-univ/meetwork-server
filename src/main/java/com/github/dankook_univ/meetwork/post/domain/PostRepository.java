@@ -14,4 +14,7 @@ public interface PostRepository {
 
     void delete(Post post);
 
+    void deleteByWriterId(String writerId);
+
+    void deleteByBoardId(String boardId);
 }

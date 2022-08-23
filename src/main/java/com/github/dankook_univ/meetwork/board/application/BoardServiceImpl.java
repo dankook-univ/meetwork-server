@@ -10,6 +10,7 @@ import com.github.dankook_univ.meetwork.board.infra.persistence.BoardRepositoryI
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventException;
 import com.github.dankook_univ.meetwork.event.infra.persistence.EventRepositoryImpl;
+import com.github.dankook_univ.meetwork.post.infra.persistence.PostRepositoryImpl;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,6 +27,8 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepositoryImpl boardRepository;
     private final ProfileServiceImpl profileService;
     private final EventRepositoryImpl eventRepository;
+
+    private final PostRepositoryImpl postRepository;
 
     @Override
     @Transactional
@@ -89,7 +92,11 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public void deleteByEventId(String eventId) {
-        boardRepository.deleteByEventId(eventId);
+        List<Board> list = boardRepository.getListByEventId(eventId);
+        for (Board board : list) {
+            postRepository.deleteByBoardId(board.getId().toString());
+            boardRepository.delete(board.getId().toString());
+        }
     }
 
     public Map<String, Boolean> automaticBoard() {

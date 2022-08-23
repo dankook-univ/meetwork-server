@@ -7,4 +7,6 @@ public interface ChatMessageRepository {
     List<ChatMessage> getByRoomId(String roomId);
 
     ChatMessage save(ChatMessage message);
+
+    void deleteBySenderId(String senderId);
 }

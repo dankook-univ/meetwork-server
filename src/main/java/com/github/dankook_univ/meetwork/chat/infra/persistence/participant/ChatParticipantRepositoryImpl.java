@@ -38,4 +38,9 @@ public class ChatParticipantRepositoryImpl implements ChatParticipantRepository 
     public ChatParticipant create(ChatParticipant participant) {
         return chatParticipantJpaRepository.save(participant);
     }
+
+    @Override
+    public void deleteByMemberId(String memberId) {
+        chatParticipantJpaRepository.deleteByMemberId(UUID.fromString(memberId));
+    }
 }

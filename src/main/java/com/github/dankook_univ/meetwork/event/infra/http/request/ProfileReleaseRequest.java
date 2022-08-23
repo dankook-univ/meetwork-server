@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class ProfileReleaseRequest {
 
-    String profileId;
+    String memberId;
 
     String eventId;
 }

@@ -35,7 +35,7 @@ public class Profile extends Core {
     @JoinColumn(name = "event_id")
     private Event event;
 
-    @OneToOne(targetEntity = File.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToOne(targetEntity = File.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "file_id")
     private File profileImage;
 

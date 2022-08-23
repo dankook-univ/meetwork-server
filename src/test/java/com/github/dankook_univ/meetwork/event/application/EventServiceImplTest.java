@@ -21,6 +21,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -647,7 +648,7 @@ class EventServiceImplTest {
         eventService.release(
             organizer.getId().toString(),
             ProfileReleaseRequest.builder()
-                .profileId(participant.getId().toString())
+                .memberId(participant.getId().toString())
                 .eventId(event.getId().toString())
                 .build());
 

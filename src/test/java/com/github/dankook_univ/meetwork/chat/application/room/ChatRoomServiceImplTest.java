@@ -2,6 +2,8 @@ package com.github.dankook_univ.meetwork.chat.application.room;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.github.dankook_univ.meetwork.chat.application.message.ChatMessageServiceImpl;
+import com.github.dankook_univ.meetwork.chat.domain.message.ChatMessage;
 import com.github.dankook_univ.meetwork.chat.domain.room.ChatRoom;
 import com.github.dankook_univ.meetwork.chat.exceptions.AlreadyChatRoomNameException;
 import com.github.dankook_univ.meetwork.chat.exceptions.NotFoundChatRoomException;
@@ -26,6 +28,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -42,6 +45,10 @@ class ChatRoomServiceImplTest {
     private ChatRoomRepositoryImpl chatRoomRepository;
     @Autowired
     private MemberRepositoryImpl memberRepository;
+
+    @Autowired
+    private ChatMessageServiceImpl chatMessageService;
+
 
     private Member createMember(String name, String email) {
         return memberRepository.save(
@@ -256,7 +263,18 @@ class ChatRoomServiceImplTest {
     public void deleteChatRoom()
         throws NotParticipatedMemberException, NotFoundChatRoomPermissionException {
         Member member = createMember("name", "meetwork@meetwork.kr");
+        Member participant = createMember("name", "meetwork@meetwork.kr");
         Event event = createEvent(member);
+
+        eventService.join(
+            participant.getId().toString(),
+            event.getId().toString(),
+            ProfileCreateRequest.builder()
+                .nickname("participant")
+                .bio("bio")
+                .build(),
+            false
+        );
 
         ChatRoom room = chatRoomService.create(
             member.getId().toString(),
@@ -265,6 +283,20 @@ class ChatRoomServiceImplTest {
                 .name("name")
                 .isPrivate(true)
                 .build()
+        );
+
+        chatRoomService.join(participant.getId().toString(), room.getId().toString());
+
+        ChatMessage message = chatMessageService.send(
+            member.getId().toString(),
+            room.getId().toString(),
+            "message"
+        );
+
+        ChatMessage message1 = chatMessageService.send(
+            participant.getId().toString(),
+            room.getId().toString(),
+            "message"
         );
 
         assertThat(chatRoomService.delete(

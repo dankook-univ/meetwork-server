@@ -34,4 +34,14 @@ public class PostRepositoryImpl implements PostRepository {
     public void delete(Post post) {
         postRepository.delete(post);
     }
+
+    @Override
+    public void deleteByWriterId(String writerId) {
+        postRepository.deleteByWriterId(UUID.fromString(writerId));
+    }
+
+    @Override
+    public void deleteByBoardId(String boardId) {
+        postRepository.deleteByBoardId(UUID.fromString(boardId));
+    }
 }

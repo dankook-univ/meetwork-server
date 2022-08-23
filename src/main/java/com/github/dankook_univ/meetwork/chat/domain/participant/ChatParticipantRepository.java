@@ -12,4 +12,6 @@ public interface ChatParticipantRepository {
     Optional<ChatParticipant> getByParticipantIdAndRoomId(String participantId, String roomId);
 
     ChatParticipant create(ChatParticipant participant);
+
+    void deleteByMemberId(String memberId);
 }

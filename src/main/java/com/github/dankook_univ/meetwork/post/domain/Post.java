@@ -29,12 +29,12 @@ import org.springframework.util.Assert;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends Core {
 
-    @OneToMany(targetEntity = Comment.class, mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Comment.class, mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("updatedAt asc")
     private final List<Comment> comments = new ArrayList<>();
     @NotNull
     @NotEmpty
-    @Column(nullable = false)
+    @Column(length = 1000, nullable = false)
     private String content;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id")

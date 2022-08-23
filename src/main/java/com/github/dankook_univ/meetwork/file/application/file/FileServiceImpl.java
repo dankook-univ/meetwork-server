@@ -8,6 +8,7 @@ import com.github.dankook_univ.meetwork.file.exceptions.FailedToFileUploadExcept
 import com.github.dankook_univ.meetwork.file.exceptions.NotSupportedFileFormatException;
 import com.github.dankook_univ.meetwork.file.infra.persistence.FileRepositoryImpl;
 import com.github.dankook_univ.meetwork.member.application.MemberServiceImpl;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -70,5 +71,15 @@ public class FileServiceImpl implements FileService {
     public void delete(String fileId) {
         fileRepository.getById(fileId).ifPresent(file -> storageService.delete(file.getKey()));
         fileRepository.delete(fileId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteByUploaderId(String uploaderId) {
+        List<File> list = fileRepository.getByUploaderId(uploaderId);
+        for (File file : list) {
+            storageService.delete(file.getKey());
+            fileRepository.delete(file);
+        }
     }
 }

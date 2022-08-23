@@ -14,6 +14,6 @@ public interface ChatRoomJpaRepository extends JpaRepository<ChatRoom, UUID> {
     List<ChatRoom> findByEventId(UUID eventId);
 
     void deleteById(@Nonnull UUID id);
-
+    
     void deleteAllByEventId(UUID eventId);
 }
