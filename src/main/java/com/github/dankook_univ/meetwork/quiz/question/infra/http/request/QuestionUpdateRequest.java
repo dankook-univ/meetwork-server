@@ -27,5 +27,6 @@ public class QuestionUpdateRequest {
     @NotNull
     String answer;
 
+    @NotNull
     List<String> choice;
 }

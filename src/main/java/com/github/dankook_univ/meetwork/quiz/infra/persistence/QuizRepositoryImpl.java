@@ -38,11 +38,9 @@ public class QuizRepositoryImpl implements QuizRepository {
                     quizParticipants.isFinished
                 ))
             .from(quizParticipants)
+            .where(quiz.event.id.eq(UUID.fromString(eventId)))
             .rightJoin(quizParticipants.quiz, quiz)
-            .on(
-                quiz.event.id.eq(UUID.fromString(eventId)),
-                quizParticipants.profile.id.eq(UUID.fromString(profileId))
-            )
+            .on(quizParticipants.profile.id.eq(UUID.fromString(profileId)))
             .fetch();
     }
 

@@ -17,10 +17,12 @@ import com.github.dankook_univ.meetwork.quiz.exceptions.NotFoundQuizException;
 import com.github.dankook_univ.meetwork.quiz.exceptions.NotFoundQuizParticipantsException;
 import com.github.dankook_univ.meetwork.quiz.exceptions.NotParticipantQuizException;
 import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuizCreateRequest;
+import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuizUpdateRequest;
 import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuizResponse;
 import com.github.dankook_univ.meetwork.quiz.question.domain.Question;
 import com.github.dankook_univ.meetwork.quiz.question.infra.http.request.QuestionCheckRequest;
 import com.github.dankook_univ.meetwork.quiz.question.infra.http.request.QuestionCreateRequest;
+import com.github.dankook_univ.meetwork.quiz.question.infra.http.request.QuestionUpdateRequest;
 import com.github.dankook_univ.meetwork.quiz.question.infra.persistence.QuestionRepositoryImpl;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.domain.QuizParticipants;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.infra.persistence.QuizParticipantsRepositoryImpl;
@@ -114,6 +116,55 @@ public class QuizServiceImplTest {
         assertThat(questions.size()).isEqualTo(2);
         assertThat(quiz.toResponse()).isNotNull();
     }
+
+    @Test
+    @DisplayName("관리자는 퀴즈를 수정할 수 있어요.")
+    public void update() {
+        Member member = createMember("name", "meetwork@meetwork.kr");
+        Event event = createEvent(member);
+
+        Quiz quiz = quizService.create(
+            member.getId().toString(),
+            QuizCreateRequest.builder()
+                .name("quizName1")
+                .eventId(event.getId().toString())
+                .questions(
+                    List.of(QuestionCreateRequest.builder()
+                        .content("question1")
+                        .answer("answer1")
+                        .choice(Arrays.asList("choice1", "choice2", "answer1", "choice3"))
+                        .build()
+                    )
+                )
+                .build());
+        List<Question> question = questionRepository.getByQuizId(quiz.getId().toString());
+
+        assertThat(quiz).isNotNull();
+        assertThat(quiz.getName()).isEqualTo("quizName1");
+        assertThat(question.get(0).getContent()).isEqualTo("question1");
+
+        Quiz updatedQuiz = quizService.update(
+            member.getId().toString(),
+            quiz.getId().toString(),
+            QuizUpdateRequest.builder()
+                .name("quizName2")
+                .questions(
+                    List.of(QuestionUpdateRequest.builder()
+                        .questionId(question.get(0).getId().toString())
+                        .content("question1-1")
+                        .answer("answer1-1")
+                        .choice(Arrays.asList("choice1", "choice2", "answer1-1", "choice3"))
+                        .build()
+                    )
+                )
+                .build()
+        );
+        List<Question> updatedQuestion = questionRepository.getByQuizId(quiz.getId().toString());
+
+        assertThat(updatedQuiz.getName()).isEqualTo("quizName2");
+        assertThat(updatedQuestion.get(0).getContent()).isEqualTo("question1-1");
+    }
+
 
     @Test
     @DisplayName("퀴즈 목록을 가져올 수 있어요.")
