@@ -13,6 +13,7 @@ import com.github.dankook_univ.meetwork.quiz.exceptions.NotParticipantQuizExcept
 import com.github.dankook_univ.meetwork.quiz.exceptions.QuestionAndQuizRelationshipException;
 import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuestionCheckRequest;
 import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuizCreateRequest;
+import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuestionsResponse;
 import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuizResponse;
 import com.github.dankook_univ.meetwork.quiz.infra.persistence.QuizRepositoryImpl;
 import com.github.dankook_univ.meetwork.quiz.question.domain.Question;
@@ -78,14 +79,17 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<Question> get(String memberId, String quizId) {
+    public QuestionsResponse get(String memberId, String quizId) {
         Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
         Profile profile = profileService.get(memberId, quiz.getEvent().getId().toString());
         if (!profile.getIsAdmin()) {
             throw new NotFoundQuizPermissionException();
         }
 
-        return questionRepository.getByQuizId(quizId);
+        return QuestionsResponse.builder()
+            .quiz(quiz)
+            .questions(questionRepository.getByQuizId(quizId))
+            .build();
     }
 
     @Override

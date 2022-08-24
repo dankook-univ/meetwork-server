@@ -3,6 +3,7 @@ package com.github.dankook_univ.meetwork.quiz.application;
 import com.github.dankook_univ.meetwork.quiz.domain.Quiz;
 import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuestionCheckRequest;
 import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuizCreateRequest;
+import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuestionsResponse;
 import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuizResponse;
 import com.github.dankook_univ.meetwork.quiz.question.domain.Question;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.domain.QuizParticipants;
@@ -14,7 +15,7 @@ public interface QuizService {
 
     List<QuizResponse> getList(String memberId, String eventId);
 
-    List<Question> get(String memberId, String quizId);
+    QuestionsResponse get(String memberId, String quizId);
 
     List<Question> participant(String memberId, String quizId);
 

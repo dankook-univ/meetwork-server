@@ -3,6 +3,7 @@ package com.github.dankook_univ.meetwork.quiz.infra.http;
 import com.github.dankook_univ.meetwork.quiz.application.QuizServiceImpl;
 import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuestionCheckRequest;
 import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuizCreateRequest;
+import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuestionsResponse;
 import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuizResponse;
 import com.github.dankook_univ.meetwork.quiz.question.domain.Question;
 import com.github.dankook_univ.meetwork.quiz.question.infra.http.response.QuestionResponse;
@@ -57,14 +58,12 @@ public class QuizController {
 
     @ApiOperation(value = "관리자용 질문 목록 조회", notes = "관리자는 퀴즈 참여없이 질문 목록 조회")
     @GetMapping("/questions/{quizId}")
-    public ResponseEntity<List<QuestionResponse>> getQuestions(
+    public ResponseEntity<QuestionsResponse> getQuestions(
         @ApiIgnore Authentication authentication,
         @PathVariable("quizId") @NotBlank String quizId
     ) {
         return ResponseEntity.ok().body(
             quizService.get(authentication.getName(), quizId)
-                .stream().map(Question::toResponse)
-                .collect(Collectors.toList())
         );
     }
 
