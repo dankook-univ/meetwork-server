@@ -29,10 +29,9 @@ public class QuizRepositoryImpl implements QuizRepository {
     public List<QuizResponse> getQuizListWithJoin(String profileId, String eventId) {
         return queryFactory
             .select(
-                Projections.fields(QuizResponse.class,
+                Projections.constructor(QuizResponse.class,
                     quiz.id,
                     quiz.name,
-                    quiz.event,
                     quiz.createdAt,
                     quiz.updatedAt,
                     quizParticipants.isFinished

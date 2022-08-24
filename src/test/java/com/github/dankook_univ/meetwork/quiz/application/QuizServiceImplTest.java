@@ -208,6 +208,56 @@ public class QuizServiceImplTest {
     }
 
     @Test
+    @DisplayName("퀴즈에 참여하지 않은 사람도 목록을 가져올 수 있어요.")
+    @Rollback(value = false)
+    public void getListWithNoParticipant() {
+        Member organizer = createMember("organizer", "meetwork@meetwork.kr");
+        Event event = createEvent(organizer);
+
+        Member participant = createMember("name", "meetwork@meetwork.kr");
+        eventService.join(
+            participant.getId().toString(),
+            event.getId().toString(),
+            ProfileCreateRequest.builder()
+                .nickname("nickname123")
+                .bio("bio")
+                .build(),
+            false);
+
+        Quiz quiz = quizService.create(
+            organizer.getId().toString(),
+            QuizCreateRequest.builder()
+                .name("quizName2")
+                .eventId(event.getId().toString())
+                .questions(
+                    List.of(QuestionCreateRequest.builder()
+                        .content("question2")
+                        .answer("answer2")
+                        .choice(Arrays.asList("choice1", "choice2", "answer2", "choice3"))
+                        .build()))
+                .build());
+
+        List<QuizResponse> list = quizService.getList(
+            participant.getId().toString(),
+            event.getId().toString()
+        );
+
+        assertThat(list.size()).isEqualTo(1);
+        assertThat(list.get(0)).isNotNull().isInstanceOf(QuizResponse.class);
+
+        assertThat(list.get(0).getIsFinished()).isFalse();
+
+        quizService.participant(participant.getId().toString(), quiz.getId().toString());
+
+        List<QuizResponse> participantList = quizService.getList(
+            participant.getId().toString(),
+            event.getId().toString()
+        );
+
+        assertThat(list.get(0).getIsFinished()).isTrue();
+    }
+
+    @Test
     @DisplayName("퀴즈에 참여할 수 있습니다.")
     public void participant() {
         Member member = createMember("name", "meetwork@meetwork.kr");
