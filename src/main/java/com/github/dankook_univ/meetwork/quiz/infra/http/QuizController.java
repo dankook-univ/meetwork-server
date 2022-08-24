@@ -6,6 +6,7 @@ import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuizCreateReques
 import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuestionsResponse;
 import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuizResponse;
 import com.github.dankook_univ.meetwork.quiz.question.domain.Question;
+import com.github.dankook_univ.meetwork.quiz.question.infra.http.request.QuestionUpdateRequest;
 import com.github.dankook_univ.meetwork.quiz.question.infra.http.response.QuestionResponse;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.domain.QuizParticipants;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.infra.http.response.MyQuizResultResponse;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +44,18 @@ public class QuizController {
     ) {
         return ResponseEntity.ok().body(
             quizService.create(authentication.getName(), request).toResponse()
+        );
+    }
+
+    @ApiOperation(value = "퀴즈 수정하기")
+    @PatchMapping("/{quizId}")
+    public ResponseEntity<QuizResponse> update(
+        @ApiIgnore Authentication authentication,
+        @PathVariable("quizId") @NotBlank String quizId,
+        @RequestBody @Valid List<QuestionUpdateRequest> request
+    ) {
+        return ResponseEntity.ok().body(
+            quizService.update(authentication.getName(), quizId, request).toResponse()
         );
     }
 

@@ -17,6 +17,8 @@ import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuestionsRespon
 import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuizResponse;
 import com.github.dankook_univ.meetwork.quiz.infra.persistence.QuizRepositoryImpl;
 import com.github.dankook_univ.meetwork.quiz.question.domain.Question;
+import com.github.dankook_univ.meetwork.quiz.question.infra.http.request.QuestionInformation;
+import com.github.dankook_univ.meetwork.quiz.question.infra.http.request.QuestionUpdateRequest;
 import com.github.dankook_univ.meetwork.quiz.question.infra.persistence.QuestionRepositoryImpl;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.domain.QuizParticipants;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.infra.persistence.QuizParticipantsRepositoryImpl;
@@ -67,6 +69,36 @@ public class QuizServiceImpl implements QuizService {
                     .choice(question.getChoice())
                     .build()
             ));
+
+        return quiz;
+    }
+
+    @Override
+    @Transactional
+    public Quiz update(String memberId, String quizId, List<QuestionUpdateRequest> request) {
+        Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
+        Profile profile = profileService.get(memberId, quiz.getEvent().getId().toString());
+        if (!profile.getIsAdmin()) {
+            throw new NotFoundQuizPermissionException();
+        }
+
+        request.stream()
+            .map(
+                (it) -> QuestionInformation.builder()
+                    .question(questionRepository.getById(it.getQuestionId())
+                        .orElseThrow(NotFoundQuestionException::new))
+                    .content(it.getContent())
+                    .answer(it.getAnswer())
+                    .choice(it.getChoice())
+                    .build()
+            )
+            .forEach(
+                (it) -> it.getQuestion().update(
+                    it.getContent(),
+                    it.getAnswer(),
+                    it.getChoice()
+                )
+            );
 
         return quiz;
     }
