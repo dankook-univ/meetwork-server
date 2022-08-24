@@ -1,6 +1,5 @@
 package com.github.dankook_univ.meetwork.quiz.infra.http.response;
 
-import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.quiz.domain.Quiz;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -27,9 +26,6 @@ public class QuizResponse {
     String name;
 
     @NotNull
-    Event event;
-
-    @NotNull
     LocalDateTime createAt;
 
     @NotNull
@@ -44,7 +40,6 @@ public class QuizResponse {
     ) {
         this.id = quiz.getId();
         this.name = quiz.getName();
-        this.event = quiz.getEvent();
         this.createAt = quiz.getCreatedAt();
         this.updateAt = quiz.getUpdatedAt();
     }

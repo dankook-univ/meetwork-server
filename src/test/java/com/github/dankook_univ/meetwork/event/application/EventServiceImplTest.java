@@ -644,10 +644,14 @@ class EventServiceImplTest {
             null,
             1);
 
+        Profile participantProfile = profileService.get(
+            participant.getId().toString(),
+            event.getId().toString()
+        );
         eventService.release(
             organizer.getId().toString(),
             ProfileReleaseRequest.builder()
-                .memberId(participant.getId().toString())
+                .profileId(participantProfile.getId().toString())
                 .eventId(event.getId().toString())
                 .build());
 

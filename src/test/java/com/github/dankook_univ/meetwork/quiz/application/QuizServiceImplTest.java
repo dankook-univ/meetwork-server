@@ -32,6 +32,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -81,6 +82,7 @@ public class QuizServiceImplTest {
 
     @Test
     @DisplayName("관리자는 퀴즈를 생성할 수 있어요.")
+    @Rollback(value = false)
     public void create() {
         Member member = createMember("name", "meetwork@meetwork.kr");
         Event event = createEvent(member);
@@ -110,6 +112,7 @@ public class QuizServiceImplTest {
         assertThat(quiz.getEvent()).isEqualTo(event);
 
         assertThat(questions.size()).isEqualTo(2);
+        assertThat(quiz.toResponse()).isNotNull();
     }
 
     @Test
@@ -151,7 +154,6 @@ public class QuizServiceImplTest {
 
         assertThat(list.size()).isEqualTo(2);
         assertThat(list.get(0)).isNotNull().isInstanceOf(QuizResponse.class);
-        assertThat(list.get(0).getEvent()).isEqualTo(event);
     }
 
     @Test
