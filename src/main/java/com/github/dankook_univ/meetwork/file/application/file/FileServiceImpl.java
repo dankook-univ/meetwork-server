@@ -8,9 +8,11 @@ import com.github.dankook_univ.meetwork.file.exceptions.FailedToFileUploadExcept
 import com.github.dankook_univ.meetwork.file.exceptions.NotSupportedFileFormatException;
 import com.github.dankook_univ.meetwork.file.infra.persistence.FileRepositoryImpl;
 import com.github.dankook_univ.meetwork.member.application.MemberServiceImpl;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,15 +22,21 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional(readOnly = true)
 public class FileServiceImpl implements FileService {
 
+    private static final Tika tika = new Tika();
     private final FileRepositoryImpl fileRepository;
-
     private final StorageServiceImpl storageService;
-
     private final MemberServiceImpl memberService;
 
     @Override
     @Transactional
     public File upload(String memberId, FileType fileType, MultipartFile multipartFile) {
+        try {
+            String tikaChecked = tika.detect(multipartFile.getInputStream());
+            System.out.println("checked mime : " + tikaChecked);
+        } catch (IOException e) {
+            throw new FailedToFileUploadException();
+        }
+
         String mime = multipartFile.getOriginalFilename() == null
             ? "jpeg"
             : multipartFile.getOriginalFilename().substring(

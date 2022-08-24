@@ -67,6 +67,9 @@ dependencies {
 
     // swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+    // apache tika
+    implementation 'org.apache.tika:tika-core:1.24.1'
 }
 
 querydsl {
