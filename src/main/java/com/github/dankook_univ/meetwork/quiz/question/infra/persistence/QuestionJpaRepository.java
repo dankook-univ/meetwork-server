@@ -10,4 +10,6 @@ public interface QuestionJpaRepository extends JpaRepository<Question, UUID> {
     List<Question> findByQuizId(UUID quizId);
 
     void deleteAllByQuizId(UUID quizId);
+
+    Long countByQuizId(UUID quizId);
 }

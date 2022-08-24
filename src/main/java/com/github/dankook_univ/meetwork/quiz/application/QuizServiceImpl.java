@@ -2,6 +2,7 @@ package com.github.dankook_univ.meetwork.quiz.application;
 
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
+import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfileException;
 import com.github.dankook_univ.meetwork.quiz.domain.Quiz;
 import com.github.dankook_univ.meetwork.quiz.exceptions.AlreadyParticipantedQuizException;
 import com.github.dankook_univ.meetwork.quiz.exceptions.ExistingQuizNameException;
@@ -202,6 +203,18 @@ public class QuizServiceImpl implements QuizService {
         }
 
         return quizParticipantsRepository.getByQuizId(quizId);
+    }
+
+    @Override
+    public Long count(String memberId, String quizId) {
+        Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
+
+        Boolean isMember = profileService.isEventMember(memberId, quiz.getEvent().getId().toString());
+        if(!isMember){
+            throw new NotFoundProfileException();
+        }
+
+        return questionRepository.countByQuizId(quizId);
     }
 
     @Override

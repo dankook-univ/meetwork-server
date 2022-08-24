@@ -11,5 +11,7 @@ public interface QuestionRepository {
 
     List<Question> getByQuizId(String quizId);
 
+    Long countByQuizId(String quizId);
+
     void delete(String quizId);
 }

@@ -129,6 +129,17 @@ public class QuizController {
         );
     }
 
+    @ApiOperation(value = "퀴즈 문제 수 조회", notes = "퀴즈의 문제 수 조회")
+    @GetMapping("/count/{quizId}")
+    public ResponseEntity<Long> count(
+        @ApiIgnore Authentication authentication,
+        @PathVariable("quizId") @NotBlank String quizId
+    ) {
+        return ResponseEntity.ok().body(
+            quizService.count(authentication.getName(), quizId)
+        );
+    }
+
     @ApiOperation(value = "퀴즈 삭제하기")
     @DeleteMapping("/{quizId}")
     public ResponseEntity<Boolean> delete(

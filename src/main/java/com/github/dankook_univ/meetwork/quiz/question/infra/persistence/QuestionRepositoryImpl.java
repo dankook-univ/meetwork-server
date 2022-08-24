@@ -30,6 +30,11 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     }
 
     @Override
+    public Long countByQuizId(String quizId) {
+        return questionRepository.countByQuizId(UUID.fromString(quizId));
+    }
+
+    @Override
     public void delete(String quizId) {
         questionRepository.deleteAllByQuizId(UUID.fromString(quizId));
     }

@@ -28,5 +28,7 @@ public interface QuizService {
 
     List<QuizParticipants> result(String memberId, String quizId);
 
+    Long count(String memberId, String quizId);
+
     void delete(String memberId, String quizId);
 }
