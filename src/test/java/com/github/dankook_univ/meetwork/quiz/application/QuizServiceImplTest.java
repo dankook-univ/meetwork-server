@@ -16,10 +16,10 @@ import com.github.dankook_univ.meetwork.quiz.exceptions.NotFoundQuestionExceptio
 import com.github.dankook_univ.meetwork.quiz.exceptions.NotFoundQuizException;
 import com.github.dankook_univ.meetwork.quiz.exceptions.NotFoundQuizParticipantsException;
 import com.github.dankook_univ.meetwork.quiz.exceptions.NotParticipantQuizException;
-import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuestionCheckRequest;
 import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuizCreateRequest;
 import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuizResponse;
 import com.github.dankook_univ.meetwork.quiz.question.domain.Question;
+import com.github.dankook_univ.meetwork.quiz.question.infra.http.request.QuestionCheckRequest;
 import com.github.dankook_univ.meetwork.quiz.question.infra.http.request.QuestionCreateRequest;
 import com.github.dankook_univ.meetwork.quiz.question.infra.persistence.QuestionRepositoryImpl;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.domain.QuizParticipants;

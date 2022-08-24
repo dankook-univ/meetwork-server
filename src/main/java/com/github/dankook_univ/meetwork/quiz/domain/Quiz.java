@@ -44,9 +44,7 @@ public class Quiz extends Core {
         this.event = event;
     }
 
-    public void update(
-        @Nullable String name, @Nullable Boolean isFinished
-    ) {
+    public void update(@Nullable String name) {
         if (name != null) {
             this.name = name.trim();
         }

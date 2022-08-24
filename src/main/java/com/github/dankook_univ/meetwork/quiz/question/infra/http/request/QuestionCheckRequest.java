@@ -1,4 +1,4 @@
-package com.github.dankook_univ.meetwork.quiz.infra.http.request;
+package com.github.dankook_univ.meetwork.quiz.question.infra.http.request;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

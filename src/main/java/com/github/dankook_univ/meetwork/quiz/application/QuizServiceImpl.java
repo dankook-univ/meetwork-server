@@ -11,14 +11,14 @@ import com.github.dankook_univ.meetwork.quiz.exceptions.NotFoundQuizParticipants
 import com.github.dankook_univ.meetwork.quiz.exceptions.NotFoundQuizPermissionException;
 import com.github.dankook_univ.meetwork.quiz.exceptions.NotParticipantQuizException;
 import com.github.dankook_univ.meetwork.quiz.exceptions.QuestionAndQuizRelationshipException;
-import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuestionCheckRequest;
 import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuizCreateRequest;
+import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuizUpdateRequest;
 import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuestionsResponse;
 import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuizResponse;
 import com.github.dankook_univ.meetwork.quiz.infra.persistence.QuizRepositoryImpl;
 import com.github.dankook_univ.meetwork.quiz.question.domain.Question;
+import com.github.dankook_univ.meetwork.quiz.question.infra.http.request.QuestionCheckRequest;
 import com.github.dankook_univ.meetwork.quiz.question.infra.http.request.QuestionInformation;
-import com.github.dankook_univ.meetwork.quiz.question.infra.http.request.QuestionUpdateRequest;
 import com.github.dankook_univ.meetwork.quiz.question.infra.persistence.QuestionRepositoryImpl;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.domain.QuizParticipants;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.infra.persistence.QuizParticipantsRepositoryImpl;
@@ -75,14 +75,17 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     @Transactional
-    public Quiz update(String memberId, String quizId, List<QuestionUpdateRequest> request) {
+    public Quiz update(String memberId, String quizId, QuizUpdateRequest request) {
         Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
         Profile profile = profileService.get(memberId, quiz.getEvent().getId().toString());
         if (!profile.getIsAdmin()) {
             throw new NotFoundQuizPermissionException();
         }
 
-        request.stream()
+        if (!Objects.equals(quiz.getName(), request.getName())) {
+            quiz.update(request.getName());
+        }
+        request.getQuestions().stream()
             .map(
                 (it) -> QuestionInformation.builder()
                     .question(questionRepository.getById(it.getQuestionId())

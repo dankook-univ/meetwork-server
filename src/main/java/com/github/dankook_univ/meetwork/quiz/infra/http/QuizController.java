@@ -1,12 +1,12 @@
 package com.github.dankook_univ.meetwork.quiz.infra.http;
 
 import com.github.dankook_univ.meetwork.quiz.application.QuizServiceImpl;
-import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuestionCheckRequest;
 import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuizCreateRequest;
+import com.github.dankook_univ.meetwork.quiz.infra.http.request.QuizUpdateRequest;
 import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuestionsResponse;
 import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuizResponse;
 import com.github.dankook_univ.meetwork.quiz.question.domain.Question;
-import com.github.dankook_univ.meetwork.quiz.question.infra.http.request.QuestionUpdateRequest;
+import com.github.dankook_univ.meetwork.quiz.question.infra.http.request.QuestionCheckRequest;
 import com.github.dankook_univ.meetwork.quiz.question.infra.http.response.QuestionResponse;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.domain.QuizParticipants;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.infra.http.response.MyQuizResultResponse;
@@ -52,7 +52,7 @@ public class QuizController {
     public ResponseEntity<QuizResponse> update(
         @ApiIgnore Authentication authentication,
         @PathVariable("quizId") @NotBlank String quizId,
-        @RequestBody @Valid List<QuestionUpdateRequest> request
+        @RequestBody @Valid QuizUpdateRequest request
     ) {
         return ResponseEntity.ok().body(
             quizService.update(authentication.getName(), quizId, request).toResponse()
