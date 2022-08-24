@@ -50,7 +50,7 @@ class ChatMessageServiceImplTest {
             EventCreateRequest.builder()
                 .name("name")
                 .code("code")
-                .meetingUrl("meetingUrl")
+                .meetingCode("meetingCode")
                 .organizerNickname("nickname")
                 .organizerBio("bio")
                 .build()

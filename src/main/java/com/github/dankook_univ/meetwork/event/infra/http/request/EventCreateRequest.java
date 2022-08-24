@@ -23,7 +23,7 @@ public class EventCreateRequest {
 	@NotEmpty
 	String code;
 
-	String meetingUrl;
+	String meetingCode;
 
 	@NotNull
 	@NotEmpty

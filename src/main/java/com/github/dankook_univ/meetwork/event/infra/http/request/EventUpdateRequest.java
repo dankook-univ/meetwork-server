@@ -1,6 +1,10 @@
 package com.github.dankook_univ.meetwork.event.infra.http.request;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
@@ -8,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class EventUpdateRequest {
 
-	String name;
-	String code;
-	String meetingUrl;
+    String name;
+    String code;
+    String meetingCode;
 }

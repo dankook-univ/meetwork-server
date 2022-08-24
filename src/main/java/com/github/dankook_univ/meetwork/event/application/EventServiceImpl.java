@@ -109,7 +109,7 @@ public class EventServiceImpl implements EventService {
             Event.builder()
                 .name(request.getName())
                 .code(request.getCode())
-                .meetingUrl(request.getMeetingUrl())
+                .meetingCode(request.getMeetingCode())
                 .build()
         );
 
@@ -153,7 +153,7 @@ public class EventServiceImpl implements EventService {
             throw new ExistingCodeException();
         }
 
-        return event.update(request.getName(), request.getCode(), request.getMeetingUrl());
+        return event.update(request.getName(), request.getCode(), request.getMeetingCode());
     }
 
     @Override

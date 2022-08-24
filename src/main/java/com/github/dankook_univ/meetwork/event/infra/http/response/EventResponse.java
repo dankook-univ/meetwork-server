@@ -17,7 +17,7 @@ public class EventResponse {
     String name;
     ProfileResponse organizer;
     String code;
-    String meetingUrl;
+    String meetingCode;
 
     @Builder
     public EventResponse(
@@ -27,7 +27,7 @@ public class EventResponse {
         this.name = event.getName();
         this.organizer = event.getOrganizer().toResponse();
         this.code = event.getCode();
-        this.meetingUrl = event.getMeetingUrl();
+        this.meetingCode = event.getMeetingCode();
         this.createdAt = event.getCreatedAt();
         this.updatedAt = event.getUpdatedAt();
     }

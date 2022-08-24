@@ -31,17 +31,17 @@ public class Event extends Core {
     private String code;
 
     @Column
-    private String meetingUrl;
+    private String meetingCode;
 
     @Builder
-    public Event(String name, Profile organizer, String code, String meetingUrl) {
+    public Event(String name, Profile organizer, String code, String meetingCode) {
         Assert.hasText(name, "name must not be empty");
         Assert.hasText(code, "code must not be empty");
 
         this.name = name;
         this.organizer = organizer;
         this.code = code;
-        this.meetingUrl = meetingUrl;
+        this.meetingCode = meetingCode;
     }
 
     public EventResponse toResponse() {
@@ -50,15 +50,15 @@ public class Event extends Core {
             .build();
     }
 
-    public Event update(String name, String code, String meetingUrl) {
+    public Event update(String name, String code, String meetingCode) {
         if (name != null) {
             this.name = name.trim();
         }
         if (code != null) {
             this.code = code.trim();
         }
-        if (meetingUrl != null) {
-            this.meetingUrl = meetingUrl;
+        if (meetingCode != null) {
+            this.meetingCode = meetingCode;
         }
 
         return this;

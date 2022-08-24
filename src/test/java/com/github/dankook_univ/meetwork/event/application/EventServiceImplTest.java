@@ -299,7 +299,7 @@ class EventServiceImplTest {
             EventUpdateRequest.builder()
                 .name("new_name")
                 .code("new_code")
-                .meetingUrl("meeting_url")
+                .meetingCode("meeting_code")
                 .build()
         );
 
@@ -308,7 +308,7 @@ class EventServiceImplTest {
 
         assertThat(updatedEvent.getName()).isEqualTo("new_name");
         assertThat(updatedEvent.getCode()).isEqualTo("new_code");
-        assertThat(updatedEvent.getMeetingUrl()).isEqualTo("meeting_url");
+        assertThat(updatedEvent.getMeetingCode()).isEqualTo("meeting_code");
     }
 
     @Test
@@ -344,7 +344,7 @@ class EventServiceImplTest {
                 EventUpdateRequest.builder()
                     .name("new_name")
                     .code("new_code")
-                    .meetingUrl("meeting_url")
+                    .meetingCode("meeting_code")
                     .build()
             )
         );
