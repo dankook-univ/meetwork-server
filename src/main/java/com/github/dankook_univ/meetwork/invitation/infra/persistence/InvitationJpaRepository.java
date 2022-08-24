@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface InvitationJpaRepository extends JpaRepository<Invitation, UUID> {
 
@@ -16,5 +17,5 @@ public interface InvitationJpaRepository extends JpaRepository<Invitation, UUID>
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from Invitation i where i.event.id = :eventId")
-    void deleteAllByEventId(UUID eventId);
+    void deleteAllByEventId(@Param("eventId") UUID eventId);
 }

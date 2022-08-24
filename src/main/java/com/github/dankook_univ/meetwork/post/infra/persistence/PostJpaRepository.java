@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface PostJpaRepository extends JpaRepository<Post, UUID> {
 
@@ -14,7 +15,7 @@ public interface PostJpaRepository extends JpaRepository<Post, UUID> {
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from Post p where p.writer.id = :writerId")
-    void deleteAllByWriterId(UUID writerId);
+    void deleteAllByWriterId(@Param("writerId") UUID writerId);
 
     void deleteAllByBoardId(UUID boardId);
 

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface ProfileJpaRepository extends JpaRepository<Profile, UUID> {
 
@@ -23,5 +24,5 @@ public interface ProfileJpaRepository extends JpaRepository<Profile, UUID> {
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from Profile p where p.event.id = :eventId")
-    void deleteAllByEventId(UUID eventId);
+    void deleteAllByEventId(@Param("eventId") UUID eventId);
 }
