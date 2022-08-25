@@ -49,11 +49,6 @@ public class QuizRepositoryImpl implements QuizRepository {
     }
 
     @Override
-    public List<Quiz> getByEventId(String eventId) {
-        return quizRepository.getByEventId(UUID.fromString(eventId));
-    }
-
-    @Override
     public Optional<Quiz> getById(String quizId) {
         return quizRepository.findById(UUID.fromString(quizId));
     }

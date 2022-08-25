@@ -10,8 +10,6 @@ public interface QuizRepository {
 
     Quiz save(Quiz quiz);
 
-    List<Quiz> getByEventId(String eventId);
-
     Optional<Quiz> getById(String quizId);
 
 

@@ -1,6 +1,7 @@
 package com.github.dankook_univ.meetwork.invitation.infra.persistence;
 
 import com.github.dankook_univ.meetwork.invitation.domain.Invitation;
+import com.github.dankook_univ.meetwork.invitation.domain.InvitationRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

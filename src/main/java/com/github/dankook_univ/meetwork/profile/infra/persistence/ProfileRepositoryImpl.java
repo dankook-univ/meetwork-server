@@ -66,8 +66,10 @@ public class ProfileRepositoryImpl implements ProfileRepository {
 
     @Override
     public void delete(String memberId, String eventId) {
-        profileRepository.deleteByMemberIdAndEventId(UUID.fromString(memberId),
-            UUID.fromString(eventId));
+        profileRepository.deleteByMemberIdAndEventId(
+            UUID.fromString(memberId),
+            UUID.fromString(eventId)
+        );
     }
 
     @Override
