@@ -194,12 +194,11 @@ public class QuizServiceImpl implements QuizService {
         Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
 
         Profile profile = profileService.get(memberId, quiz.getEvent().getId().toString());
-        QuizParticipants quizParticipants = quizParticipantsRepository.getByProfileIdAndQuizId(
-            profile.getId().toString(),
-            quizId
-        ).orElseThrow(NotFoundQuizParticipantsException::new);
-        if (!profile.getIsAdmin() && !quizParticipants.getIsFinished()) {
-            throw new NotParticipantQuizException();
+        if (!profile.getIsAdmin()) {
+            quizParticipantsRepository.getByProfileIdAndQuizId(
+                profile.getId().toString(),
+                quizId
+            ).orElseThrow(NotParticipantQuizException::new);
         }
 
         return quizParticipantsRepository.getByQuizId(quizId);
@@ -209,8 +208,9 @@ public class QuizServiceImpl implements QuizService {
     public Long count(String memberId, String quizId) {
         Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
 
-        Boolean isMember = profileService.isEventMember(memberId, quiz.getEvent().getId().toString());
-        if(!isMember){
+        Boolean isMember = profileService.isEventMember(memberId,
+            quiz.getEvent().getId().toString());
+        if (!isMember) {
             throw new NotFoundProfileException();
         }
 
