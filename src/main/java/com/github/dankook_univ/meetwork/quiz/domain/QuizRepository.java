@@ -12,10 +12,9 @@ public interface QuizRepository {
 
     Optional<Quiz> getById(String quizId);
 
+    List<Quiz> getByEventId(String eventId);
 
     Optional<Quiz> getByName(String name);
 
     void delete(Quiz quiz);
-
-    void deleteByEventId(String eventId);
 }

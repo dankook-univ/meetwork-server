@@ -244,4 +244,17 @@ public class QuizServiceImpl implements QuizService {
         quizRepository.delete(quiz);
     }
 
+    @Override
+    @Transactional
+    public void deleteByEventId(String eventId) {
+        quizRepository.getByEventId(eventId)
+            .forEach(
+                (quiz) -> {
+                    quizParticipantsRepository.delete(quiz.getId().toString());
+                    questionRepository.delete(quiz.getId().toString());
+                    quizRepository.delete(quiz);
+                }
+            );
+    }
+
 }
