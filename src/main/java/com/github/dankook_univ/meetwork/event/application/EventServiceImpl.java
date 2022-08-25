@@ -156,7 +156,7 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundEventPermissionException();
         }
 
-        if (!request.getCode().equals(event.getCode()) && checkExistingCode(request.getCode())) {
+        if (request.getCode() != null && checkExistingCode(request.getCode())) {
             throw new ExistingCodeException();
         }
 
