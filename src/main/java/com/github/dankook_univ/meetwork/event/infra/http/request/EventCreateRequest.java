@@ -1,12 +1,12 @@
 package com.github.dankook_univ.meetwork.event.infra.http.request;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class EventCreateRequest {
 
     @NotBlank
-    @Min(2)
+    @Length(min = 2)
     String name;
 
     @NotBlank
