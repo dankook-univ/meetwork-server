@@ -182,13 +182,17 @@ public class EventServiceImpl implements EventService {
     public Event codeJoin(String memberId, String code, ProfileCreateRequest request) {
         Event event = eventRepository.getByCode(code).orElseThrow(NotFoundEventException::new);
 
+        Boolean isMember = profileService.isEventMember(memberId, event.getId().toString());
+        if (isMember) {
+            return event;
+        }
+
         profileService.create(
             memberId,
             getById(event.getId().toString()),
             request,
             false
         );
-
         return event;
     }
 
