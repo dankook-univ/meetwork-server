@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -29,13 +29,11 @@ public class Question extends Core {
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     @Column(nullable = false)
     private String content;
 
-    @NotEmpty
-    @NotNull
+    @NotBlank
     @Column(nullable = false)
     private String answer;
 

@@ -1,7 +1,7 @@
 package com.github.dankook_univ.meetwork.event.infra.http.request;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,22 +15,20 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class EventCreateRequest {
 
-	@NotNull
-	@NotEmpty
-	String name;
+    @NotBlank
+    @Min(2)
+    String name;
 
-	@NotNull
-	@NotEmpty
-	String code;
+    @NotBlank
+    String code;
 
-	String meetingCode;
+    String meetingCode;
 
-	@NotNull
-	@NotEmpty
-	String organizerNickname;
+    @NotBlank
+    String organizerNickname;
 
-	String organizerBio;
+    String organizerBio;
 
-	MultipartFile organizerProfileImage;
+    MultipartFile organizerProfileImage;
 
 }

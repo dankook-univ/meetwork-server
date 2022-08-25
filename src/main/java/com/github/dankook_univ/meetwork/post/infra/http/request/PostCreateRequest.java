@@ -1,7 +1,6 @@
 package com.github.dankook_univ.meetwork.post.infra.http.request;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,11 +13,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class PostCreateRequest {
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String content;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String boardId;
 }

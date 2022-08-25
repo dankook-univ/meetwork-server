@@ -1,7 +1,7 @@
 package com.github.dankook_univ.meetwork.quiz.question.infra.http.request;
 
 import java.util.List;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,14 +15,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuestionCreateRequest {
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String content;
 
-    @NotEmpty
-    @NotNull
+    @NotBlank
     String answer;
 
+    @NotNull
     List<String> choice;
 
 }

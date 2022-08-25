@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -31,8 +31,7 @@ public class Comment extends Core {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     private String content;
 
     @Builder

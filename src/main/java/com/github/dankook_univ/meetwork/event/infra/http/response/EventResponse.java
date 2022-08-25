@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class EventResponse {
-
+    
     String id;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

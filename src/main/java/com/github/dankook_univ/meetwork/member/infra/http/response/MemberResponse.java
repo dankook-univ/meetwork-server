@@ -2,8 +2,7 @@ package com.github.dankook_univ.meetwork.member.infra.http.response;
 
 import com.github.dankook_univ.meetwork.member.domain.Member;
 import java.time.LocalDateTime;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,24 +11,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberResponse {
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String id;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String name;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String email;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     LocalDateTime createAt;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     LocalDateTime updateAt;
 
     @Builder

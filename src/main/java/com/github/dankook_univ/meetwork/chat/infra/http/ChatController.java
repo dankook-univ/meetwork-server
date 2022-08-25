@@ -16,6 +16,7 @@ import com.github.dankook_univ.meetwork.profile.infra.http.response.ProfileRespo
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -40,7 +41,7 @@ public class ChatController {
     @GetMapping("/{eventId}")
     public ResponseEntity<List<ChatRoomResponse>> getChatRooms(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") String eventId
+        @PathVariable("eventId") @Valid @NotEmpty String eventId
     ) {
         return ResponseEntity.ok().body(
             chatRoomService.getChatRoomList(authentication.getName(), eventId).stream()
@@ -52,7 +53,7 @@ public class ChatController {
     @GetMapping("/{eventId}/{roomId}")
     public ResponseEntity<ChatRoomResponse> getChatRoom(
         @ApiIgnore Authentication authentication,
-        @PathVariable("roomId") String roomId
+        @PathVariable("roomId") @Valid @NotEmpty String roomId
     ) throws NotParticipatedMemberException {
         return ResponseEntity.ok().body(
             chatRoomService.getChatRoom(authentication.getName(), roomId).toResponse()
@@ -62,7 +63,7 @@ public class ChatController {
     @GetMapping("/{eventId}/participant")
     public ResponseEntity<List<ChatRoomResponse>> getParticipatedChatRooms(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") String eventId
+        @PathVariable("eventId") @Valid @NotEmpty String eventId
     ) {
         return ResponseEntity.ok().body(
             chatRoomService.getParticipatedChatRoomList(authentication.getName(), eventId).stream()
@@ -74,7 +75,7 @@ public class ChatController {
     @GetMapping("/{eventId}/{roomId}/participants")
     public ResponseEntity<List<ProfileResponse>> getParticipants(
         @ApiIgnore Authentication authentication,
-        @PathVariable("roomId") String roomId
+        @PathVariable("roomId") @Valid @NotEmpty String roomId
     ) throws NotParticipatedMemberException {
         return ResponseEntity.ok().body(
             chatRoomService.getParticipants(authentication.getName(), roomId).stream()
@@ -86,7 +87,7 @@ public class ChatController {
     @GetMapping("/{eventId}/{roomId}/messages")
     public ResponseEntity<List<ChatMessageResponse>> getMessages(
         @ApiIgnore Authentication authentication,
-        @PathVariable("roomId") String roomId
+        @PathVariable("roomId") @Valid @NotEmpty String roomId
     ) throws NotParticipatedMemberException {
         return ResponseEntity.ok().body(
             chatMessageService.getByRoomId(authentication.getName(), roomId).stream()
@@ -98,7 +99,7 @@ public class ChatController {
     @PostMapping("/{eventId}/new")
     public ResponseEntity<ChatRoomResponse> createChatRoom(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") String eventId,
+        @PathVariable("eventId") @Valid @NotEmpty String eventId,
         @RequestBody @Valid ChatRoomCreateRequest request
     ) {
         return ResponseEntity.ok().body(
@@ -109,7 +110,7 @@ public class ChatController {
     @PostMapping("/{eventId}/{roomId}/join")
     public ResponseEntity<ChatRoomResponse> joinChatRoom(
         @ApiIgnore Authentication authentication,
-        @PathVariable("roomId") String roomId
+        @PathVariable("roomId") @Valid @NotEmpty String roomId
     ) {
         return ResponseEntity.ok().body(
             chatRoomService.join(authentication.getName(), roomId).toResponse()
@@ -119,7 +120,7 @@ public class ChatController {
     @PostMapping("/{eventId}/{roomId}/message/new")
     public ResponseEntity<ChatMessageResponse> sendMessage(
         @ApiIgnore Authentication authentication,
-        @PathVariable("roomId") String roomId,
+        @PathVariable("roomId") @Valid @NotEmpty String roomId,
         @RequestBody @Valid MessageCreateRequest request
     ) throws NotParticipatedMemberException {
         return ResponseEntity.ok().body(
@@ -131,8 +132,8 @@ public class ChatController {
     @PutMapping("/{eventId}/{roomId}")
     public ResponseEntity<ChatRoomResponse> update(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") String eventId,
-        @PathVariable("roomId") String roomId,
+        @PathVariable("eventId") @Valid @NotEmpty String eventId,
+        @PathVariable("roomId") @Valid @NotEmpty String roomId,
         @RequestBody @Valid ChatRoomUpdateRequest request
     ) throws NotParticipatedMemberException, NotFoundChatRoomPermissionException {
         return ResponseEntity.ok().body(
@@ -143,8 +144,8 @@ public class ChatController {
     @DeleteMapping("/{eventId}/{roomId}")
     public ResponseEntity<Boolean> delete(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") String eventId,
-        @PathVariable("roomId") String roomId
+        @PathVariable("eventId") @Valid @NotEmpty String eventId,
+        @PathVariable("roomId") @Valid @NotEmpty String roomId
     ) throws NotParticipatedMemberException, NotFoundChatRoomPermissionException {
         return ResponseEntity.ok().body(
             chatRoomService.delete(authentication.getName(), eventId, roomId)

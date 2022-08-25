@@ -4,9 +4,8 @@ import com.github.dankook_univ.meetwork.common.domain.Core;
 import com.github.dankook_univ.meetwork.member.infra.http.response.MemberResponse;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,14 +18,12 @@ import org.springframework.util.Assert;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends Core {
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     @Column(nullable = false)
     private String name;
 
-    @NotNull
-    @NotEmpty
-    @Email
+    @NotBlank
+    @Pattern(regexp = "^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")
     @Column(nullable = false)
     private String email;
 

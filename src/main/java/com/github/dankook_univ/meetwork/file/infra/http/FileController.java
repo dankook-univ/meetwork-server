@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -26,7 +27,8 @@ public class FileController {
     @PostMapping("/upload")
     public ResponseEntity<String> upload(
         @ApiIgnore Authentication authentication,
-        @Valid MultipartFile image) {
+        @Valid @NotNull MultipartFile image
+    ) {
         return ResponseEntity.ok().body(
             fileService.upload(authentication.getName(), FileType.post, image).toResponse().getUrl()
         );
@@ -36,11 +38,14 @@ public class FileController {
     @PostMapping("/uploads")
     public ResponseEntity<List<String>> uploads(
         @ApiIgnore Authentication authentication,
-        @Valid List<MultipartFile> images) {
+        @Valid @NotNull List<MultipartFile> images
+    ) {
         return ResponseEntity.ok().body(
             images.stream().map(
                 (file) -> fileService.upload(authentication.getName(), FileType.post, file)
-                    .toResponse().getUrl()).collect(Collectors.toList())
+                    .toResponse()
+                    .getUrl()
+            ).collect(Collectors.toList())
         );
     }
 }

@@ -16,7 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,8 +33,7 @@ public class Post extends Core {
     @OrderBy("updatedAt asc")
     private final List<Comment> comments = new ArrayList<>();
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     @Column(length = 32768, nullable = false)
     private String content;
 

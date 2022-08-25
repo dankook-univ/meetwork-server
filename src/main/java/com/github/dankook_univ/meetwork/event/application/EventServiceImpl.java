@@ -79,14 +79,21 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<Profile> getMemberList(String memberId, String eventId, Boolean adminOnly,
-        int page) {
+    public List<Profile> getMemberList(
+        String memberId,
+        String eventId,
+        Boolean adminOnly,
+        int page
+    ) {
         if (!profileService.isEventMember(memberId, eventId)) {
             throw new NotFoundProfileException();
         }
 
-        return profileService.getListByEventIdAndAdminOnly(eventId, adminOnly,
-            PageRequest.of(page - 1, 15));
+        return profileService.getListByEventIdAndAdminOnly(
+            eventId,
+            adminOnly,
+            PageRequest.of(page - 1, 15)
+        );
     }
 
     @Override
@@ -126,13 +133,14 @@ public class EventServiceImpl implements EventService {
             )
         );
 
-        boardService.automaticBoard().forEach((name, isAdmin) ->
-            boardService.create(memberId, BoardCreateRequest.builder()
-                .name(name)
-                .adminOnly(isAdmin)
-                .eventId(event.getId().toString())
-                .build()
-            )
+        boardService.automaticBoard().forEach(
+            (name, isAdmin) ->
+                boardService.create(memberId, BoardCreateRequest.builder()
+                    .name(name)
+                    .adminOnly(isAdmin)
+                    .eventId(event.getId().toString())
+                    .build()
+                )
         );
 
         return event;
@@ -146,9 +154,9 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundEventPermissionException();
         }
 
-        if (!Objects.equals(request.getCode(), event.getCode())
-            &&
-            checkExistingCode(request.getCode())
+        if (
+            !Objects.equals(request.getCode(), event.getCode())
+                && checkExistingCode(request.getCode())
         ) {
             throw new ExistingCodeException();
         }
@@ -160,7 +168,8 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public Boolean updateAdmin(String memberId, UpdateAdminRequest request) {
         Event event = getById(request.getEventId());
-        Profile organizer = profileService.get(memberId, request.getEventId());
+
+        Profile organizer = profileService.get(memberId, event.getId().toString());
         if (event.getOrganizer() != organizer) {
             throw new NotFoundEventPermissionException();
         }
@@ -223,6 +232,7 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public void secession(String memberId, String eventId) {
         Profile target = profileService.get(memberId, eventId);
+
         deleteAll(target);
     }
 
@@ -235,6 +245,7 @@ public class EventServiceImpl implements EventService {
         }
 
         Profile target = profileService.getById(request.getProfileId());
+        
         deleteAll(target);
     }
 

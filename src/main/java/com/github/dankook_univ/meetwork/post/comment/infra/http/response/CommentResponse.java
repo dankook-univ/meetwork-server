@@ -3,7 +3,7 @@ package com.github.dankook_univ.meetwork.post.comment.infra.http.response;
 import com.github.dankook_univ.meetwork.post.comment.domain.Comment;
 import com.github.dankook_univ.meetwork.profile.infra.http.response.ProfileResponse;
 import java.time.LocalDateTime;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,15 +15,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommentResponse {
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String id;
 
     @NotNull
     ProfileResponse writer;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String content;
 
     @NotNull

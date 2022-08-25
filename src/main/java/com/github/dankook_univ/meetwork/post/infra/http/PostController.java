@@ -34,7 +34,6 @@ public class PostController {
     public ResponseEntity<PostResponse> create(
         @ApiIgnore Authentication authentication,
         @RequestBody @Valid PostCreateRequest request
-
     ) {
         return ResponseEntity.ok().body(
             postService.create(authentication.getName(), request).toResponse()
@@ -44,7 +43,7 @@ public class PostController {
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> get(
         @ApiIgnore Authentication authentication,
-        @PathVariable("postId") @NotBlank String postId
+        @PathVariable("postId") @Valid @NotBlank String postId
     ) {
         return ResponseEntity.ok().body(
             postService.get(authentication.getName(), postId).toResponse()
@@ -54,7 +53,7 @@ public class PostController {
     @GetMapping("/list/{boardId}")
     public ResponseEntity<List<PostResponse>> getList(
         @ApiIgnore Authentication authentication,
-        @PathVariable("boardId") @NotBlank String boardId,
+        @PathVariable("boardId") @Valid @NotBlank String boardId,
         @RequestParam(value = "page", required = false, defaultValue = "1") int page
     ) {
         return ResponseEntity.ok().body(
@@ -67,7 +66,7 @@ public class PostController {
     @PatchMapping("/{postId}")
     public ResponseEntity<PostResponse> update(
         @ApiIgnore Authentication authentication,
-        @PathVariable("postId") @NotBlank String postId,
+        @PathVariable("postId") @Valid @NotBlank String postId,
         @RequestBody @Valid PostUpdateRequest request
     ) {
         return ResponseEntity.ok().body(
@@ -78,7 +77,7 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public ResponseEntity<Boolean> delete(
         @ApiIgnore Authentication authentication,
-        @PathVariable("postId") @NotBlank String postId
+        @PathVariable("postId") @Valid @NotBlank String postId
     ) {
         postService.delete(authentication.getName(), postId);
         return ResponseEntity.ok().body(true);

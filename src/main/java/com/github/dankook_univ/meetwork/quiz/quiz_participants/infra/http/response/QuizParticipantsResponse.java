@@ -4,7 +4,7 @@ import com.github.dankook_univ.meetwork.profile.infra.http.response.ProfileRespo
 import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuizResponse;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.domain.QuizParticipants;
 import java.time.LocalDateTime;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,8 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class QuizParticipantsResponse {
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String id;
 
     @NotNull

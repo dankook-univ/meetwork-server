@@ -4,7 +4,7 @@ import com.github.dankook_univ.meetwork.quiz.infra.http.response.QuizResponse;
 import com.github.dankook_univ.meetwork.quiz.question.domain.Question;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,16 +16,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class QuestionResponse {
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String id;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String content;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String answer;
 
     @NotNull

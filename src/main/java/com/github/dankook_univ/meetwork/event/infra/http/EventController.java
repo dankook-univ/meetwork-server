@@ -40,7 +40,7 @@ public class EventController {
     @GetMapping("/{eventId}")
     public ResponseEntity<EventResponse> get(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @NotBlank String eventId
+        @PathVariable("eventId") @Valid @NotBlank String eventId
     ) {
         return ResponseEntity.ok().body(
             eventService.get(authentication.getName(), eventId).toResponse()
@@ -64,7 +64,7 @@ public class EventController {
     @GetMapping("/me/{eventId}")
     public ResponseEntity<ProfileResponse> getMyProfile(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @NotBlank String eventId
+        @PathVariable("eventId") @Valid @NotBlank String eventId
     ) {
         return ResponseEntity.ok().body(
             eventService.getMyProfile(authentication.getName(), eventId).toResponse()
@@ -75,7 +75,7 @@ public class EventController {
     @GetMapping("/members/{eventId}")
     public ResponseEntity<List<ProfileResponse>> getMemberList(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @NotBlank String eventId,
+        @PathVariable("eventId") @Valid @NotBlank String eventId,
         @RequestParam(value = "adminOnly", required = false) Boolean adminOnly,
         @RequestParam(value = "page", required = false, defaultValue = "1") int page
     ) {
@@ -90,8 +90,8 @@ public class EventController {
     @GetMapping("/member/{eventId}/{memberId}")
     public ResponseEntity<ProfileResponse> getMember(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @NotBlank String eventId,
-        @PathVariable("memberId") @NotBlank String memberId
+        @PathVariable("eventId") @Valid @NotBlank String eventId,
+        @PathVariable("memberId") @Valid @NotBlank String memberId
     ) {
         return ResponseEntity.ok().body(
             eventService.getMember(authentication.getName(), eventId, memberId).toResponse()
@@ -113,7 +113,7 @@ public class EventController {
     @ApiOperation(value = "이벤트 코드 중복 확인", notes = "이벤트 코드가 중복되는지 검사해요.")
     @GetMapping("/check/{code}")
     public ResponseEntity<Boolean> checkCode(
-        @PathVariable("code") @NotBlank String code
+        @PathVariable("code") @Valid @NotBlank String code
     ) {
         return ResponseEntity.ok().body(
             eventService.checkExistingCode(code)
@@ -124,7 +124,7 @@ public class EventController {
     @PatchMapping("/join/{code}")
     public ResponseEntity<EventResponse> joinCode(
         @ApiIgnore Authentication authentication,
-        @PathVariable("code") @NotBlank String code,
+        @PathVariable("code") @Valid @NotBlank String code,
         @Valid ProfileCreateRequest request
     ) {
         return ResponseEntity.ok().body(
@@ -136,7 +136,7 @@ public class EventController {
     @PatchMapping("/{eventId}")
     public ResponseEntity<EventResponse> update(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @NotBlank String eventId,
+        @PathVariable("eventId") @Valid @NotBlank String eventId,
         @RequestBody @Valid EventUpdateRequest request
     ) {
         return ResponseEntity.ok().body(
@@ -159,7 +159,7 @@ public class EventController {
     @DeleteMapping("/secession/{eventId}")
     public ResponseEntity<Boolean> secession(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @NotBlank String eventId
+        @PathVariable("eventId") @Valid @NotBlank String eventId
     ) {
         eventService.secession(authentication.getName(), eventId);
         return ResponseEntity.ok().body(true);
@@ -180,7 +180,7 @@ public class EventController {
     @DeleteMapping("/{eventId}")
     public ResponseEntity<Boolean> delete(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @NotBlank String eventId
+        @PathVariable("eventId") @Valid @NotBlank String eventId
     ) {
         eventService.delete(authentication.getName(), eventId);
         return ResponseEntity.ok().body(true);

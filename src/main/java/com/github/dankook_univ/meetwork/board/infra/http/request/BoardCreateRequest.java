@@ -1,5 +1,7 @@
 package com.github.dankook_univ.meetwork.board.infra.http.request;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,9 +14,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BoardCreateRequest {
 
+    @NotBlank
     String eventId;
 
+    @NotBlank
     String name;
 
+    @NotNull
     Boolean adminOnly;
 }

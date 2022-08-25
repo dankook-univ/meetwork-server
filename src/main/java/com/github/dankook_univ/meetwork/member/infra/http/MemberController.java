@@ -15,16 +15,14 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequiredArgsConstructor
 public class MemberController {
 
-	private final MemberServiceImpl memberService;
+    private final MemberServiceImpl memberService;
 
-	@GetMapping("/me")
-	public ResponseEntity<MemberResponse> me(
-			@ApiIgnore Authentication authentication
-	) {
-		return ResponseEntity.ok().body(
-				memberService.getById(
-						authentication.getName()
-				).toResponse()
-		);
-	}
+    @GetMapping("/me")
+    public ResponseEntity<MemberResponse> me(
+        @ApiIgnore Authentication authentication
+    ) {
+        return ResponseEntity.ok().body(
+            memberService.getById(authentication.getName()).toResponse()
+        );
+    }
 }

@@ -4,7 +4,7 @@ import com.github.dankook_univ.meetwork.quiz.domain.Quiz;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,12 +16,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class QuizResponse {
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     UUID id;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String name;
 
     @NotNull

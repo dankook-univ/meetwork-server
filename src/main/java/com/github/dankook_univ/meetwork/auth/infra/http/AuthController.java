@@ -5,6 +5,7 @@ import com.github.dankook_univ.meetwork.auth.infra.http.request.ReissueRequest;
 import com.github.dankook_univ.meetwork.auth.infra.http.request.SignInRequest;
 import com.github.dankook_univ.meetwork.auth.infra.http.request.SignUpRequest;
 import com.github.dankook_univ.meetwork.auth.infra.http.response.TokenResponse;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -25,18 +26,18 @@ public class AuthController {
     private final AuthServiceImpl authService;
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> signIn(@RequestBody SignInRequest request) {
+    public ResponseEntity<TokenResponse> signIn(@RequestBody @Valid SignInRequest request) {
         return ResponseEntity.ok().body(authService.signIn(request));
     }
 
     @PostMapping("/new")
-    public ResponseEntity<TokenResponse> signUp(@RequestBody SignUpRequest request) {
+    public ResponseEntity<TokenResponse> signUp(@RequestBody @Valid SignUpRequest request) {
         return ResponseEntity.ok().body(authService.signUp(request));
     }
 
     @PostMapping("/reissue")
     public ResponseEntity<TokenResponse> reissue(
-        @RequestBody ReissueRequest request
+        @RequestBody @Valid ReissueRequest request
     ) {
         return ResponseEntity.ok().body(authService.reissue(request));
     }

@@ -3,7 +3,7 @@ package com.github.dankook_univ.meetwork.invitation.infra.http.response;
 import com.github.dankook_univ.meetwork.event.infra.http.response.EventResponse;
 import com.github.dankook_univ.meetwork.invitation.domain.Invitation;
 import java.time.LocalDateTime;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class InvitationResponse {
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String id;
 
     @NotNull
@@ -23,12 +22,10 @@ public class InvitationResponse {
     @NotNull
     Boolean isAdmin;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     LocalDateTime createAt;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     LocalDateTime updateAt;
 
     @Builder

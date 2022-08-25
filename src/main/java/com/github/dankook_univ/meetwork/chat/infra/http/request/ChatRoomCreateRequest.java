@@ -1,7 +1,7 @@
 package com.github.dankook_univ.meetwork.chat.infra.http.request;
 
 import java.util.List;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,8 +10,7 @@ import lombok.Getter;
 @Builder
 public class ChatRoomCreateRequest {
 
-    @NotEmpty
-    @NotNull
+    @NotBlank
     String name;
 
     @NotNull

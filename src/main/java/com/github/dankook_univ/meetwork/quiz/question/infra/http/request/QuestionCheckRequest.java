@@ -1,5 +1,6 @@
 package com.github.dankook_univ.meetwork.quiz.question.infra.http.request;
 
+import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,9 +13,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuestionCheckRequest {
 
+    @NotBlank
     String quizId;
 
+    @NotBlank
     String questionId;
 
+    @NotBlank
     String answer;
 }

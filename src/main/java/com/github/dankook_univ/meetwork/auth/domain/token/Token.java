@@ -1,8 +1,7 @@
 package com.github.dankook_univ.meetwork.auth.domain.token;
 
 import java.io.Serializable;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,12 +12,10 @@ import org.springframework.util.Assert;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Token implements Serializable {
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     private String accessToken;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     private String refreshToken;
 
     @Builder

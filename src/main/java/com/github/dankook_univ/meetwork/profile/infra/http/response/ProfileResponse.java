@@ -4,6 +4,7 @@ import com.github.dankook_univ.meetwork.file.infra.http.response.FileResponse;
 import com.github.dankook_univ.meetwork.member.infra.http.response.MemberResponse;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
@@ -14,8 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProfileResponse {
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String id;
 
     @NotNull
@@ -23,8 +23,7 @@ public class ProfileResponse {
 
     FileResponse profileImage;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     String nickname;
 
     @NotEmpty

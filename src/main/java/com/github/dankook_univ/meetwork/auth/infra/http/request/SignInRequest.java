@@ -1,8 +1,7 @@
 package com.github.dankook_univ.meetwork.auth.infra.http.request;
 
 import com.github.dankook_univ.meetwork.auth.domain.auth.AuthType;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,12 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SignInRequest {
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     private AuthType type;
 
-    @NotNull
-    @NotEmpty
+    @NotBlank
     private String token;
 
     @Builder

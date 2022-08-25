@@ -44,11 +44,10 @@ public class InvitationController {
     @ApiOperation(value = "초대 목록 조회", notes = "초대된 이벤트 목록을 최근순으로 조회하기")
     @GetMapping("/list/{memberId}")
     public ResponseEntity<List<InvitationResponse>> getList(
-        @ApiIgnore Authentication authentication,
-        @PathVariable("memberId") @NotBlank String memberId
+        @ApiIgnore Authentication authentication
     ) {
         return ResponseEntity.ok().body(
-            invitationService.getList(memberId)
+            invitationService.getList(authentication.getName())
                 .stream().map(Invitation::toResponse)
                 .collect(Collectors.toList())
         );
@@ -58,7 +57,7 @@ public class InvitationController {
     @PatchMapping("/join/{eventId}")
     public ResponseEntity<Boolean> join(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @NotBlank String eventId,
+        @PathVariable("eventId") @Valid @NotBlank String eventId,
         @Valid ProfileCreateRequest request
     ) {
         return ResponseEntity.ok().body(
@@ -70,7 +69,7 @@ public class InvitationController {
     @DeleteMapping("/refuse/{eventId}")
     public ResponseEntity<Boolean> refuse(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @NotBlank String eventId
+        @PathVariable("eventId") @Valid @NotBlank String eventId
     ) {
         return ResponseEntity.ok().body(
             invitationService.delete(authentication.getName(), eventId)

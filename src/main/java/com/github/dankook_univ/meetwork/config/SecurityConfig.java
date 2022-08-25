@@ -18,48 +18,48 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-	private final TokenProviderImpl tokenProvider;
-	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final TokenProviderImpl tokenProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		return http.csrf().disable()
-                
-				.cors().configurationSource(corsConfigurationSource())
-				.and()
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http.csrf().disable()
 
-				.apply(new JwtSecurityConfig(tokenProvider))
-				.and()
+            .cors().configurationSource(corsConfigurationSource())
+            .and()
 
-				.exceptionHandling()
-				.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-				.accessDeniedHandler(jwtAccessDeniedHandler)
-				.and()
+            .apply(new JwtSecurityConfig(tokenProvider))
+            .and()
 
-				.authorizeRequests()
-				.antMatchers("/").permitAll()
-				.antMatchers("/swagger-ui/**").permitAll()
-				.antMatchers("/swagger-resources/**").permitAll()
-				.antMatchers("/v3/api-docs").permitAll()
-				.antMatchers("/api/auth/**").permitAll()
-				.antMatchers("/ws/**").permitAll()
-				.anyRequest().authenticated()
-				.and()
-				.build();
-	}
+            .exceptionHandling()
+            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+            .accessDeniedHandler(jwtAccessDeniedHandler)
+            .and()
 
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
+            .authorizeRequests()
+            .antMatchers("/").permitAll()
+            .antMatchers("/swagger-ui/**").permitAll()
+            .antMatchers("/swagger-resources/**").permitAll()
+            .antMatchers("/v3/api-docs").permitAll()
+            .antMatchers("/api/auth/**").permitAll()
+            .antMatchers("/ws/**").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .build();
+    }
 
-		configuration.addAllowedOrigin("http://localhost:3000");
-		configuration.addAllowedHeader("*");
-		configuration.addAllowedMethod("*");
-		configuration.setAllowCredentials(true);
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
 
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", configuration);
-		return source;
-	}
+        configuration.addAllowedOrigin("https://meetwork-web.vercel.app");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
