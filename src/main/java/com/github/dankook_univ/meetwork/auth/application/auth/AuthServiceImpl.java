@@ -60,7 +60,7 @@ public class AuthServiceImpl implements AuthService {
                         memberRepository.save(
                             Member.builder()
                                 .name(securityUtilService.protectInputValue(request.getName()))
-                                .email(securityUtilService.protectInputValue(request.getEmail()))
+                                .email(request.getEmail())
                                 .build()
                         )
                     ).build()
