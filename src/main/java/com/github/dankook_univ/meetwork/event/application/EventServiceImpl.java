@@ -22,7 +22,7 @@ import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfileException;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
-import com.github.dankook_univ.meetwork.quiz.infra.persistence.QuizRepositoryImpl;
+import com.github.dankook_univ.meetwork.quiz.application.QuizServiceImpl;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.infra.persistence.QuizParticipantsRepositoryImpl;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,7 +47,7 @@ public class EventServiceImpl implements EventService {
 
     private final ChatRoomRepositoryImpl chatRoomRepository;
 
-    private final QuizRepositoryImpl quizRepository;
+    private final QuizServiceImpl quizService;
 
     private final FileServiceImpl fileService;
 
@@ -256,7 +256,7 @@ public class EventServiceImpl implements EventService {
 
         boardService.deleteByEventId(eventId);
         chatRoomRepository.deleteByEventId(eventId);
-        quizRepository.deleteByEventId(eventId);
+        quizService.deleteByEventId(eventId);
         invitationRepository.deleteByEventId(eventId);
         eventRepository.delete(event);
         profileService.deleteByEventId(eventId);

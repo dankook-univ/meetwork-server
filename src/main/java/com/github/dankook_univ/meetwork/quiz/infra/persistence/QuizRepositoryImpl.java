@@ -54,6 +54,11 @@ public class QuizRepositoryImpl implements QuizRepository {
     }
 
     @Override
+    public List<Quiz> getByEventId(String eventId) {
+        return quizRepository.getByEventId(UUID.fromString(eventId));
+    }
+
+    @Override
     public Optional<Quiz> getByName(String name) {
         return quizRepository.getByName(name);
     }
@@ -63,8 +68,4 @@ public class QuizRepositoryImpl implements QuizRepository {
         quizRepository.delete(quiz);
     }
 
-    @Override
-    public void deleteByEventId(String eventId) {
-        quizRepository.deleteAllByEventId(UUID.fromString(eventId));
-    }
 }

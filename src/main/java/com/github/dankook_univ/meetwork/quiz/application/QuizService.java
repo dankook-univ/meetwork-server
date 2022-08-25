@@ -9,6 +9,7 @@ import com.github.dankook_univ.meetwork.quiz.question.domain.Question;
 import com.github.dankook_univ.meetwork.quiz.question.infra.http.request.QuestionCheckRequest;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.domain.QuizParticipants;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface QuizService {
 
@@ -31,4 +32,7 @@ public interface QuizService {
     Long count(String memberId, String quizId);
 
     void delete(String memberId, String quizId);
+
+    @Transactional
+    void deleteByEventId(String eventId);
 }
