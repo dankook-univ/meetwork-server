@@ -24,7 +24,6 @@ import com.github.dankook_univ.meetwork.quiz.question.infra.persistence.Question
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.domain.QuizParticipants;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.infra.persistence.QuizParticipantsRepositoryImpl;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +36,6 @@ public class QuizServiceImpl implements QuizService {
     private final QuizRepositoryImpl quizRepository;
     private final QuizParticipantsRepositoryImpl quizParticipantsRepository;
     private final QuestionRepositoryImpl questionRepository;
-
     private final ProfileServiceImpl profileService;
 
 
@@ -50,7 +48,7 @@ public class QuizServiceImpl implements QuizService {
         }
 
         quizRepository.getByName(request.getName())
-            .ifPresent((m) -> {
+            .ifPresent((it) -> {
                 throw new ExistingQuizNameException();
             });
 
@@ -69,7 +67,8 @@ public class QuizServiceImpl implements QuizService {
                     .answer(question.getAnswer())
                     .choice(question.getChoice())
                     .build()
-            ));
+            )
+        );
 
         return quiz;
     }
@@ -83,9 +82,10 @@ public class QuizServiceImpl implements QuizService {
             throw new NotFoundQuizPermissionException();
         }
 
-        if (!Objects.equals(quiz.getName(), request.getName())) {
+        if (!quiz.getName().equals(request.getName())) {
             quiz.update(request.getName());
         }
+
         request.getQuestions().stream()
             .map(
                 (it) -> QuestionInformation.builder()
@@ -135,7 +135,7 @@ public class QuizServiceImpl implements QuizService {
         Profile profile = profileService.get(memberId, quiz.getEvent().getId().toString());
 
         quizParticipantsRepository.getByProfileIdAndQuizId(profile.getId().toString(), quizId)
-            .ifPresent(m -> {
+            .ifPresent(it -> {
                 throw new AlreadyParticipantedQuizException();
             });
 
@@ -157,7 +157,7 @@ public class QuizServiceImpl implements QuizService {
             .orElseThrow(NotFoundQuizException::new);
         Question question = questionRepository.getById(request.getQuestionId())
             .orElseThrow(NotFoundQuestionException::new);
-        if (question.getQuiz() != quiz) {
+        if (!question.getQuiz().getId().equals(quiz.getId())) {
             throw new QuestionAndQuizRelationshipException();
         }
 
@@ -167,10 +167,11 @@ public class QuizServiceImpl implements QuizService {
             question.getQuiz().getId().toString()
         ).orElseThrow(NotFoundQuizParticipantsException::new);
 
-        if (Objects.equals(request.getAnswer(), question.getAnswer())) {
+        if (request.getAnswer().equals(question.getAnswer())) {
             quizParticipants.addCount();
             return true;
         }
+
         return false;
     }
 
@@ -207,10 +208,7 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public Long count(String memberId, String quizId) {
         Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
-
-        Boolean isMember = profileService.isEventMember(memberId,
-            quiz.getEvent().getId().toString());
-        if (!isMember) {
+        if (!profileService.isEventMember(memberId, quiz.getEvent().getId().toString())) {
             throw new NotFoundProfileException();
         }
 

@@ -13,7 +13,6 @@ import com.github.dankook_univ.meetwork.post.infra.persistence.PostRepositoryImp
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -56,7 +55,7 @@ public class PostServiceImpl implements PostService {
         if (board.getAdminOnly() && !profile.getIsAdmin()) {
             throw new NotFoundBoardPermissionException();
         }
-        if (!Objects.equals(profile.getId().toString(), post.getWriter().getId().toString())) {
+        if (!profile.getId().equals(post.getWriter().getId())) {
             throw new NotFoundPostPermissionException();
         }
 
@@ -65,14 +64,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post get(String memberId, String postId) {
-        Post post = postRepository.getById(postId)
-            .orElseThrow(NotFoundPostException::new);
+        Post post = postRepository.getById(postId).orElseThrow(NotFoundPostException::new);
 
-        Boolean isEventMember = profileService.isEventMember(
-            memberId,
-            post.getBoard().getEvent().getId().toString()
-        );
-        if (!isEventMember) {
+        if (
+            !profileService.isEventMember(memberId, post.getBoard().getEvent().getId().toString())
+        ) {
             throw new NotFoundEventPermissionException();
         }
 
@@ -83,11 +79,7 @@ public class PostServiceImpl implements PostService {
     public List<Post> getList(String memberId, String boardId, int page) {
         Board board = boardService.get(boardId);
 
-        Boolean isEventMember = profileService.isEventMember(
-            memberId,
-            board.getEvent().getId().toString()
-        );
-        if (!isEventMember) {
+        if (!profileService.isEventMember(memberId, board.getEvent().getId().toString())) {
             throw new NotFoundEventPermissionException();
         }
 
@@ -103,10 +95,10 @@ public class PostServiceImpl implements PostService {
             post.getBoard().getEvent().getId().toString()
         );
 
-        if (post.getWriter() == profile || profile.getIsAdmin()) {
-            postRepository.delete(post);
-        } else {
+        if (!(post.getWriter() == profile || profile.getIsAdmin())) {
             throw new NotFoundPostPermissionException();
         }
+        
+        postRepository.delete(post);
     }
 }

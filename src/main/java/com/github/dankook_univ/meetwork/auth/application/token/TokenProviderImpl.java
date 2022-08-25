@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,6 +32,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Component
 @Transactional(readOnly = true)
 public class TokenProviderImpl implements TokenProvider {
@@ -82,20 +84,18 @@ public class TokenProviderImpl implements TokenProvider {
             .accessToken(accessToken)
             .refreshToken(refreshToken)
             .accessTokenExpirationDate(
-                new Timestamp(getClaims(accessToken).getExpiration().getTime()).toLocalDateTime())
+                new Timestamp(getClaims(accessToken).getExpiration().getTime()).toLocalDateTime()
+            )
             .refreshTokenExpirationDate(
-                new Timestamp(getClaims(refreshToken).getExpiration().getTime()).toLocalDateTime())
+                new Timestamp(getClaims(refreshToken).getExpiration().getTime()).toLocalDateTime()
+            )
             .build();
     }
 
     @Override
     public boolean remove(Auth auth) {
-        try {
-            tokenRepository.delete(auth.getId().toString());
-            return true;
-        } catch (Exception exception) {
-            return false;
-        }
+        tokenRepository.delete(auth.getId().toString());
+        return true;
     }
 
     @Override
@@ -105,8 +105,9 @@ public class TokenProviderImpl implements TokenProvider {
 
     @Override
     public Auth parse(String token) {
-        UUID memberId = UUID.fromString(getClaims(token).get("memberId", String.class));
-        return authRepository.getByMemberId(memberId).orElseThrow(NotFoundAuthException::new);
+        return authRepository.getByMemberId(
+            UUID.fromString(getClaims(token).get("memberId", String.class))
+        ).orElseThrow(NotFoundAuthException::new);
     }
 
     @Override
@@ -134,7 +135,11 @@ public class TokenProviderImpl implements TokenProvider {
         Claims claims = Jwts.claims();
         claims.put("memberId", auth.getMember().getId());
         claims.put("roles",
-            auth.getRoles().stream().map(Role::getType).collect(Collectors.toList()));
+            auth.getRoles().stream()
+                .map(Role::getType)
+                .collect(Collectors.toList())
+        );
+
         return claims;
     }
 
@@ -146,6 +151,7 @@ public class TokenProviderImpl implements TokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
         } catch (ExpiredJwtException e) {
+            log.error("[TokenProviderImpl Error] 토큰이 만료되었습니다. ({})", e.getMessage());
             return e.getClaims();
         }
     }

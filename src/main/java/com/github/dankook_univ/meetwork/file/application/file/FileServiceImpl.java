@@ -24,8 +24,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileServiceImpl implements FileService {
 
     private static final Tika tika = new Tika();
-    private static final List<String> FILETYPE = Arrays.asList("image/jpeg", "image/png",
-        "image/jpg");
+    private static final List<String> FILETYPE = Arrays.asList(
+        "image/jpeg",
+        "image/png",
+        "image/jpg"
+    );
     private final FileRepositoryImpl fileRepository;
     private final StorageServiceImpl storageService;
     private final MemberServiceImpl memberService;
@@ -56,32 +59,33 @@ public class FileServiceImpl implements FileService {
             );
 
             storageService.upload(multipartFile, file.getKey());
-
         } catch (IOException e) {
             throw new FailedToFileUploadException();
         } catch (FailedToFileUploadException e) {
             if (file != null) {
                 fileRepository.delete(file.getId().toString());
             }
-        } finally {
-            return file;
         }
+
+        return file;
     }
 
     @Override
     @Transactional
     public void delete(String fileId) {
-        fileRepository.getById(fileId).ifPresent(file -> storageService.delete(file.getKey()));
+        fileRepository.getById(fileId).ifPresent((file) -> storageService.delete(file.getKey()));
         fileRepository.delete(fileId);
     }
 
     @Override
     @Transactional
     public void deleteByUploaderId(String uploaderId) {
-        List<File> list = fileRepository.getByUploaderId(uploaderId);
-        for (File file : list) {
-            storageService.delete(file.getKey());
-            fileRepository.delete(file);
-        }
+        fileRepository.getByUploaderId(uploaderId)
+            .forEach(
+                file -> {
+                    storageService.delete(file.getKey());
+                    fileRepository.delete(file);
+                }
+            );
     }
 }

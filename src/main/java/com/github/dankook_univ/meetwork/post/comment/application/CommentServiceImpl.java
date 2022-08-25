@@ -10,7 +10,6 @@ import com.github.dankook_univ.meetwork.post.comment.infra.persistence.CommentRe
 import com.github.dankook_univ.meetwork.post.domain.Post;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,7 +57,7 @@ public class CommentServiceImpl implements CommentService {
             comment.getPost().getBoard().getEvent().getId().toString()
         );
 
-        if (!Objects.equals(profile.getId().toString(), comment.getWriter().getId().toString())) {
+        if (!profile.getId().equals(comment.getWriter().getId())) {
             throw new NotFoundCommentPermissionException();
         }
 
@@ -81,6 +80,5 @@ public class CommentServiceImpl implements CommentService {
         } else {
             throw new NotFoundCommentPermissionException();
         }
-
     }
 }

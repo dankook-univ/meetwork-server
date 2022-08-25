@@ -27,7 +27,6 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepositoryImpl boardRepository;
     private final ProfileServiceImpl profileService;
     private final EventRepositoryImpl eventRepository;
-
     private final PostRepositoryImpl postRepository;
 
     @Override
@@ -37,13 +36,18 @@ public class BoardServiceImpl implements BoardService {
             throw new NotFoundBoardPermissionException();
         }
 
-        if (boardRepository.getByEventIdAndName(
-            request.getEventId(), request.getName()).isPresent()) {
+        if (
+            boardRepository.getByEventIdAndName(
+                request.getEventId(),
+                request.getName()
+            ).isPresent()
+        ) {
             throw new ExistingBoardNameException();
         }
 
         Event event = eventRepository.getById(request.getEventId())
             .orElseThrow(NotFoundEventException::new);
+
         return boardRepository.save(
             Board.builder()
                 .event(event)
@@ -57,7 +61,6 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     public Board update(String memberId, String boardId, BoardUpdateRequest request) {
         Board board = getById(boardId);
-
         if (!profileService.get(memberId, board.getEvent().getId().toString()).getIsAdmin()) {
             throw new NotFoundBoardPermissionException();
         }
@@ -72,7 +75,9 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public List<Board> getList(String memberId, String eventId) {
-        profileService.get(memberId, eventId);
+        if (!profileService.isEventMember(memberId, eventId)) {
+            throw new NotFoundBoardPermissionException();
+        }
 
         return boardRepository.getListByEventId(eventId);
     }
@@ -81,7 +86,6 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     public void delete(String memberId, String boardId) {
         Board board = getById(boardId);
-
         if (!profileService.get(memberId, board.getEvent().getId().toString()).getIsAdmin()) {
             throw new NotFoundBoardPermissionException();
         }
@@ -92,19 +96,21 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public void deleteByEventId(String eventId) {
-        List<Board> list = boardRepository.getListByEventId(eventId);
-        for (Board board : list) {
+        List<Board> boards = boardRepository.getListByEventId(eventId);
+        boards.forEach(board -> {
             postRepository.deleteByBoardId(board.getId().toString());
             boardRepository.delete(board.getId().toString());
-        }
+        });
     }
 
     public Map<String, Boolean> automaticBoard() {
-        Map<String, Boolean> list = new LinkedHashMap<String, Boolean>();
-        list.put("공지 게시판", true);
-        list.put("Q&A 게시판", false);
-        list.put("자유 게시판", false);
-        return list;
+        Map<String, Boolean> boards = new LinkedHashMap<>();
+
+        boards.put("공지 게시판", true);
+        boards.put("Q&A 게시판", false);
+        boards.put("자유 게시판", false);
+
+        return boards;
     }
 
     private Board getById(String boardId) {

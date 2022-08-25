@@ -4,6 +4,7 @@ import com.github.dankook_univ.meetwork.chat.domain.room.ChatRoom;
 import com.github.dankook_univ.meetwork.chat.infra.http.response.ChatMessageResponse;
 import com.github.dankook_univ.meetwork.common.domain.Core;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
+import io.jsonwebtoken.lang.Assert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -29,6 +30,10 @@ public class ChatMessage extends Core {
 
     @Builder
     public ChatMessage(ChatRoom room, Profile sender, String message) {
+        Assert.isInstanceOf(ChatRoom.class, room, "room must be instance of ChatRoom");
+        Assert.isInstanceOf(Profile.class, sender, "sender must be instance of Profile");
+        Assert.hasText(message, "message must not be empty");
+
         this.room = room;
         this.sender = sender;
         this.message = message;

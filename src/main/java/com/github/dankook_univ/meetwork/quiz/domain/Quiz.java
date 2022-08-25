@@ -32,10 +32,7 @@ public class Quiz extends Core {
     private Event event;
 
     @Builder
-    public Quiz(
-        String name,
-        Event event
-    ) {
+    public Quiz(String name, Event event) {
         Assert.hasText(name, "name must not be empty");
         Assert.notNull(event, "event must not be null");
 

@@ -27,7 +27,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     private final ChatRoomRepositoryImpl chatRoomRepository;
     private final ChatParticipantRepositoryImpl chatParticipantRepository;
-
     private final ProfileServiceImpl profileService;
 
     @Override

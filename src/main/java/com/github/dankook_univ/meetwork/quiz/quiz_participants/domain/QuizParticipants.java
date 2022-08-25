@@ -65,6 +65,7 @@ public class QuizParticipants extends Core {
 
     public QuizParticipants setRanking(int ranking) {
         this.ranking = ranking;
+        
         return this;
     }
 

@@ -5,6 +5,7 @@ import com.github.dankook_univ.meetwork.chat.application.message.ChatMessageServ
 import com.github.dankook_univ.meetwork.chat.exceptions.NotParticipatedMemberException;
 import com.github.dankook_univ.meetwork.chat.infra.socket.request.MessageRequest;
 import com.github.dankook_univ.meetwork.member.domain.Member;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -21,7 +22,8 @@ public class MessageController {
     @MessageMapping("/chat/message")
     @Transactional
     public void message(
-        MessageRequest request, @Header("Authorization") String token
+        @Valid MessageRequest request,
+        @Header("Authorization") String token
     ) throws NotParticipatedMemberException {
         Member member = tokenProvider.parse(token.substring(7)).getMember();
 

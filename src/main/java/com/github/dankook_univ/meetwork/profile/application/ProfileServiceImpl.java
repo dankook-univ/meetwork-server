@@ -40,12 +40,17 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public Profile create(String memberId, Event event, ProfileCreateRequest request,
-        Boolean isAdmin) {
+    public Profile create(
+        String memberId,
+        Event event,
+        ProfileCreateRequest request,
+        Boolean isAdmin
+    ) {
         if (
             profileRepository.getByEventIdAndNickname(
                 event.getId().toString(),
-                request.getNickname()).isPresent()
+                request.getNickname()
+            ).isPresent()
         ) {
             throw new ExistingNicknameException();
         }
@@ -61,9 +66,11 @@ public class ProfileServiceImpl implements ProfileService {
         );
 
         if (request.getProfileImage() != null) {
-            File file = fileService.upload(memberId, FileType.profile, request.getProfileImage());
-            profile.updateProfileImage(file);
+            profile.updateProfileImage(
+                fileService.upload(memberId, FileType.profile, request.getProfileImage())
+            );
         }
+
         return profile;
     }
 
@@ -82,12 +89,15 @@ public class ProfileServiceImpl implements ProfileService {
             if (profile.getProfileImage() != null) {
                 fileService.delete(profile.getProfileImage().getId().toString());
             }
+
             File file = fileService.upload(memberId, FileType.profile, request.getProfileImage());
             profile.updateProfileImage(file);
         }
+
         if (request.getIsProfileImageDeleted() && profile.getProfileImage() != null) {
             fileService.delete(profile.getProfileImage().getId().toString());
         }
+
         return profile;
     }
 

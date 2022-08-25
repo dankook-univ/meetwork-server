@@ -25,7 +25,7 @@ import org.springframework.util.Assert;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Auth extends Core {
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "auth", cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Role.class, mappedBy = "auth", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private final List<Role> roles = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -33,15 +33,15 @@ public class Auth extends Core {
 
     private String clientId;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToOne(targetEntity = Member.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "member_id")
     private Member member;
 
     @Builder
     public Auth(AuthType type, String clientId, Member member) {
-        Assert.isInstanceOf(AuthType.class, type, "type should be instance of AuthType");
+        Assert.isInstanceOf(AuthType.class, type, "type must be instance of AuthType");
         Assert.hasText(clientId, "clientId must not be empty");
-        Assert.isInstanceOf(Member.class, member, "member should be instance of Member");
+        Assert.isInstanceOf(Member.class, member, "member must be instance of Member");
 
         this.type = type;
         this.clientId = clientId;

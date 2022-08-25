@@ -58,8 +58,11 @@ public class Question extends Core {
         this.choice = choice;
     }
 
-    public void update(@Nullable String content, @Nullable String answer,
-        @Nullable List<String> choice) {
+    public void update(
+        @Nullable String content,
+        @Nullable String answer,
+        @Nullable List<String> choice
+    ) {
         if (content != null) {
             this.content = content.trim();
         }

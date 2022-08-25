@@ -41,9 +41,10 @@ public class StorageServiceImpl implements StorageService {
             );
 
             storage.putObject(putObjectRequest);
+
             setAccessLevel(key);
         } catch (AmazonS3Exception | IOException e) {
-            log.error("[StorageService Exception] 파일 업로드 오류: {}", e.getMessage());
+            log.error("[StorageService Exception] 파일 업로드 오류 ({})", e.getMessage());
             throw new FailedToFileUploadException();
         }
     }
@@ -53,7 +54,7 @@ public class StorageServiceImpl implements StorageService {
         try {
             storage.deleteObject(bucket, key);
         } catch (AmazonS3Exception e) {
-            log.error("[StorageService Exception] 파일 삭제 오류: {}", e.getMessage());
+            log.error("[StorageService Exception] 파일 삭제 오류 ({})", e.getMessage());
             throw new FailedToFileDeleteException();
         }
     }

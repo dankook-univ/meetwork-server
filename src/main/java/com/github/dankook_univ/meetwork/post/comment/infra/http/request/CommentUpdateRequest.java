@@ -1,6 +1,5 @@
 package com.github.dankook_univ.meetwork.post.comment.infra.http.request;
 
-import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,9 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class CommentUpdateRequest {
 
-    @NotBlank
     String content;
 
-    @NotBlank
     String postId;
 }

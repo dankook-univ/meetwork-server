@@ -60,7 +60,6 @@ public class EventServiceImpl implements EventService {
 
     private final InvitationRepositoryImpl invitationRepository;
 
-
     @Override
     public Event get(String memberId, String eventId) {
         if (!profileService.isEventMember(memberId, eventId)) {
@@ -190,9 +189,7 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public Event codeJoin(String memberId, String code, ProfileCreateRequest request) {
         Event event = eventRepository.getByCode(code).orElseThrow(NotFoundEventException::new);
-
-        Boolean isMember = profileService.isEventMember(memberId, event.getId().toString());
-        if (isMember) {
+        if (profileService.isEventMember(memberId, event.getId().toString())) {
             return event;
         }
 
@@ -202,6 +199,7 @@ public class EventServiceImpl implements EventService {
             request,
             false
         );
+
         return event;
     }
 
@@ -231,9 +229,7 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public void secession(String memberId, String eventId) {
-        Profile target = profileService.get(memberId, eventId);
-
-        deleteAll(target);
+        deleteAll(profileService.get(memberId, eventId));
     }
 
     @Override
@@ -244,9 +240,7 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundEventPermissionException();
         }
 
-        Profile target = profileService.getById(request.getProfileId());
-        
-        deleteAll(target);
+        deleteAll(profileService.getById(request.getProfileId()));
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.github.dankook_univ.meetwork.file.domain;
 import com.github.dankook_univ.meetwork.common.domain.Core;
 import com.github.dankook_univ.meetwork.file.infra.http.response.FileResponse;
 import com.github.dankook_univ.meetwork.member.domain.Member;
-import com.github.dankook_univ.meetwork.profile.domain.Profile;
+import io.jsonwebtoken.lang.Assert;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,6 +38,11 @@ public class File extends Core {
 
     @Builder
     public File(Member uploader, FileType type, String mime, String name) {
+        Assert.isInstanceOf(Member.class, uploader, "member must be instance of Member");
+        Assert.isInstanceOf(FileType.class, type, "type must be instance of FileType");
+        Assert.hasText(mime, "mime must not be empty");
+        Assert.hasText(name, "name must not be empty");
+
         this.uploader = uploader;
         this.key = type + "/" + UUID.randomUUID() + "." + mime;
         this.type = type;

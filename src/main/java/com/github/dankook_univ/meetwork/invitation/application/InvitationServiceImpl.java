@@ -16,7 +16,6 @@ import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,36 +43,42 @@ public class InvitationServiceImpl implements InvitationService {
 
         Event event = eventService.get(memberId, request.getEventId());
 
-        List<InvitationMemberInformation> list =
-            request.getInvitationInformations().stream()
-                .filter((it) -> memberService.getByEmail(it.getEmail()).isPresent())
-                .map((it) -> InvitationMemberInformation.builder()
-                    .member(memberService.getByEmail(it.getEmail())
-                        .orElseThrow(NotFoundMemberException::new))
-                    .isAdmin(it.getIsAdmin())
-                    .build()
+        request.getInvitationInformations().stream()
+            .filter((it) -> memberService.getByEmail(it.getEmail()).isPresent())
+            .map((it) -> InvitationMemberInformation.builder()
+                .member(
+                    memberService.getByEmail(it.getEmail())
+                        .orElseThrow(NotFoundMemberException::new)
                 )
-                .collect(Collectors.toList());
+                .isAdmin(it.getIsAdmin())
+                .build()
+            )
+            .forEach(
+                invitationMemberInformation -> {
+                    if (
+                        invitationRepository.getByGuestIdAndEventId(
+                            invitationMemberInformation.getMember().getId().toString(),
+                            request.getEventId()
+                        ).isEmpty()
+                    ) {
+                        invitationRepository.save(
+                            Invitation.builder()
+                                .event(event)
+                                .guest(invitationMemberInformation.getMember())
+                                .isAdmin(invitationMemberInformation.getIsAdmin())
+                                .build()
+                        );
+                    }
+                }
+            );
 
-        for (InvitationMemberInformation it : list) {
-            if (invitationRepository.getByGuestIdAndEventId(
-                it.getMember().getId().toString(), request.getEventId()
-            ).isEmpty()) {
-                invitationRepository.save(
-                    Invitation.builder()
-                        .event(event)
-                        .guest(it.getMember())
-                        .isAdmin(it.getIsAdmin())
-                        .build()
-                );
-            }
-        }
         return true;
     }
 
     @Override
     public List<Invitation> getList(String memberId) {
         Member member = memberService.getById(memberId);
+
         return invitationRepository.getList(member.getId().toString());
     }
 
@@ -98,6 +103,7 @@ public class InvitationServiceImpl implements InvitationService {
                 .build(),
             invitation.getIsAdmin()
         );
+
         return true;
     }
 
@@ -107,6 +113,7 @@ public class InvitationServiceImpl implements InvitationService {
         Invitation invitation = invitationRepository.getByGuestIdAndEventId(memberId, eventId)
             .orElseThrow(NotFoundInvitationException::new);
         invitationRepository.delete(invitation);
+        
         return true;
     }
 

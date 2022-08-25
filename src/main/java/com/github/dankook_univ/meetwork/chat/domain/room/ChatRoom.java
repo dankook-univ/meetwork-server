@@ -6,6 +6,7 @@ import com.github.dankook_univ.meetwork.chat.infra.http.response.ChatRoomRespons
 import com.github.dankook_univ.meetwork.common.domain.Core;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
+import io.jsonwebtoken.lang.Assert;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -39,6 +40,11 @@ public class ChatRoom extends Core {
 
     @Builder
     public ChatRoom(Event event, Profile organizer, String name, Boolean isPrivate) {
+        Assert.isInstanceOf(Event.class, event, "event must be instance of Event");
+        Assert.isInstanceOf(Profile.class, organizer, "organizer must be instance of Profile");
+        Assert.hasText(name, "name must not be empty");
+        Assert.notNull(isPrivate, "isPrivate must not be null");
+
         this.event = event;
         this.organizer = organizer;
         this.name = name;

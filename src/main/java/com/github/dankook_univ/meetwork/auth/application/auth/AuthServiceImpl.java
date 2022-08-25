@@ -34,10 +34,9 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public TokenResponse signIn(SignInRequest request) {
         Auth auth = authRepository.getByAuthTypeAndClientId(
-                request.getType(),
-                getClientId(request.getType(), request.getToken())
-            )
-            .orElseThrow(NotFoundAuthException::new);
+            request.getType(),
+            getClientId(request.getType(), request.getToken())
+        ).orElseThrow(NotFoundAuthException::new);
 
         return tokenProvider.create(auth);
     }
@@ -46,27 +45,25 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public TokenResponse signUp(SignUpRequest request) {
         String clientId = getClientId(request.getType(), request.getToken());
-        Auth existingAuth = authRepository.getByAuthTypeAndClientId(request.getType(), clientId)
-            .orElse(null);
-        if (existingAuth != null) {
+        if (authRepository.getByAuthTypeAndClientId(request.getType(), clientId).isPresent()) {
             throw new ExistingAuthException();
         }
 
-        Auth auth = authRepository.save(
-            Auth.builder()
-                .type(request.getType())
-                .clientId(getClientId(request.getType(), request.getToken()))
-                .member(
-                    memberRepository.save(
-                        Member.builder()
-                            .name(request.getName())
-                            .email(request.getEmail())
-                            .build()
-                    )
-                ).build()
+        return tokenProvider.create(
+            authRepository.save(
+                Auth.builder()
+                    .type(request.getType())
+                    .clientId(getClientId(request.getType(), request.getToken()))
+                    .member(
+                        memberRepository.save(
+                            Member.builder()
+                                .name(request.getName())
+                                .email(request.getEmail())
+                                .build()
+                        )
+                    ).build()
+            )
         );
-
-        return tokenProvider.create(auth);
     }
 
     @Override
@@ -75,8 +72,7 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidTokenException();
         }
 
-        Auth auth = tokenProvider.parse(request.getRefreshToken());
-        return tokenProvider.create(auth);
+        return tokenProvider.create(tokenProvider.parse(request.getRefreshToken()));
     }
 
     @Override
