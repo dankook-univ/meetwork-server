@@ -134,7 +134,8 @@ public class TokenProviderImpl implements TokenProvider {
     private Claims setClaims(Auth auth) {
         Claims claims = Jwts.claims();
         claims.put("memberId", auth.getMember().getId());
-        claims.put("roles",
+        claims.put(
+            "roles",
             auth.getRoles().stream()
                 .map(Role::getType)
                 .collect(Collectors.toList())

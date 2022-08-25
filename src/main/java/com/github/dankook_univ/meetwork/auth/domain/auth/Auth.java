@@ -26,7 +26,7 @@ import org.springframework.util.Assert;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Auth extends Core {
 
-    @OneToMany(targetEntity = Role.class, mappedBy = "auth", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(targetEntity = Role.class, mappedBy = "auth", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final List<Role> roles = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
