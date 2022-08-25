@@ -188,6 +188,9 @@ public class PostServiceImplTest {
         Event event = createEvent(member);
         Board adminOnlyBoard = createBoard(member, event, "소통방", true);
 
+        assertThat(adminOnlyBoard).isNotNull().isInstanceOf(Board.class);
+        assertThat(adminOnlyBoard.getAdminOnly()).isTrue();
+
         Post firstPost = postService.create(
             member.getId().toString(),
             PostCreateRequest.builder()
@@ -206,10 +209,9 @@ public class PostServiceImplTest {
         List<Post> list = postService.getList(
             member.getId().toString(),
             adminOnlyBoard.getId().toString(),
-            1);
+            1
+        );
 
-        assertThat(adminOnlyBoard).isNotNull();
-        assertThat(adminOnlyBoard.getAdminOnly()).isTrue();
         assertThat(firstPost).isNotNull();
         assertThat(secondPost).isNotNull();
 

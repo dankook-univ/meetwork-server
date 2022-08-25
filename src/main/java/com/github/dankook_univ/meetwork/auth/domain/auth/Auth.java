@@ -7,6 +7,7 @@ import com.github.dankook_univ.meetwork.member.domain.Member;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -31,6 +32,7 @@ public class Auth extends Core {
     @Enumerated(EnumType.STRING)
     private AuthType type;
 
+    @Column
     private String clientId;
 
     @OneToOne(targetEntity = Member.class, fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)

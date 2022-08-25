@@ -71,7 +71,7 @@ class ChatMessageServiceImplTest {
     @Test
     @DisplayName("채팅방 메시지를 생성할 수 있어요.")
     public void createChatMessage() throws NotParticipatedMemberException {
-        Member member = createMember("name", "email");
+        Member member = createMember("name", "meetwork@meetwork.kr");
         Event event = createEvent(member);
         ChatRoom room = createChatRoom(member, event);
 
@@ -122,7 +122,7 @@ class ChatMessageServiceImplTest {
     @Test
     @DisplayName("채팅방 메시지를 조회할 수 있어요.")
     public void getChatMessages() throws NotParticipatedMemberException {
-        Member member = createMember("name", "email");
+        Member member = createMember("name", "meetwork@meetwork.kr");
         Event event = createEvent(member);
         ChatRoom room = createChatRoom(member, event);
 

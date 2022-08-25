@@ -2,7 +2,6 @@ package com.github.dankook_univ.meetwork.auth.infra.http.request;
 
 import com.github.dankook_univ.meetwork.auth.domain.auth.AuthType;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -14,8 +13,7 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SignUpRequest {
 
-
-    @NotEmpty
+    @NotBlank
     private AuthType type;
 
     @NotBlank

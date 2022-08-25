@@ -17,7 +17,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     properties:
       hibernate:
         show_sql: true
@@ -39,5 +39,5 @@ storage:
   bucket: meetwork
   end-point: https://kr.object.ncloudstorage.com
   region: kr-standard
-  access-key: xvbezHVRWRZHFTDp8ORZ
-  secret-key: DcRdI4ahBL48avKV7gYKvxZmqZ2VjOlPVurietKD
+  access-key: accessKey
+  secret-key: secretKey

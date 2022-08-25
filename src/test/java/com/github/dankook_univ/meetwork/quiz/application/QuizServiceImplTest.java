@@ -34,7 +34,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -84,7 +83,6 @@ public class QuizServiceImplTest {
 
     @Test
     @DisplayName("관리자는 퀴즈를 생성할 수 있어요.")
-    @Rollback(value = false)
     public void create() {
         Member member = createMember("name", "meetwork@meetwork.kr");
         Event event = createEvent(member);
@@ -209,7 +207,6 @@ public class QuizServiceImplTest {
 
     @Test
     @DisplayName("퀴즈에 참여하지 않은 사람도 목록을 가져올 수 있어요.")
-    @Rollback(value = false)
     public void getListWithNoParticipant() {
         Member organizer = createMember("organizer", "meetwork@meetwork.kr");
         Event event = createEvent(organizer);
@@ -254,7 +251,7 @@ public class QuizServiceImplTest {
             event.getId().toString()
         );
 
-        assertThat(list.get(0).getIsFinished()).isTrue();
+        assertThat(participantList.get(0).getIsFinished()).isTrue();
     }
 
     @Test
