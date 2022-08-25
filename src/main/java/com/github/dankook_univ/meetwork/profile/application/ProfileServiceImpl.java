@@ -1,5 +1,6 @@
 package com.github.dankook_univ.meetwork.profile.application;
 
+import com.github.dankook_univ.meetwork.common.service.SecurityUtilService;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.file.application.file.FileServiceImpl;
 import com.github.dankook_univ.meetwork.file.domain.File;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ProfileServiceImpl implements ProfileService {
 
+    private final SecurityUtilService securityUtilService;
     private final ProfileRepositoryImpl profileRepository;
     private final MemberServiceImpl memberService;
     private final FileServiceImpl fileService;
@@ -49,7 +51,7 @@ public class ProfileServiceImpl implements ProfileService {
         if (
             profileRepository.getByEventIdAndNickname(
                 event.getId().toString(),
-                request.getNickname()
+                securityUtilService.protectInputValue(request.getNickname())
             ).isPresent()
         ) {
             throw new ExistingNicknameException();
@@ -59,8 +61,8 @@ public class ProfileServiceImpl implements ProfileService {
             Profile.builder()
                 .member(memberService.getById(memberId))
                 .event(event)
-                .nickname(request.getNickname())
-                .bio(request.getBio())
+                .nickname(securityUtilService.protectInputValue(request.getNickname()))
+                .bio(securityUtilService.protectInputValue(request.getBio()))
                 .isAdmin(isAdmin)
                 .build()
         );
@@ -83,7 +85,11 @@ public class ProfileServiceImpl implements ProfileService {
             throw new NotFoundProfilePermissionException();
         }
 
-        profile.update(request.getNickname(), request.getBio(), null);
+        profile.update(
+            securityUtilService.protectInputValue(request.getNickname()),
+            securityUtilService.protectInputValue(request.getBio()),
+            null
+        );
 
         if (request.getProfileImage() != null) {
             if (profile.getProfileImage() != null) {

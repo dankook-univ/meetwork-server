@@ -1,5 +1,6 @@
 package com.github.dankook_univ.meetwork.invitation.application;
 
+import com.github.dankook_univ.meetwork.common.service.SecurityUtilService;
 import com.github.dankook_univ.meetwork.event.application.EventServiceImpl;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventPermissionException;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class InvitationServiceImpl implements InvitationService {
 
+    private final SecurityUtilService securityUtilService;
     private final InvitationRepositoryImpl invitationRepository;
 
     private final ProfileServiceImpl profileService;
@@ -44,10 +46,14 @@ public class InvitationServiceImpl implements InvitationService {
         Event event = eventService.get(memberId, request.getEventId());
 
         request.getInvitationInformations().stream()
-            .filter((it) -> memberService.getByEmail(it.getEmail()).isPresent())
+            .filter(
+                (it) -> memberService.getByEmail(
+                    securityUtilService.protectInputValue(it.getEmail())
+                ).isPresent()
+            )
             .map((it) -> InvitationMemberInformation.builder()
                 .member(
-                    memberService.getByEmail(it.getEmail())
+                    memberService.getByEmail(securityUtilService.protectInputValue(it.getEmail()))
                         .orElseThrow(NotFoundMemberException::new)
                 )
                 .isAdmin(it.getIsAdmin())
@@ -113,7 +119,7 @@ public class InvitationServiceImpl implements InvitationService {
         Invitation invitation = invitationRepository.getByGuestIdAndEventId(memberId, eventId)
             .orElseThrow(NotFoundInvitationException::new);
         invitationRepository.delete(invitation);
-        
+
         return true;
     }
 

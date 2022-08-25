@@ -162,7 +162,7 @@ public class BoardServiceImplTest {
         assertThat(list.size()).isEqualTo(3);
 
         assertThat(list.get(0).getName()).isEqualTo("공지 게시판");
-        assertThat(list.get(1).getName()).isEqualTo("Q&A 게시판");
+        assertThat(list.get(1).getName()).isEqualTo("QnA 게시판");
         assertThat(list.get(2).getName()).isEqualTo("자유 게시판");
     }
 

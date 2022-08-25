@@ -7,6 +7,7 @@ import com.github.dankook_univ.meetwork.chat.domain.room.ChatRoom;
 import com.github.dankook_univ.meetwork.chat.exceptions.NotParticipatedMemberException;
 import com.github.dankook_univ.meetwork.chat.infra.http.response.ChatMessageResponse;
 import com.github.dankook_univ.meetwork.chat.infra.persistence.message.ChatMessageRepositoryImpl;
+import com.github.dankook_univ.meetwork.common.service.SecurityUtilService;
 import com.github.dankook_univ.meetwork.member.domain.Member;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ChatMessageServiceImpl implements ChatMessageService {
 
+    private final SecurityUtilService securityUtilService;
     private final ChatRoomServiceImpl chatRoomService;
     private final ProfileServiceImpl profileService;
     private final ChatMessageRepositoryImpl chatMessageRepository;
@@ -47,7 +49,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             ChatMessage.builder()
                 .room(room)
                 .sender(profile)
-                .message(message)
+                .message(securityUtilService.protectInputValue(message))
                 .build()
         );
         room.appendMessage(chatMessage);

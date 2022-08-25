@@ -13,6 +13,7 @@ import com.github.dankook_univ.meetwork.auth.infra.http.request.SignInRequest;
 import com.github.dankook_univ.meetwork.auth.infra.http.request.SignUpRequest;
 import com.github.dankook_univ.meetwork.auth.infra.http.response.TokenResponse;
 import com.github.dankook_univ.meetwork.auth.infra.persistence.AuthRepositoryImpl;
+import com.github.dankook_univ.meetwork.common.service.SecurityUtilService;
 import com.github.dankook_univ.meetwork.member.domain.Member;
 import com.github.dankook_univ.meetwork.member.infra.persistence.MemberRepositoryImpl;
 import java.util.UUID;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AuthServiceImpl implements AuthService {
 
+    private final SecurityUtilService securityUtilService;
     private final TokenProviderImpl tokenProvider;
     private final AuthRepositoryImpl authRepository;
     private final MemberRepositoryImpl memberRepository;
@@ -57,8 +59,8 @@ public class AuthServiceImpl implements AuthService {
                     .member(
                         memberRepository.save(
                             Member.builder()
-                                .name(request.getName())
-                                .email(request.getEmail())
+                                .name(securityUtilService.protectInputValue(request.getName()))
+                                .email(securityUtilService.protectInputValue(request.getEmail()))
                                 .build()
                         )
                     ).build()

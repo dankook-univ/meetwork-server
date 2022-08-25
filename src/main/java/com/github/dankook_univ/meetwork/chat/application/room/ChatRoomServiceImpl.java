@@ -10,6 +10,7 @@ import com.github.dankook_univ.meetwork.chat.infra.http.request.ChatRoomCreateRe
 import com.github.dankook_univ.meetwork.chat.infra.http.request.ChatRoomUpdateRequest;
 import com.github.dankook_univ.meetwork.chat.infra.persistence.participant.ChatParticipantRepositoryImpl;
 import com.github.dankook_univ.meetwork.chat.infra.persistence.room.ChatRoomRepositoryImpl;
+import com.github.dankook_univ.meetwork.common.service.SecurityUtilService;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfileException;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class ChatRoomServiceImpl implements ChatRoomService {
 
+    private final SecurityUtilService securityUtilService;
     private final ChatRoomRepositoryImpl chatRoomRepository;
     private final ChatParticipantRepositoryImpl chatParticipantRepository;
     private final ProfileServiceImpl profileService;
@@ -91,7 +93,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             ChatRoom.builder()
                 .event(profile.getEvent())
                 .organizer(profile)
-                .name(request.getName())
+                .name(securityUtilService.protectInputValue(request.getName()))
                 .isPrivate(request.getIsPrivate())
                 .build()
         );
@@ -142,7 +144,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             throw new NotFoundChatRoomPermissionException();
         }
 
-        return room.update(request.getName(), request.getIsPrivate());
+        return room.update(
+            securityUtilService.protectInputValue(request.getName()),
+            request.getIsPrivate()
+        );
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.github.dankook_univ.meetwork.quiz.application;
 
+import com.github.dankook_univ.meetwork.common.service.SecurityUtilService;
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfileException;
@@ -24,6 +25,7 @@ import com.github.dankook_univ.meetwork.quiz.question.infra.persistence.Question
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.domain.QuizParticipants;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.infra.persistence.QuizParticipantsRepositoryImpl;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class QuizServiceImpl implements QuizService {
 
+    private final SecurityUtilService securityUtilService;
     private final QuizRepositoryImpl quizRepository;
     private final QuizParticipantsRepositoryImpl quizParticipantsRepository;
     private final QuestionRepositoryImpl questionRepository;
@@ -54,7 +57,7 @@ public class QuizServiceImpl implements QuizService {
 
         Quiz quiz = quizRepository.save(
             Quiz.builder()
-                .name(request.getName())
+                .name(securityUtilService.protectInputValue(request.getName()))
                 .event(profile.getEvent())
                 .build()
         );
@@ -63,9 +66,13 @@ public class QuizServiceImpl implements QuizService {
             questionRepository.save(
                 Question.builder()
                     .quiz(quiz)
-                    .content(question.getContent())
-                    .answer(question.getAnswer())
-                    .choice(question.getChoice())
+                    .content(securityUtilService.protectInputValue(question.getContent()))
+                    .answer(securityUtilService.protectInputValue(question.getAnswer()))
+                    .choice(
+                        question.getChoice().stream()
+                            .map(securityUtilService::protectInputValue)
+                            .collect(Collectors.toList())
+                    )
                     .build()
             )
         );
@@ -91,16 +98,22 @@ public class QuizServiceImpl implements QuizService {
                 (it) -> QuestionInformation.builder()
                     .question(questionRepository.getById(it.getQuestionId())
                         .orElseThrow(NotFoundQuestionException::new))
-                    .content(it.getContent())
-                    .answer(it.getAnswer())
-                    .choice(it.getChoice())
+                    .content(securityUtilService.protectInputValue(it.getContent()))
+                    .answer(securityUtilService.protectInputValue(it.getAnswer()))
+                    .choice(
+                        it.getChoice().stream()
+                            .map(securityUtilService::protectInputValue)
+                            .collect(Collectors.toList())
+                    )
                     .build()
             )
             .forEach(
                 (it) -> it.getQuestion().update(
-                    it.getContent(),
-                    it.getAnswer(),
-                    it.getChoice()
+                    securityUtilService.protectInputValue(it.getContent()),
+                    securityUtilService.protectInputValue(it.getAnswer()),
+                    it.getChoice().stream()
+                        .map(securityUtilService::protectInputValue)
+                        .collect(Collectors.toList())
                 )
             );
 
@@ -167,7 +180,8 @@ public class QuizServiceImpl implements QuizService {
             question.getQuiz().getId().toString()
         ).orElseThrow(NotFoundQuizParticipantsException::new);
 
-        if (request.getAnswer().equals(question.getAnswer())) {
+        if (securityUtilService.protectInputValue(request.getAnswer())
+            .equals(question.getAnswer())) {
             quizParticipants.addCount();
             return true;
         }

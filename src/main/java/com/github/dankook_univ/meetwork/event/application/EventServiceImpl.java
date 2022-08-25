@@ -5,6 +5,7 @@ import com.github.dankook_univ.meetwork.board.infra.http.request.BoardCreateRequ
 import com.github.dankook_univ.meetwork.chat.infra.persistence.message.ChatMessageRepositoryImpl;
 import com.github.dankook_univ.meetwork.chat.infra.persistence.participant.ChatParticipantRepositoryImpl;
 import com.github.dankook_univ.meetwork.chat.infra.persistence.room.ChatRoomRepositoryImpl;
+import com.github.dankook_univ.meetwork.common.service.SecurityUtilService;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.exceptions.ExistingCodeException;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventException;
@@ -24,7 +25,6 @@ import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreate
 import com.github.dankook_univ.meetwork.quiz.infra.persistence.QuizRepositoryImpl;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.infra.persistence.QuizParticipantsRepositoryImpl;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class EventServiceImpl implements EventService {
 
+    private final SecurityUtilService securityUtilService;
     private final EventRepositoryImpl eventRepository;
 
     private final ProfileServiceImpl profileService;
@@ -113,8 +114,8 @@ public class EventServiceImpl implements EventService {
 
         Event event = eventRepository.save(
             Event.builder()
-                .name(request.getName())
-                .code(request.getCode())
+                .name(securityUtilService.protectInputValue(request.getName()))
+                .code(securityUtilService.protectInputValue(request.getCode().trim()))
                 .meetingCode(request.getMeetingCode())
                 .build()
         );
@@ -124,8 +125,10 @@ public class EventServiceImpl implements EventService {
                 memberId,
                 event,
                 ProfileCreateRequest.builder()
-                    .nickname(request.getOrganizerNickname())
-                    .bio(request.getOrganizerBio())
+                    .nickname(
+                        securityUtilService.protectInputValue(request.getOrganizerNickname().trim())
+                    )
+                    .bio(securityUtilService.protectInputValue(request.getOrganizerBio()))
                     .profileImage(request.getOrganizerProfileImage())
                     .build(),
                 true
@@ -135,7 +138,7 @@ public class EventServiceImpl implements EventService {
         boardService.automaticBoard().forEach(
             (name, isAdmin) ->
                 boardService.create(memberId, BoardCreateRequest.builder()
-                    .name(name)
+                    .name(securityUtilService.protectInputValue(name))
                     .adminOnly(isAdmin)
                     .eventId(event.getId().toString())
                     .build()
@@ -153,14 +156,15 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundEventPermissionException();
         }
 
-        if (
-            !Objects.equals(request.getCode(), event.getCode())
-                && checkExistingCode(request.getCode())
-        ) {
+        if (!request.getCode().equals(event.getCode()) && checkExistingCode(request.getCode())) {
             throw new ExistingCodeException();
         }
 
-        return event.update(request.getName(), request.getCode(), request.getMeetingCode());
+        return event.update(
+            securityUtilService.protectInputValue(request.getName()),
+            securityUtilService.protectInputValue(request.getCode()),
+            securityUtilService.protectInputValue(request.getMeetingCode())
+        );
     }
 
     @Override
@@ -182,23 +186,22 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public Boolean checkExistingCode(String code) {
-        return eventRepository.getByCode(code).isPresent();
+        return eventRepository.getByCode(securityUtilService.protectInputValue(code)).isPresent();
     }
 
     @Override
     @Transactional
     public Event codeJoin(String memberId, String code, ProfileCreateRequest request) {
-        Event event = eventRepository.getByCode(code).orElseThrow(NotFoundEventException::new);
-        if (profileService.isEventMember(memberId, event.getId().toString())) {
-            return event;
+        Event event = eventRepository.getByCode(securityUtilService.protectInputValue(code))
+            .orElseThrow(NotFoundEventException::new);
+        if (!profileService.isEventMember(memberId, event.getId().toString())) {
+            profileService.create(
+                memberId,
+                getById(event.getId().toString()),
+                request,
+                false
+            );
         }
-
-        profileService.create(
-            memberId,
-            getById(event.getId().toString()),
-            request,
-            false
-        );
 
         return event;
     }

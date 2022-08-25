@@ -7,6 +7,7 @@ import com.github.dankook_univ.meetwork.board.exceptions.NotFoundBoardPermission
 import com.github.dankook_univ.meetwork.board.infra.http.request.BoardCreateRequest;
 import com.github.dankook_univ.meetwork.board.infra.http.request.BoardUpdateRequest;
 import com.github.dankook_univ.meetwork.board.infra.persistence.BoardRepositoryImpl;
+import com.github.dankook_univ.meetwork.common.service.SecurityUtilService;
 import com.github.dankook_univ.meetwork.event.domain.Event;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventException;
 import com.github.dankook_univ.meetwork.event.infra.persistence.EventRepositoryImpl;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class BoardServiceImpl implements BoardService {
 
+    private final SecurityUtilService securityUtilService;
     private final BoardRepositoryImpl boardRepository;
     private final ProfileServiceImpl profileService;
     private final EventRepositoryImpl eventRepository;
@@ -51,7 +53,7 @@ public class BoardServiceImpl implements BoardService {
         return boardRepository.save(
             Board.builder()
                 .event(event)
-                .name(request.getName())
+                .name(securityUtilService.protectInputValue(request.getName()))
                 .adminOnly(request.getAdminOnly())
                 .build()
         );
@@ -65,7 +67,10 @@ public class BoardServiceImpl implements BoardService {
             throw new NotFoundBoardPermissionException();
         }
 
-        return board.update(request.getName(), request.getAdminOnly());
+        return board.update(
+            securityUtilService.protectInputValue(request.getName()),
+            request.getAdminOnly()
+        );
     }
 
     @Override
@@ -107,7 +112,7 @@ public class BoardServiceImpl implements BoardService {
         Map<String, Boolean> boards = new LinkedHashMap<>();
 
         boards.put("공지 게시판", true);
-        boards.put("Q&A 게시판", false);
+        boards.put("QnA 게시판", false);
         boards.put("자유 게시판", false);
 
         return boards;

@@ -3,6 +3,7 @@ package com.github.dankook_univ.meetwork.post.application;
 import com.github.dankook_univ.meetwork.board.application.BoardServiceImpl;
 import com.github.dankook_univ.meetwork.board.domain.Board;
 import com.github.dankook_univ.meetwork.board.exceptions.NotFoundBoardPermissionException;
+import com.github.dankook_univ.meetwork.common.service.SecurityUtilService;
 import com.github.dankook_univ.meetwork.event.exceptions.NotFoundEventPermissionException;
 import com.github.dankook_univ.meetwork.post.domain.Post;
 import com.github.dankook_univ.meetwork.post.exceptions.NotFoundPostException;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class PostServiceImpl implements PostService {
 
+    private final SecurityUtilService securityUtilService;
     private final PostRepositoryImpl postRepository;
     private final ProfileServiceImpl profileService;
     private final BoardServiceImpl boardService;
@@ -38,7 +40,7 @@ public class PostServiceImpl implements PostService {
 
         return postRepository.save(
             Post.builder()
-                .content(request.getContent())
+                .content(securityUtilService.protectInputValue(request.getContent()))
                 .writer(profile)
                 .board(board)
                 .build()
@@ -59,7 +61,7 @@ public class PostServiceImpl implements PostService {
             throw new NotFoundPostPermissionException();
         }
 
-        return post.update(request.getContent());
+        return post.update(securityUtilService.protectInputValue(request.getContent()));
     }
 
     @Override
@@ -98,7 +100,7 @@ public class PostServiceImpl implements PostService {
         if (!(post.getWriter() == profile || profile.getIsAdmin())) {
             throw new NotFoundPostPermissionException();
         }
-        
+
         postRepository.delete(post);
     }
 }

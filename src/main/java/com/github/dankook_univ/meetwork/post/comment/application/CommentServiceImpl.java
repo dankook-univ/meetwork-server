@@ -1,5 +1,6 @@
 package com.github.dankook_univ.meetwork.post.comment.application;
 
+import com.github.dankook_univ.meetwork.common.service.SecurityUtilService;
 import com.github.dankook_univ.meetwork.post.application.PostServiceImpl;
 import com.github.dankook_univ.meetwork.post.comment.domain.Comment;
 import com.github.dankook_univ.meetwork.post.comment.exceptions.NotFoundCommentException;
@@ -19,10 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class CommentServiceImpl implements CommentService {
 
+    private final SecurityUtilService securityUtilService;
     private final CommentRepositoryImpl commentRepository;
-
     private final ProfileServiceImpl profileService;
-
     private final PostServiceImpl postService;
 
     @Override
@@ -37,7 +37,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.save(
             Comment.builder()
                 .writer(profile)
-                .content(request.getContent())
+                .content(securityUtilService.protectInputValue(request.getContent()))
                 .post(post)
                 .build()
         );
@@ -61,7 +61,7 @@ public class CommentServiceImpl implements CommentService {
             throw new NotFoundCommentPermissionException();
         }
 
-        return comment.update(request.getContent());
+        return comment.update(securityUtilService.protectInputValue(request.getContent()));
     }
 
     @Override
@@ -74,11 +74,11 @@ public class CommentServiceImpl implements CommentService {
             comment.getPost().getBoard().getEvent().getId().toString()
         );
 
-        if (profile == comment.getWriter() || profile.getIsAdmin()) {
-            comment.getPost().deleteComment(comment);
-            commentRepository.delete(comment);
-        } else {
+        if (!(profile == comment.getWriter() || profile.getIsAdmin())) {
             throw new NotFoundCommentPermissionException();
         }
+
+        comment.getPost().deleteComment(comment);
+        commentRepository.delete(comment);
     }
 }
