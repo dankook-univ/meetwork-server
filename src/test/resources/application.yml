@@ -41,3 +41,7 @@ storage:
   region: kr-standard
   access-key: accessKey
   secret-key: secretKey
+
+slack:
+  token: xoxb-4018209014944-3994438468883-FfgGSNFanGaAkRiT6jRdED6N
+  channel-id: C03UU2W1SLX

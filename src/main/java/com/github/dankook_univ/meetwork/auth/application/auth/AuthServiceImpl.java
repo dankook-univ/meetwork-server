@@ -16,6 +16,7 @@ import com.github.dankook_univ.meetwork.auth.infra.persistence.AuthRepositoryImp
 import com.github.dankook_univ.meetwork.common.service.SecurityUtilService;
 import com.github.dankook_univ.meetwork.member.domain.Member;
 import com.github.dankook_univ.meetwork.member.infra.persistence.MemberRepositoryImpl;
+import com.github.dankook_univ.meetwork.slack.application.SlackServiceImpl;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthServiceImpl implements AuthService {
 
     private final SecurityUtilService securityUtilService;
+    private final SlackServiceImpl slackService;
     private final TokenProviderImpl tokenProvider;
     private final AuthRepositoryImpl authRepository;
     private final MemberRepositoryImpl memberRepository;
@@ -51,21 +53,26 @@ public class AuthServiceImpl implements AuthService {
             throw new ExistingAuthException();
         }
 
-        return tokenProvider.create(
+        Member member = memberRepository.save(
+            Member.builder()
+                .name(securityUtilService.protectInputValue(request.getName()))
+                .email(request.getEmail())
+                .build()
+        );
+
+        TokenResponse token = tokenProvider.create(
             authRepository.save(
                 Auth.builder()
                     .type(request.getType())
                     .clientId(getClientId(request.getType(), request.getToken()))
-                    .member(
-                        memberRepository.save(
-                            Member.builder()
-                                .name(securityUtilService.protectInputValue(request.getName()))
-                                .email(request.getEmail())
-                                .build()
-                        )
-                    ).build()
+                    .member(member)
+                    .build()
             )
         );
+
+        slackService.sendMessage(member.getName() + "(" + member.getEmail() + ") 님이 가입하셨습니다.");
+
+        return token;
     }
 
     @Override
