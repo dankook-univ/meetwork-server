@@ -21,10 +21,16 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
     properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 slack:
   token: xoxb-4018209014944-3994438468883-FfgGSNFanGaAkRiT6jRdED6N

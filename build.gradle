@@ -71,6 +71,9 @@ dependencies {
     // apache tika
     implementation 'org.apache.tika:tika-core:1.24.1'
 
+    // email
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
     // slack
     implementation 'com.slack.api:slack-api-client:1.24.0'
 }
