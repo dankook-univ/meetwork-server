@@ -21,6 +21,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+      properties:
+        hibernate:
+          show_sql: true
+          format_sql: true
 
   mail:
     host: smtp.gmail.com
@@ -31,3 +35,7 @@ spring:
           auth: true
           starttls:
             enable: true
+
+slack:
+  token: xoxb-4018209014944-3994438468883-FfgGSNFanGaAkRiT6jRdED6N
+  channel-id: C040J807KUG
