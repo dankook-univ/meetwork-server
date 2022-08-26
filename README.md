@@ -16,4 +16,8 @@
 --storage.region=${region}
 --storage.access-key=${access-key}
 --storage.secret-key=${secret-key}
+--slack.token=${slack_token}
+--slack.channel-id=${slack_channel_id}
+--spring.mail.username=${mail_username}
+--spring.mail.password=${mail_password}
 ```
