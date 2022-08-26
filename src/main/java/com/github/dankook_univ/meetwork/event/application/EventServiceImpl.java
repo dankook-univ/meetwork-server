@@ -24,6 +24,7 @@ import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfileExcept
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import com.github.dankook_univ.meetwork.quiz.application.QuizServiceImpl;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.infra.persistence.QuizParticipantsRepositoryImpl;
+import com.github.dankook_univ.meetwork.slack.application.SlackServiceImpl;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -40,25 +41,16 @@ public class EventServiceImpl implements EventService {
 
     private final SecurityUtilService securityUtilService;
     private final EventRepositoryImpl eventRepository;
-
     private final ProfileServiceImpl profileService;
-
     private final BoardServiceImpl boardService;
-
     private final ChatRoomRepositoryImpl chatRoomRepository;
-
     private final QuizServiceImpl quizService;
-
     private final FileServiceImpl fileService;
-
+    private final SlackServiceImpl slackService;
     private final PostRepositoryImpl postRepository;
-
     private final QuizParticipantsRepositoryImpl quizParticipantsRepository;
-
     private final ChatParticipantRepositoryImpl chatParticipantRepository;
-
     private final ChatMessageRepositoryImpl chatMessageRepository;
-
     private final InvitationRepositoryImpl invitationRepository;
 
     @Override
@@ -143,6 +135,10 @@ public class EventServiceImpl implements EventService {
                     .eventId(event.getId().toString())
                     .build()
                 )
+        );
+
+        slackService.sendMessage(
+            event.getOrganizer().getNickname() + "님이 " + event.getName() + "을 생성하였습니다."
         );
 
         return event;
@@ -260,6 +256,10 @@ public class EventServiceImpl implements EventService {
         invitationRepository.deleteByEventId(eventId);
         eventRepository.delete(event);
         profileService.deleteByEventId(eventId);
+
+        slackService.sendMessage(
+            event.getOrganizer().getNickname() + "님이 " + event.getName() + "을 삭제하였습니다."
+        );
     }
 
     private Event getById(String eventId) {
