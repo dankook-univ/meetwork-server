@@ -7,15 +7,15 @@ import java.util.List;
 
 public interface BoardService {
 
-    Board create(String name, BoardCreateRequest request);
+    Board create(Long memberId, BoardCreateRequest request);
 
-    Board update(String memberId, String boardId, BoardUpdateRequest request);
+    Board update(Long memberId, Long boardId, BoardUpdateRequest request);
 
-    Board get(String boardId);
+    Board get(Long boardId);
 
-    List<Board> getList(String memberId, String eventId);
+    List<Board> getList(Long memberId, Long eventId);
 
-    void delete(String memberId, String boardId);
+    void delete(Long memberId, Long boardId);
 
-    void deleteByEventId(String eventId);
+    void deleteByEventId(Long eventId);
 }

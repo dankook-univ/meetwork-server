@@ -22,7 +22,7 @@ public class MemberController {
         @ApiIgnore Authentication authentication
     ) {
         return ResponseEntity.ok().body(
-            memberService.getById(authentication.getName()).toResponse()
+            memberService.getById(Long.getLong(authentication.getName())).toResponse()
         );
     }
 }

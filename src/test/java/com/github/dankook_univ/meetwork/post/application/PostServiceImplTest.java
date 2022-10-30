@@ -51,7 +51,7 @@ public class PostServiceImplTest {
 
     private Event createEvent(Member member) {
         return eventService.create(
-            member.getId().toString(),
+            member.getId(),
             EventCreateRequest.builder()
                 .name("eventName")
                 .organizerNickname("nickname")
@@ -63,11 +63,11 @@ public class PostServiceImplTest {
 
     private Board createBoard(Member member, Event event, String name, Boolean isAdmin) {
         return boardService.create(
-            member.getId().toString(),
+            member.getId(),
             BoardCreateRequest.builder()
                 .name(name)
                 .adminOnly(isAdmin)
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .build());
     }
 
@@ -79,10 +79,10 @@ public class PostServiceImplTest {
         Board adminOnlyBoard = createBoard(member, event, "소통방", true);
 
         Post post = postService.create(
-            member.getId().toString(),
+            member.getId(),
             PostCreateRequest.builder()
                 .content("content")
-                .boardId(adminOnlyBoard.getId().toString())
+                .boardId(adminOnlyBoard.getId())
                 .build()
         );
 
@@ -104,8 +104,8 @@ public class PostServiceImplTest {
 
         Member participant = createMember("participant", "meetwork@meetwork.kr");
         Event joinedEvent = eventService.join(
-            participant.getId().toString(),
-            event.getId().toString(),
+            participant.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
@@ -115,10 +115,10 @@ public class PostServiceImplTest {
 
         Assertions.assertThrows(NotFoundBoardPermissionException.class, () -> {
             Post post = postService.create(
-                participant.getId().toString(),
+                participant.getId(),
                 PostCreateRequest.builder()
                     .content("content")
-                    .boardId(adminOnlyBoard.getId().toString())
+                    .boardId(adminOnlyBoard.getId())
                     .build()
             );
         });
@@ -132,16 +132,16 @@ public class PostServiceImplTest {
         Board adminOnlyBoard = createBoard(member, event, "소통방", true);
 
         Post post = postService.create(
-            member.getId().toString(),
+            member.getId(),
             PostCreateRequest.builder()
                 .content("content")
-                .boardId(adminOnlyBoard.getId().toString())
+                .boardId(adminOnlyBoard.getId())
                 .build()
         );
 
         Post updatedPost = postService.update(
-            member.getId().toString(),
-            post.getId().toString(),
+            member.getId(),
+            post.getId(),
             PostUpdateRequest.builder()
                 .build()
         );
@@ -162,14 +162,14 @@ public class PostServiceImplTest {
         Board adminOnlyBoard = createBoard(member, event, "소통방", true);
 
         Post post = postService.create(
-            member.getId().toString(),
+            member.getId(),
             PostCreateRequest.builder()
                 .content("content")
-                .boardId(adminOnlyBoard.getId().toString())
+                .boardId(adminOnlyBoard.getId())
                 .build()
         );
 
-        Post finedPost = postService.get(member.getId().toString(), post.getId().toString());
+        Post finedPost = postService.get(member.getId(), post.getId());
 
         assertThat(post).isNotNull();
         assertThat(post).isInstanceOf(Post.class);
@@ -192,23 +192,23 @@ public class PostServiceImplTest {
         assertThat(adminOnlyBoard.getAdminOnly()).isTrue();
 
         Post firstPost = postService.create(
-            member.getId().toString(),
+            member.getId(),
             PostCreateRequest.builder()
                 .content("content")
-                .boardId(adminOnlyBoard.getId().toString())
+                .boardId(adminOnlyBoard.getId())
                 .build()
         );
         Post secondPost = postService.create(
-            member.getId().toString(),
+            member.getId(),
             PostCreateRequest.builder()
                 .content("content")
-                .boardId(adminOnlyBoard.getId().toString())
+                .boardId(adminOnlyBoard.getId())
                 .build()
         );
 
         List<Post> list = postService.getList(
-            member.getId().toString(),
-            adminOnlyBoard.getId().toString(),
+            member.getId(),
+            adminOnlyBoard.getId(),
             1
         );
 
@@ -227,18 +227,18 @@ public class PostServiceImplTest {
         Board adminOnlyBoard = createBoard(member, event, "소통방", true);
 
         Post post = postService.create(
-            member.getId().toString(),
+            member.getId(),
             PostCreateRequest.builder()
                 .content("content")
-                .boardId(adminOnlyBoard.getId().toString())
+                .boardId(adminOnlyBoard.getId())
                 .build()
         );
 
-        postService.delete(member.getId().toString(), post.getId().toString());
+        postService.delete(member.getId(), post.getId());
 
         assertThat(post).isNotNull();
         Assertions.assertThrows(NotFoundPostException.class, () -> {
-            postService.get(member.getId().toString(), post.getId().toString());
+            postService.get(member.getId(), post.getId());
         });
     }
 
@@ -251,8 +251,8 @@ public class PostServiceImplTest {
 
         Member participant = createMember("participant", "meetwork@meetwork.kr");
         eventService.join(
-            participant.getId().toString(),
-            event.getId().toString(),
+            participant.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
@@ -261,18 +261,18 @@ public class PostServiceImplTest {
         );
 
         Post post = postService.create(
-            participant.getId().toString(),
+            participant.getId(),
             PostCreateRequest.builder()
                 .content("content")
-                .boardId(adminOnlyBoard.getId().toString())
+                .boardId(adminOnlyBoard.getId())
                 .build()
         );
 
-        postService.delete(organizer.getId().toString(), post.getId().toString());
+        postService.delete(organizer.getId(), post.getId());
 
         assertThat(post).isNotNull();
         Assertions.assertThrows(NotFoundPostException.class, () -> {
-            postService.get(organizer.getId().toString(), post.getId().toString());
+            postService.get(organizer.getId(), post.getId());
         });
     }
 

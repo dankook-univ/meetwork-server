@@ -39,9 +39,9 @@ public class ProfileServiceImplTest {
         );
 
         Profile profile = profileService.create(
-            member.getId().toString(),
+            member.getId(),
             eventService.create(
-                member.getId().toString(),
+                member.getId(),
                 EventCreateRequest.builder()
                     .name("event")
                     .organizerNickname("nickname")
@@ -71,9 +71,9 @@ public class ProfileServiceImplTest {
         );
 
         Profile profile = profileService.create(
-            member.getId().toString(),
+            member.getId(),
             eventService.create(
-                member.getId().toString(),
+                member.getId(),
                 EventCreateRequest.builder()
                     .name("event")
                     .organizerNickname("nickname")
@@ -89,9 +89,9 @@ public class ProfileServiceImplTest {
         );
 
         profileService.update(
-            member.getId().toString(),
+            member.getId(),
             ProfileUpdateRequest.builder()
-                .profileId(profile.getId().toString())
+                .profileId(profile.getId())
                 .nickname("new nickname")
                 .bio("new bio")
                 .isProfileImageDeleted(false)

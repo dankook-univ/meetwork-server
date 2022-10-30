@@ -33,7 +33,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public Board create(String memberId, BoardCreateRequest request) {
+    public Board create(Long memberId, BoardCreateRequest request) {
         if (!profileService.get(memberId, request.getEventId()).getIsAdmin()) {
             throw new NotFoundBoardPermissionException();
         }
@@ -61,9 +61,9 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public Board update(String memberId, String boardId, BoardUpdateRequest request) {
+    public Board update(Long memberId, Long boardId, BoardUpdateRequest request) {
         Board board = getById(boardId);
-        if (!profileService.get(memberId, board.getEvent().getId().toString()).getIsAdmin()) {
+        if (!profileService.get(memberId, board.getEvent().getId()).getIsAdmin()) {
             throw new NotFoundBoardPermissionException();
         }
 
@@ -74,12 +74,12 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public Board get(String boardId) {
+    public Board get(Long boardId) {
         return getById(boardId);
     }
 
     @Override
-    public List<Board> getList(String memberId, String eventId) {
+    public List<Board> getList(Long memberId, Long eventId) {
         if (!profileService.isEventMember(memberId, eventId)) {
             throw new NotFoundBoardPermissionException();
         }
@@ -89,9 +89,9 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public void delete(String memberId, String boardId) {
+    public void delete(Long memberId, Long boardId) {
         Board board = getById(boardId);
-        if (!profileService.get(memberId, board.getEvent().getId().toString()).getIsAdmin()) {
+        if (!profileService.get(memberId, board.getEvent().getId()).getIsAdmin()) {
             throw new NotFoundBoardPermissionException();
         }
 
@@ -100,11 +100,11 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public void deleteByEventId(String eventId) {
+    public void deleteByEventId(Long eventId) {
         List<Board> boards = boardRepository.getListByEventId(eventId);
         boards.forEach(board -> {
-            postRepository.deleteByBoardId(board.getId().toString());
-            boardRepository.delete(board.getId().toString());
+            postRepository.deleteByBoardId(board.getId());
+            boardRepository.delete(board.getId());
         });
     }
 
@@ -118,7 +118,7 @@ public class BoardServiceImpl implements BoardService {
         return boards;
     }
 
-    private Board getById(String boardId) {
+    private Board getById(Long boardId) {
         return boardRepository.getById(boardId).orElseThrow(NotFoundBoardException::new);
     }
 }

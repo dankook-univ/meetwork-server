@@ -28,7 +28,7 @@ public class MessageController {
         Member member = tokenProvider.parse(token.substring(7)).getMember();
 
         chatMessageService.send(
-            member.getId().toString(),
+            member.getId(),
             request.getRoomId(),
             request.getMessage()
         );

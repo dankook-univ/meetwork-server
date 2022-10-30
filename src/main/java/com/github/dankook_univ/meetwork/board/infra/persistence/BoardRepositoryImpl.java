@@ -4,7 +4,6 @@ import com.github.dankook_univ.meetwork.board.domain.Board;
 import com.github.dankook_univ.meetwork.board.domain.BoardRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -15,13 +14,13 @@ public class BoardRepositoryImpl implements BoardRepository {
     private final BoardJpaRepository boardRepository;
 
     @Override
-    public Optional<Board> getById(String id) {
-        return boardRepository.findById(UUID.fromString(id));
+    public Optional<Board> getById(Long id) {
+        return boardRepository.findById(id);
     }
 
     @Override
-    public Optional<Board> getByEventIdAndName(String eventId, String name) {
-        return boardRepository.getByEventIdAndName(UUID.fromString(eventId), name);
+    public Optional<Board> getByEventIdAndName(Long eventId, String name) {
+        return boardRepository.getByEventIdAndName(eventId, name);
     }
 
     @Override
@@ -30,17 +29,17 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     @Override
-    public List<Board> getListByEventId(String eventId) {
-        return boardRepository.findByEventIdOrderByUpdatedAtAsc(UUID.fromString(eventId));
+    public List<Board> getListByEventId(Long eventId) {
+        return boardRepository.findByEventIdOrderByUpdatedAtAsc(eventId);
     }
 
     @Override
-    public void delete(String boardId) {
-        boardRepository.deleteById(UUID.fromString(boardId));
+    public void delete(Long boardId) {
+        boardRepository.deleteById(boardId);
     }
 
     @Override
-    public void deleteByEventId(String eventId) {
-        boardRepository.deleteAllByEventId(UUID.fromString(eventId));
+    public void deleteByEventId(Long eventId) {
+        boardRepository.deleteAllByEventId(eventId);
     }
 }

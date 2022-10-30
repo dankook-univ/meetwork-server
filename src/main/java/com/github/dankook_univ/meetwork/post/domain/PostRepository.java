@@ -8,13 +8,13 @@ public interface PostRepository {
 
     Post save(Post post);
 
-    Optional<Post> getById(String postId);
+    Optional<Post> getById(Long postId);
 
-    List<Post> getByBoardId(String boardId, Pageable pageable);
+    List<Post> getByBoardId(Long boardId, Pageable pageable);
 
     void delete(Post post);
 
-    void deleteByWriterId(String writerId);
+    void deleteByWriterId(Long writerId);
 
-    void deleteByBoardId(String boardId);
+    void deleteByBoardId(Long boardId);
 }

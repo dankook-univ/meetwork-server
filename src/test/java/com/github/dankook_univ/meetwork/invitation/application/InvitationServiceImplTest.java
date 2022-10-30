@@ -43,7 +43,7 @@ public class InvitationServiceImplTest {
 
     private Event createEvent(Member member, String name, String code) {
         return eventService.create(
-            member.getId().toString(),
+            member.getId(),
             EventCreateRequest.builder()
                 .name(name)
                 .organizerNickname("nickname")
@@ -63,9 +63,9 @@ public class InvitationServiceImplTest {
         Member participant2 = createMember("participant2", "himitery0131@meetwork.kr");
 
         Boolean check = invitationService.create(
-            organizer.getId().toString(),
+            organizer.getId(),
             InvitationCreateRequest.builder()
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .invitationInformations(
                     List.of(
                         InvitationInformation.builder()
@@ -81,9 +81,9 @@ public class InvitationServiceImplTest {
         );
 
         List<Invitation> participant1InvitationList = invitationService.getList(
-            participant1.getId().toString());
+            participant1.getId());
         List<Invitation> participant2InvitationList = invitationService.getList(
-            participant2.getId().toString());
+            participant2.getId());
 
         assertThat(check).isTrue();
 
@@ -105,9 +105,9 @@ public class InvitationServiceImplTest {
         Member participant = createMember("participant1", "govl6113@meetwork.kr");
 
         invitationService.create(
-            organizer1.getId().toString(),
+            organizer1.getId(),
             InvitationCreateRequest.builder()
-                .eventId(event1.getId().toString())
+                .eventId(event1.getId())
                 .invitationInformations(
                     List.of(
                         InvitationInformation.builder()
@@ -118,9 +118,9 @@ public class InvitationServiceImplTest {
                 ).build()
         );
         invitationService.create(
-            organizer2.getId().toString(),
+            organizer2.getId(),
             InvitationCreateRequest.builder()
-                .eventId(event2.getId().toString())
+                .eventId(event2.getId())
                 .invitationInformations(
                     List.of(
                         InvitationInformation.builder()
@@ -131,7 +131,7 @@ public class InvitationServiceImplTest {
                 ).build()
         );
 
-        List<Invitation> list = invitationService.getList(participant.getId().toString());
+        List<Invitation> list = invitationService.getList(participant.getId());
 
         assertThat(list).isNotNull();
         assertThat(list.size()).isEqualTo(2);
@@ -152,9 +152,9 @@ public class InvitationServiceImplTest {
         Member participant = createMember("participant", "govl6113@meetwork.kr");
 
         invitationService.create(
-            organizer.getId().toString(),
+            organizer.getId(),
             InvitationCreateRequest.builder()
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .invitationInformations(
                     List.of(
                         InvitationInformation.builder()
@@ -166,8 +166,8 @@ public class InvitationServiceImplTest {
         );
 
         invitationService.join(
-            participant.getId().toString(),
-            event.getId().toString(),
+            participant.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant")
                 .bio("bio")
@@ -175,8 +175,8 @@ public class InvitationServiceImplTest {
         );
 
         Profile profile = eventService.getMyProfile(
-            participant.getId().toString(),
-            event.getId().toString()
+            participant.getId(),
+            event.getId()
         );
 
         assertThat(profile).isNotNull().isInstanceOf(Profile.class);
@@ -194,9 +194,9 @@ public class InvitationServiceImplTest {
         Member participant = createMember("participant", "govl6113@meetwork.kr");
 
         invitationService.create(
-            organizer.getId().toString(),
+            organizer.getId(),
             InvitationCreateRequest.builder()
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .invitationInformations(
                     List.of(
                         InvitationInformation.builder()
@@ -207,11 +207,11 @@ public class InvitationServiceImplTest {
                 ).build()
         );
 
-        List<Invitation> invitationList = invitationService.getList(participant.getId().toString());
+        List<Invitation> invitationList = invitationService.getList(participant.getId());
 
-        invitationService.delete(participant.getId().toString(), event.getId().toString());
+        invitationService.delete(participant.getId(), event.getId());
 
-        List<Invitation> refuseList = invitationService.getList(participant.getId().toString());
+        List<Invitation> refuseList = invitationService.getList(participant.getId());
 
         assertThat(invitationList.size()).isEqualTo(1);
         assertThat(refuseList.size()).isEqualTo(0);

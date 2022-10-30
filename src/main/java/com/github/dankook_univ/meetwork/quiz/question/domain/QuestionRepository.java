@@ -7,11 +7,11 @@ public interface QuestionRepository {
 
     Question save(Question question);
 
-    Optional<Question> getById(String id);
+    Optional<Question> getById(Long id);
 
-    List<Question> getByQuizId(String quizId);
+    List<Question> getByQuizId(Long quizId);
 
-    Long countByQuizId(String quizId);
+    Long countByQuizId(Long quizId);
 
-    void delete(String quizId);
+    void delete(Long quizId);
 }

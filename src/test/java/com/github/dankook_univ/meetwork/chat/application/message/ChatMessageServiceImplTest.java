@@ -46,7 +46,7 @@ class ChatMessageServiceImplTest {
 
     private Event createEvent(Member member) {
         return eventService.create(
-            member.getId().toString(),
+            member.getId(),
             EventCreateRequest.builder()
                 .name("name")
                 .code("code")
@@ -59,8 +59,8 @@ class ChatMessageServiceImplTest {
 
     private ChatRoom createChatRoom(Member member, Event event) {
         return chatRoomService.create(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ChatRoomCreateRequest.builder()
                 .name("name")
                 .isPrivate(false)
@@ -76,8 +76,8 @@ class ChatMessageServiceImplTest {
         ChatRoom room = createChatRoom(member, event);
 
         ChatMessage message = chatMessageService.send(
-            member.getId().toString(),
-            room.getId().toString(),
+            member.getId(),
+            room.getId(),
             "message"
         );
 
@@ -95,8 +95,8 @@ class ChatMessageServiceImplTest {
         Member other = createMember("other", "other@meetwork.kr");
 
         eventService.join(
-            other.getId().toString(),
-            event.getId().toString(),
+            other.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("other_nickname")
                 .bio("other_bio")
@@ -105,14 +105,14 @@ class ChatMessageServiceImplTest {
         );
 
         Assertions.assertThrows(NotParticipatedMemberException.class, () -> chatMessageService.send(
-            other.getId().toString(),
-            room.getId().toString(),
+            other.getId(),
+            room.getId(),
             "message"
         ));
 
         List<ChatMessage> messages = chatMessageService.getByRoomId(
-            member.getId().toString(),
-            room.getId().toString()
+            member.getId(),
+            room.getId()
         );
 
         assertThat(messages).isNotNull().isInstanceOf(List.class);
@@ -130,8 +130,8 @@ class ChatMessageServiceImplTest {
             {
                 try {
                     chatMessageService.send(
-                        member.getId().toString(),
-                        room.getId().toString(),
+                        member.getId(),
+                        room.getId(),
                         "message-" + index
                     );
                 } catch (NotParticipatedMemberException ignored) {
@@ -140,8 +140,8 @@ class ChatMessageServiceImplTest {
         );
 
         List<ChatMessage> messages = chatMessageService.getByRoomId(
-            member.getId().toString(),
-            room.getId().toString()
+            member.getId(),
+            room.getId()
         );
 
         assertThat(messages).isNotNull().isInstanceOf(List.class);

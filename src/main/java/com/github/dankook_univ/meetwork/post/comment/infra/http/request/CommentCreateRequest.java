@@ -17,5 +17,5 @@ public class CommentCreateRequest {
     String content;
 
     @NotBlank
-    String postId;
+    Long postId;
 }

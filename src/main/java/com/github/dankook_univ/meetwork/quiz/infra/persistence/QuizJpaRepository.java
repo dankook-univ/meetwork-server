@@ -3,14 +3,13 @@ package com.github.dankook_univ.meetwork.quiz.infra.persistence;
 import com.github.dankook_univ.meetwork.quiz.domain.Quiz;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface QuizJpaRepository extends JpaRepository<Quiz, UUID> {
+public interface QuizJpaRepository extends JpaRepository<Quiz, Long> {
 
-    List<Quiz> getByEventId(UUID eventId);
+    List<Quiz> getByEventId(Long eventId);
 
     Optional<Quiz> getByName(String name);
 
-    void deleteAllByEventId(UUID eventId);
+    void deleteAllByEventId(Long eventId);
 }

@@ -2,7 +2,6 @@ package com.github.dankook_univ.meetwork.quiz.infra.http.response;
 
 import com.github.dankook_univ.meetwork.quiz.domain.Quiz;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class QuizResponse {
 
     @NotBlank
-    UUID id;
+    Long id;
 
     @NotBlank
     String name;
@@ -42,7 +41,7 @@ public class QuizResponse {
     }
 
     @Builder
-    public QuizResponse(UUID id, String name, LocalDateTime createAt, LocalDateTime updateAt,
+    public QuizResponse(Long id, String name, LocalDateTime createAt, LocalDateTime updateAt,
         @Nullable Boolean isFinished
     ) {
         this.id = id;

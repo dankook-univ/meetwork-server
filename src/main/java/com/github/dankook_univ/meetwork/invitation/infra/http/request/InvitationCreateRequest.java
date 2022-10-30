@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class InvitationCreateRequest {
 
-    String eventId;
+    Long eventId;
 
     List<InvitationInformation> invitationInformations;
 }

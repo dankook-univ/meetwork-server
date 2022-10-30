@@ -30,7 +30,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Override
     public List<ChatMessage> getByRoomId(
-        String memberId, String roomId
+        Long memberId, Long roomId
     ) throws NotParticipatedMemberException {
         chatRoomService.shouldParticipating(memberId, roomId);
 
@@ -40,10 +40,10 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Override
     @Transactional
     public ChatMessage send(
-        String memberId, String roomId, String message
+        Long memberId, Long roomId, String message
     ) throws NotParticipatedMemberException {
         ChatRoom room = chatRoomService.getChatRoom(memberId, roomId);
-        Profile profile = profileService.get(memberId, room.getEvent().getId().toString());
+        Profile profile = profileService.get(memberId, room.getEvent().getId());
 
         ChatMessage chatMessage = chatMessageRepository.save(
             ChatMessage.builder()

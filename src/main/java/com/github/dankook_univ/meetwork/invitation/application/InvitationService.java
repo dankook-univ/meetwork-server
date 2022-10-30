@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface InvitationService {
 
-    Boolean create(String memberId, InvitationCreateRequest request);
+    Boolean create(Long memberId, InvitationCreateRequest request);
 
-    List<Invitation> getList(String memberId);
+    List<Invitation> getList(Long memberId);
 
-    Boolean join(String memberId, String eventId, ProfileCreateRequest request);
+    Boolean join(Long memberId, Long eventId, ProfileCreateRequest request);
 
-    Boolean delete(String memberId, String eventId);
+    Boolean delete(Long memberId, Long eventId);
 }

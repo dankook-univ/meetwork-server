@@ -18,7 +18,6 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,7 +105,7 @@ public class TokenProviderImpl implements TokenProvider {
     @Override
     public Auth parse(String token) {
         return authRepository.getByMemberId(
-            UUID.fromString(getClaims(token).get("memberId", String.class))
+            Long.getLong(getClaims(token).get("memberId", String.class))
         ).orElseThrow(NotFoundAuthException::new);
     }
 

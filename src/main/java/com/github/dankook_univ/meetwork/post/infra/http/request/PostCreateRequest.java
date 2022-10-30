@@ -17,5 +17,5 @@ public class PostCreateRequest {
     String content;
 
     @NotBlank
-    String boardId;
+    Long boardId;
 }

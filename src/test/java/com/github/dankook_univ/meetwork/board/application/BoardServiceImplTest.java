@@ -46,7 +46,7 @@ public class BoardServiceImplTest {
 
     private Event createEvent(Member member, String name) {
         return eventService.create(
-            member.getId().toString(),
+            member.getId(),
             EventCreateRequest.builder()
                 .name(name)
                 .organizerNickname("nickname")
@@ -63,11 +63,11 @@ public class BoardServiceImplTest {
         Event event = createEvent(member, "event");
 
         Board board = boardService.create(
-            member.getId().toString(),
+            member.getId(),
             BoardCreateRequest.builder()
                 .name("소통방")
                 .adminOnly(true)
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .build());
 
         assertThat(board).isNotNull();
@@ -85,17 +85,17 @@ public class BoardServiceImplTest {
         Event event = createEvent(member, "event");
 
         Board board = boardService.create(
-            member.getId().toString(),
+            member.getId(),
             BoardCreateRequest.builder()
                 .name("소통방")
                 .adminOnly(true)
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .build()
         );
 
         Board updatedBoard = boardService.update(
-            member.getId().toString(),
-            board.getId().toString(),
+            member.getId(),
+            board.getId(),
             BoardUpdateRequest.builder()
                 .name("사진방")
                 .adminOnly(false)
@@ -117,8 +117,8 @@ public class BoardServiceImplTest {
 
         Event event = createEvent(organizer, "event");
         eventService.join(
-            participant.getId().toString(),
-            event.getId().toString(),
+            participant.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
@@ -127,24 +127,22 @@ public class BoardServiceImplTest {
         );
 
         Board board = boardService.create(
-            organizer.getId().toString(),
+            organizer.getId(),
             BoardCreateRequest.builder()
                 .name("소통방")
                 .adminOnly(true)
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .build()
         );
 
-        Assertions.assertThrows(NotFoundBoardPermissionException.class, () -> {
-            boardService.update(
-                participant.getId().toString(),
-                board.getId().toString(),
-                BoardUpdateRequest.builder()
-                    .name("사진방")
-                    .adminOnly(false)
-                    .build()
-            );
-        });
+        Assertions.assertThrows(NotFoundBoardPermissionException.class, () -> boardService.update(
+            participant.getId(),
+            board.getId(),
+            BoardUpdateRequest.builder()
+                .name("사진방")
+                .adminOnly(false)
+                .build()
+        ));
     }
 
     @Test
@@ -154,8 +152,8 @@ public class BoardServiceImplTest {
         Event event = createEvent(member, "event");
 
         List<Board> list = boardService.getList(
-            member.getId().toString(),
-            event.getId().toString()
+            member.getId(),
+            event.getId()
         );
 
         assertThat(list).isNotNull();
@@ -173,21 +171,19 @@ public class BoardServiceImplTest {
         Event event = createEvent(member, "event");
 
         Board board = boardService.create(
-            member.getId().toString(),
+            member.getId(),
             BoardCreateRequest.builder()
                 .name("소통방")
                 .adminOnly(true)
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .build());
 
         assertThat(board).isNotNull();
 
-        boardService.delete(member.getId().toString(), board.getId().toString());
+        boardService.delete(member.getId(), board.getId());
 
-        Assertions.assertThrows(NotFoundBoardException.class, () -> {
-            boardService.get(
-                board.getId().toString()
-            );
-        });
+        Assertions.assertThrows(NotFoundBoardException.class, () -> boardService.get(
+            board.getId()
+        ));
     }
 }

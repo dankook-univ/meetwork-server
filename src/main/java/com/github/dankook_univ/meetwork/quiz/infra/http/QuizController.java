@@ -43,7 +43,7 @@ public class QuizController {
         @RequestBody @Valid QuizCreateRequest request
     ) {
         return ResponseEntity.ok().body(
-            quizService.create(authentication.getName(), request).toResponse()
+            quizService.create(Long.getLong(authentication.getName()), request).toResponse()
         );
     }
 
@@ -51,11 +51,11 @@ public class QuizController {
     @PatchMapping("/{quizId}")
     public ResponseEntity<QuizResponse> update(
         @ApiIgnore Authentication authentication,
-        @PathVariable("quizId") @Valid @NotBlank String quizId,
+        @PathVariable("quizId") @Valid @NotBlank Long quizId,
         @RequestBody @Valid QuizUpdateRequest request
     ) {
         return ResponseEntity.ok().body(
-            quizService.update(authentication.getName(), quizId, request).toResponse()
+            quizService.update(Long.getLong(authentication.getName()), quizId, request).toResponse()
         );
     }
 
@@ -63,10 +63,10 @@ public class QuizController {
     @GetMapping("/list/{eventId}")
     public ResponseEntity<List<QuizResponse>> getList(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotBlank String eventId
+        @PathVariable("eventId") @Valid @NotBlank Long eventId
     ) {
         return ResponseEntity.ok().body(
-            quizService.getList(authentication.getName(), eventId)
+            quizService.getList(Long.getLong(authentication.getName()), eventId)
         );
     }
 
@@ -74,10 +74,10 @@ public class QuizController {
     @GetMapping("/questions/{quizId}")
     public ResponseEntity<QuestionsResponse> getQuestions(
         @ApiIgnore Authentication authentication,
-        @PathVariable("quizId") @Valid @NotBlank String quizId
+        @PathVariable("quizId") @Valid @NotBlank Long quizId
     ) {
         return ResponseEntity.ok().body(
-            quizService.get(authentication.getName(), quizId)
+            quizService.get(Long.getLong(authentication.getName()), quizId)
         );
     }
 
@@ -85,10 +85,10 @@ public class QuizController {
     @GetMapping("/participant/{quizId}")
     public ResponseEntity<List<QuestionResponse>> participant(
         @ApiIgnore Authentication authentication,
-        @PathVariable("quizId") @Valid @NotBlank String quizId
+        @PathVariable("quizId") @Valid @NotBlank Long quizId
     ) {
         return ResponseEntity.ok().body(
-            quizService.participant(authentication.getName(), quizId)
+            quizService.participant(Long.getLong(authentication.getName()), quizId)
                 .stream().map(Question::toResponse)
                 .collect(Collectors.toList())
         );
@@ -101,7 +101,7 @@ public class QuizController {
         @RequestBody @Valid QuestionCheckRequest request
     ) {
         return ResponseEntity.ok().body(
-            quizService.check(authentication.getName(), request)
+            quizService.check(Long.getLong(authentication.getName()), request)
         );
     }
 
@@ -109,10 +109,10 @@ public class QuizController {
     @GetMapping("/result/me/{quizId}")
     public ResponseEntity<MyQuizResultResponse> myResult(
         @ApiIgnore Authentication authentication,
-        @PathVariable("quizId") @Valid @NotBlank String quizId
+        @PathVariable("quizId") @Valid @NotBlank Long quizId
     ) {
         return ResponseEntity.ok().body(
-            quizService.myResult(authentication.getName(), quizId).toMyResponse()
+            quizService.myResult(Long.getLong(authentication.getName()), quizId).toMyResponse()
         );
     }
 
@@ -120,10 +120,10 @@ public class QuizController {
     @GetMapping("/result/{quizId}")
     public ResponseEntity<List<QuizParticipantsResponse>> result(
         @ApiIgnore Authentication authentication,
-        @PathVariable("quizId") @Valid @NotBlank String quizId
+        @PathVariable("quizId") @Valid @NotBlank Long quizId
     ) {
         return ResponseEntity.ok().body(
-            quizService.result(authentication.getName(), quizId)
+            quizService.result(Long.getLong(authentication.getName()), quizId)
                 .stream().map(QuizParticipants::toResponse)
                 .collect(Collectors.toList())
         );
@@ -133,10 +133,10 @@ public class QuizController {
     @GetMapping("/count/{quizId}")
     public ResponseEntity<Long> count(
         @ApiIgnore Authentication authentication,
-        @PathVariable("quizId") @Valid @NotBlank String quizId
+        @PathVariable("quizId") @Valid @NotBlank Long quizId
     ) {
         return ResponseEntity.ok().body(
-            quizService.count(authentication.getName(), quizId)
+            quizService.count(Long.getLong(authentication.getName()), quizId)
         );
     }
 
@@ -144,9 +144,9 @@ public class QuizController {
     @DeleteMapping("/{quizId}")
     public ResponseEntity<Boolean> delete(
         @ApiIgnore Authentication authentication,
-        @PathVariable("quizId") @Valid @NotBlank String quizId
+        @PathVariable("quizId") @Valid @NotBlank Long quizId
     ) {
-        quizService.delete(authentication.getName(), quizId);
+        quizService.delete(Long.getLong(authentication.getName()), quizId);
         return ResponseEntity.ok().body(true);
     }
 }

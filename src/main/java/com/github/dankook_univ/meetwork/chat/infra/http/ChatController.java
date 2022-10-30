@@ -41,10 +41,11 @@ public class ChatController {
     @GetMapping("/{eventId}")
     public ResponseEntity<List<ChatRoomResponse>> getChatRooms(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotEmpty String eventId
+        @PathVariable("eventId") @Valid @NotEmpty Long eventId
     ) {
         return ResponseEntity.ok().body(
-            chatRoomService.getChatRoomList(authentication.getName(), eventId).stream()
+            chatRoomService.getChatRoomList(Long.getLong(authentication.getName()), eventId)
+                .stream()
                 .map(ChatRoom::toResponse)
                 .collect(Collectors.toList())
         );
@@ -53,20 +54,21 @@ public class ChatController {
     @GetMapping("/{eventId}/{roomId}")
     public ResponseEntity<ChatRoomResponse> getChatRoom(
         @ApiIgnore Authentication authentication,
-        @PathVariable("roomId") @Valid @NotEmpty String roomId
+        @PathVariable("roomId") @Valid @NotEmpty Long roomId
     ) throws NotParticipatedMemberException {
         return ResponseEntity.ok().body(
-            chatRoomService.getChatRoom(authentication.getName(), roomId).toResponse()
+            chatRoomService.getChatRoom(Long.getLong(authentication.getName()), roomId).toResponse()
         );
     }
 
     @GetMapping("/{eventId}/participant")
     public ResponseEntity<List<ChatRoomResponse>> getParticipatedChatRooms(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotEmpty String eventId
+        @PathVariable("eventId") @Valid @NotEmpty Long eventId
     ) {
         return ResponseEntity.ok().body(
-            chatRoomService.getParticipatedChatRoomList(authentication.getName(), eventId).stream()
+            chatRoomService.getParticipatedChatRoomList(Long.getLong(authentication.getName()),
+                    eventId).stream()
                 .map(ChatRoom::toResponse)
                 .collect(Collectors.toList())
         );
@@ -75,10 +77,10 @@ public class ChatController {
     @GetMapping("/{eventId}/{roomId}/participants")
     public ResponseEntity<List<ProfileResponse>> getParticipants(
         @ApiIgnore Authentication authentication,
-        @PathVariable("roomId") @Valid @NotEmpty String roomId
+        @PathVariable("roomId") @Valid @NotEmpty Long roomId
     ) throws NotParticipatedMemberException {
         return ResponseEntity.ok().body(
-            chatRoomService.getParticipants(authentication.getName(), roomId).stream()
+            chatRoomService.getParticipants(Long.getLong(authentication.getName()), roomId).stream()
                 .map(Profile::toResponse)
                 .collect(Collectors.toList())
         );
@@ -87,10 +89,10 @@ public class ChatController {
     @GetMapping("/{eventId}/{roomId}/messages")
     public ResponseEntity<List<ChatMessageResponse>> getMessages(
         @ApiIgnore Authentication authentication,
-        @PathVariable("roomId") @Valid @NotEmpty String roomId
+        @PathVariable("roomId") @Valid @NotEmpty Long roomId
     ) throws NotParticipatedMemberException {
         return ResponseEntity.ok().body(
-            chatMessageService.getByRoomId(authentication.getName(), roomId).stream()
+            chatMessageService.getByRoomId(Long.getLong(authentication.getName()), roomId).stream()
                 .map(ChatMessage::toResponse)
                 .collect(Collectors.toList())
         );
@@ -99,56 +101,65 @@ public class ChatController {
     @PostMapping("/{eventId}/new")
     public ResponseEntity<ChatRoomResponse> createChatRoom(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotEmpty String eventId,
+        @PathVariable("eventId") @Valid @NotEmpty Long eventId,
         @RequestBody @Valid ChatRoomCreateRequest request
     ) {
         return ResponseEntity.ok().body(
-            chatRoomService.create(authentication.getName(), eventId, request).toResponse()
+            chatRoomService.create(Long.getLong(authentication.getName()), eventId, request)
+                .toResponse()
         );
     }
 
     @PostMapping("/{eventId}/{roomId}/join")
     public ResponseEntity<ChatRoomResponse> joinChatRoom(
         @ApiIgnore Authentication authentication,
-        @PathVariable("roomId") @Valid @NotEmpty String roomId
+        @PathVariable("roomId") @Valid @NotEmpty Long roomId
     ) {
         return ResponseEntity.ok().body(
-            chatRoomService.join(authentication.getName(), roomId).toResponse()
+            chatRoomService.join(Long.getLong(authentication.getName()), roomId).toResponse()
         );
     }
 
     @PostMapping("/{eventId}/{roomId}/message/new")
     public ResponseEntity<ChatMessageResponse> sendMessage(
         @ApiIgnore Authentication authentication,
-        @PathVariable("roomId") @Valid @NotEmpty String roomId,
+        @PathVariable("roomId") @Valid @NotEmpty Long roomId,
         @RequestBody @Valid MessageCreateRequest request
     ) throws NotParticipatedMemberException {
         return ResponseEntity.ok().body(
-            chatMessageService.send(authentication.getName(), roomId, request.getMessage())
-                .toResponse()
+            chatMessageService.send(
+                Long.getLong(authentication.getName()),
+                roomId,
+                request.getMessage()
+            ).toResponse()
         );
     }
 
     @PutMapping("/{eventId}/{roomId}")
     public ResponseEntity<ChatRoomResponse> update(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotEmpty String eventId,
-        @PathVariable("roomId") @Valid @NotEmpty String roomId,
+        @PathVariable("eventId") @Valid @NotEmpty Long eventId,
+        @PathVariable("roomId") @Valid @NotEmpty Long roomId,
         @RequestBody @Valid ChatRoomUpdateRequest request
     ) throws NotParticipatedMemberException, NotFoundChatRoomPermissionException {
         return ResponseEntity.ok().body(
-            chatRoomService.update(authentication.getName(), eventId, roomId, request).toResponse()
+            chatRoomService.update(
+                Long.getLong(authentication.getName()),
+                eventId,
+                roomId,
+                request
+            ).toResponse()
         );
     }
 
     @DeleteMapping("/{eventId}/{roomId}")
     public ResponseEntity<Boolean> delete(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotEmpty String eventId,
-        @PathVariable("roomId") @Valid @NotEmpty String roomId
+        @PathVariable("eventId") @Valid @NotEmpty Long eventId,
+        @PathVariable("roomId") @Valid @NotEmpty Long roomId
     ) throws NotParticipatedMemberException, NotFoundChatRoomPermissionException {
         return ResponseEntity.ok().body(
-            chatRoomService.delete(authentication.getName(), eventId, roomId)
+            chatRoomService.delete(Long.getLong(authentication.getName()), eventId, roomId)
         );
     }
 }

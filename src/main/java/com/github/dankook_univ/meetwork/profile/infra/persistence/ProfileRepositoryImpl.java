@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -22,38 +21,34 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     private final QProfile profile = QProfile.profile;
 
     @Override
-    public Optional<Profile> getById(String profileId) {
-        return profileRepository.findById(UUID.fromString(profileId));
+    public Optional<Profile> getById(Long profileId) {
+        return profileRepository.findById(profileId);
     }
 
     @Override
-    public Optional<Profile> getByMemberIdAndEventId(String memberId, String eventId) {
-        return profileRepository.findByMemberIdAndEventId(UUID.fromString(memberId),
-            UUID.fromString(eventId));
+    public Optional<Profile> getByMemberIdAndEventId(Long memberId, Long eventId) {
+        return profileRepository.findByMemberIdAndEventId(memberId, eventId);
     }
 
     @Override
-    public Optional<Profile> getByEventIdAndNickname(String eventId, String nickname) {
-        return profileRepository.findByEventIdAndNickname(UUID.fromString(eventId), nickname);
+    public Optional<Profile> getByEventIdAndNickname(Long eventId, String nickname) {
+        return profileRepository.findByEventIdAndNickname(eventId, nickname);
     }
 
     @Override
-    public List<Profile> getByMemberId(String memberId, Pageable pageable) {
-        return profileRepository.findByMemberId(UUID.fromString(memberId), pageable).getContent();
+    public List<Profile> getByMemberId(Long memberId, Pageable pageable) {
+        return profileRepository.findByMemberId(memberId, pageable).getContent();
     }
 
     @Override
     public List<Profile> getByEventIdAndAdminOnly(
-        String eventId,
+        Long eventId,
         Boolean adminOnly,
         Pageable pageable
     ) {
         return queryFactory
             .selectFrom(profile)
-            .where(
-                profile.event.id.eq(UUID.fromString(eventId)),
-                adminOnlyEq(adminOnly)
-            )
+            .where(profile.event.id.eq(eventId), adminOnlyEq(adminOnly))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
@@ -65,11 +60,8 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     }
 
     @Override
-    public void delete(String memberId, String eventId) {
-        profileRepository.deleteByMemberIdAndEventId(
-            UUID.fromString(memberId),
-            UUID.fromString(eventId)
-        );
+    public void delete(Long memberId, Long eventId) {
+        profileRepository.deleteByMemberIdAndEventId(memberId, eventId);
     }
 
     @Override
@@ -78,8 +70,8 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     }
 
     @Override
-    public void deleteAllByEventId(String eventId) {
-        profileRepository.deleteAllByEventId(UUID.fromString(eventId));
+    public void deleteAllByEventId(Long eventId) {
+        profileRepository.deleteAllByEventId(eventId);
     }
 
     private BooleanExpression adminOnlyEq(Boolean adminOnly) {

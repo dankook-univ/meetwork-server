@@ -4,7 +4,6 @@ import com.github.dankook_univ.meetwork.file.domain.File;
 import com.github.dankook_univ.meetwork.file.domain.FileRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -15,13 +14,13 @@ public class FileRepositoryImpl implements FileRepository {
     final private FileJpaRepository fileJpaRepository;
 
     @Override
-    public Optional<File> getById(String id) {
-        return fileJpaRepository.findById(UUID.fromString(id));
+    public Optional<File> getById(Long id) {
+        return fileJpaRepository.findById(id);
     }
 
     @Override
-    public List<File> getByUploaderId(String uploaderId) {
-        return fileJpaRepository.findByUploaderId(UUID.fromString(uploaderId));
+    public List<File> getByUploaderId(Long uploaderId) {
+        return fileJpaRepository.findByUploaderId(uploaderId);
     }
 
     @Override
@@ -30,8 +29,8 @@ public class FileRepositoryImpl implements FileRepository {
     }
 
     @Override
-    public void delete(String fileId) {
-        fileJpaRepository.deleteById(UUID.fromString(fileId));
+    public void delete(Long fileId) {
+        fileJpaRepository.deleteById(fileId);
     }
 
     @Override

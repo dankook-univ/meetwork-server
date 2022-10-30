@@ -13,5 +13,5 @@ public interface AuthService {
 
     TokenResponse reissue(ReissueRequest request);
 
-    boolean signOut(String memberId);
+    boolean signOut(Long memberId);
 }

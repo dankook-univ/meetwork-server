@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 public class UpdateAdminRequest {
 
     @NotBlank
-    String profileId;
+    Long profileId;
 
     @NotBlank
-    String eventId;
+    Long eventId;
 
     @NotNull
     Boolean isAdmin;

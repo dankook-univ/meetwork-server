@@ -5,13 +5,13 @@ import java.util.Optional;
 
 public interface ChatParticipantRepository {
 
-    List<ChatParticipant> getByRoomId(String roomId);
+    List<ChatParticipant> getByRoomId(Long roomId);
 
-    List<ChatParticipant> getByParticipantId(String participantId);
+    List<ChatParticipant> getByParticipantId(Long participantId);
 
-    Optional<ChatParticipant> getByParticipantIdAndRoomId(String participantId, String roomId);
+    Optional<ChatParticipant> getByParticipantIdAndRoomId(Long participantId, Long roomId);
 
     ChatParticipant create(ChatParticipant participant);
 
-    void deleteByMemberId(String memberId);
+    void deleteByMemberId(Long memberId);
 }

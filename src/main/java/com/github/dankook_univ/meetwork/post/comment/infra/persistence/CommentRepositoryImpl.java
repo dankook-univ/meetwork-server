@@ -3,7 +3,6 @@ package com.github.dankook_univ.meetwork.post.comment.infra.persistence;
 import com.github.dankook_univ.meetwork.post.comment.domain.Comment;
 import com.github.dankook_univ.meetwork.post.comment.domain.CommentRepository;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -19,8 +18,8 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public Optional<Comment> getById(String commentId) {
-        return commentRepository.findById(UUID.fromString(commentId));
+    public Optional<Comment> getById(Long commentId) {
+        return commentRepository.findById(commentId);
     }
 
     @Override

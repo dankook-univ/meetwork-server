@@ -4,7 +4,6 @@ import com.github.dankook_univ.meetwork.auth.domain.auth.Auth;
 import com.github.dankook_univ.meetwork.auth.domain.auth.AuthRepository;
 import com.github.dankook_univ.meetwork.auth.domain.auth.AuthType;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -20,12 +19,12 @@ public class AuthRepositoryImpl implements AuthRepository {
     }
 
     @Override
-    public Optional<Auth> getById(UUID id) {
+    public Optional<Auth> getById(Long id) {
         return authJpaRepository.findById(id);
     }
 
     @Override
-    public Optional<Auth> getByMemberId(UUID memberId) {
+    public Optional<Auth> getByMemberId(Long memberId) {
         return authJpaRepository.findByMemberId(memberId);
     }
 

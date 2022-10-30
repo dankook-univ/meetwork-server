@@ -4,7 +4,6 @@ import com.github.dankook_univ.meetwork.post.domain.Post;
 import com.github.dankook_univ.meetwork.post.domain.PostRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -21,13 +20,13 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Optional<Post> getById(String postId) {
-        return postRepository.findById(UUID.fromString(postId));
+    public Optional<Post> getById(Long postId) {
+        return postRepository.findById(postId);
     }
 
     @Override
-    public List<Post> getByBoardId(String boardId, Pageable pageable) {
-        return postRepository.findByBoardIdOrderByUpdatedAtDesc(UUID.fromString(boardId), pageable)
+    public List<Post> getByBoardId(Long boardId, Pageable pageable) {
+        return postRepository.findByBoardIdOrderByUpdatedAtDesc(boardId, pageable)
             .toList();
     }
 
@@ -37,12 +36,12 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public void deleteByWriterId(String writerId) {
-        postRepository.deleteAllByWriterId(UUID.fromString(writerId));
+    public void deleteByWriterId(Long writerId) {
+        postRepository.deleteAllByWriterId(writerId);
     }
 
     @Override
-    public void deleteByBoardId(String boardId) {
-        postRepository.deleteAllByBoardId(UUID.fromString(boardId));
+    public void deleteByBoardId(Long boardId) {
+        postRepository.deleteAllByBoardId(boardId);
     }
 }

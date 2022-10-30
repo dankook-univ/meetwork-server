@@ -10,25 +10,25 @@ import java.util.List;
 
 public interface ChatRoomService {
 
-    List<ChatRoom> getChatRoomList(String memberId, String eventId);
+    List<ChatRoom> getChatRoomList(Long memberId, Long eventId);
 
-    List<ChatRoom> getParticipatedChatRoomList(String memberId, String eventId);
+    List<ChatRoom> getParticipatedChatRoomList(Long memberId, Long eventId);
 
-    ChatRoom getChatRoom(String memberId, String roomId) throws NotParticipatedMemberException;
+    ChatRoom getChatRoom(Long memberId, Long roomId) throws NotParticipatedMemberException;
 
     List<Profile> getParticipants(
-        String memberId, String roomId
+        Long memberId, Long roomId
     ) throws NotParticipatedMemberException;
 
-    ChatRoom create(String memberId, String eventId, ChatRoomCreateRequest request);
+    ChatRoom create(Long memberId, Long eventId, ChatRoomCreateRequest request);
 
-    ChatRoom update(String memberId, String eventId, String roomId, ChatRoomUpdateRequest request)
+    ChatRoom update(Long memberId, Long eventId, Long roomId, ChatRoomUpdateRequest request)
         throws NotParticipatedMemberException, NotFoundChatRoomPermissionException;
 
-    ChatRoom join(String memberId, String roomId);
+    ChatRoom join(Long memberId, Long roomId);
 
-    Boolean delete(String memberId, String eventId, String roomId)
+    Boolean delete(Long memberId, Long eventId, Long roomId)
         throws NotParticipatedMemberException, NotFoundChatRoomPermissionException;
 
-    void shouldParticipating(String memberId, String roomId) throws NotParticipatedMemberException;
+    void shouldParticipating(Long memberId, Long roomId) throws NotParticipatedMemberException;
 }

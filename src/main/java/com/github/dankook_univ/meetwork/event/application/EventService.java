@@ -11,31 +11,31 @@ import java.util.List;
 
 public interface EventService {
 
-    Event get(String memberId, String eventId);
+    Event get(Long memberId, Long eventId);
 
-    List<Event> getList(String memberId, int page);
+    List<Event> getList(Long memberId, int page);
 
-    List<Profile> getMemberList(String memberId, String eventId, Boolean adminOnly, int page);
+    List<Profile> getMemberList(Long memberId, Long eventId, Boolean adminOnly, int page);
 
-    Profile getMember(String memberId, String eventId, String profileId);
+    Profile getMember(Long memberId, Long eventId, Long profileId);
 
-    Event create(String memberId, EventCreateRequest request);
+    Event create(Long memberId, EventCreateRequest request);
 
-    Event update(String memberId, String profileId, EventUpdateRequest request);
+    Event update(Long memberId, Long profileId, EventUpdateRequest request);
 
-    Boolean updateAdmin(String memberId, UpdateAdminRequest request);
+    Boolean updateAdmin(Long memberId, UpdateAdminRequest request);
 
     Boolean checkExistingCode(String code);
 
-    Event codeJoin(String memberId, String code, ProfileCreateRequest request);
+    Event codeJoin(Long memberId, String code, ProfileCreateRequest request);
 
-    Event join(String memberId, String eventId, ProfileCreateRequest request, Boolean isAdmin);
+    Event join(Long memberId, Long eventId, ProfileCreateRequest request, Boolean isAdmin);
 
-    Profile getMyProfile(String memberId, String eventId);
+    Profile getMyProfile(Long memberId, Long eventId);
 
-    void secession(String memberId, String eventId);
+    void secession(Long memberId, Long eventId);
 
-    void release(String memberId, ProfileReleaseRequest request);
+    void release(Long memberId, ProfileReleaseRequest request);
 
-    void delete(String memberId, String eventId);
+    void delete(Long memberId, Long eventId);
 }

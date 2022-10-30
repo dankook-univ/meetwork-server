@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface ChatMessageService {
 
-    List<ChatMessage> getByRoomId(String memberId, String roomId)
+    List<ChatMessage> getByRoomId(Long memberId, Long roomId)
         throws NotParticipatedMemberException;
 
-    ChatMessage send(String memberId, String roomId, String message)
+    ChatMessage send(Long memberId, Long roomId, String message)
         throws NotParticipatedMemberException;
 }

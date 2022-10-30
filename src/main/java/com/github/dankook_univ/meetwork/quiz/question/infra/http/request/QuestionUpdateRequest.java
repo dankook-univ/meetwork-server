@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuestionUpdateRequest {
 
-    String questionId;
+    Long questionId;
 
     String content;
 

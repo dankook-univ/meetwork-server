@@ -2,14 +2,14 @@ version: "3"
 
 services:
   database:
-    image: postgres
-    container_name: postgres
+    image: postgres:15
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     environment:
       - TZ=Asia/Seoul
-    env_file:
-      - ./env/.env
+      - POSTGRES_DB=meetwork
+      - POSTGRES_USER=meetwork
+      - POSTGRES_PASSWORD=password
     ports:
       - "5432:5432"
     networks:
@@ -17,10 +17,9 @@ services:
 
   redis:
     image: redis:6
-    container_name: redis
     volumes:
       - ./data/redis:/data
-    command: redis-server --requirepass password --port 6379
+    command: redis-server --port 6379
     ports:
       - "6379:6379"
     networks:

@@ -30,7 +30,8 @@ public class FileController {
         @Valid @NotNull MultipartFile image
     ) {
         return ResponseEntity.ok().body(
-            fileService.upload(authentication.getName(), FileType.post, image).toResponse().getUrl()
+            fileService.upload(Long.getLong(authentication.getName()), FileType.post, image)
+                .toResponse().getUrl()
         );
     }
 
@@ -42,7 +43,8 @@ public class FileController {
     ) {
         return ResponseEntity.ok().body(
             images.stream().map(
-                (file) -> fileService.upload(authentication.getName(), FileType.post, file)
+                (file) -> fileService.upload(Long.getLong(authentication.getName()), FileType.post,
+                        file)
                     .toResponse()
                     .getUrl()
             ).collect(Collectors.toList())

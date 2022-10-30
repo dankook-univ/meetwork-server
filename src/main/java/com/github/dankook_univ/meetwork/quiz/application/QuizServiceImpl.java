@@ -44,7 +44,7 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     @Transactional
-    public Quiz create(String memberId, QuizCreateRequest request) {
+    public Quiz create(Long memberId, QuizCreateRequest request) {
         Profile profile = profileService.get(memberId, request.getEventId());
         if (!profile.getIsAdmin()) {
             throw new NotFoundQuizPermissionException();
@@ -82,9 +82,9 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     @Transactional
-    public Quiz update(String memberId, String quizId, QuizUpdateRequest request) {
+    public Quiz update(Long memberId, Long quizId, QuizUpdateRequest request) {
         Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
-        Profile profile = profileService.get(memberId, quiz.getEvent().getId().toString());
+        Profile profile = profileService.get(memberId, quiz.getEvent().getId());
         if (!profile.getIsAdmin()) {
             throw new NotFoundQuizPermissionException();
         }
@@ -121,16 +121,16 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<QuizResponse> getList(String memberId, String eventId) {
+    public List<QuizResponse> getList(Long memberId, Long eventId) {
         Profile profile = profileService.get(memberId, eventId);
 
-        return quizRepository.getQuizListWithJoin(profile.getId().toString(), eventId);
+        return quizRepository.getQuizListWithJoin(profile.getId(), eventId);
     }
 
     @Override
-    public QuestionsResponse get(String memberId, String quizId) {
+    public QuestionsResponse get(Long memberId, Long quizId) {
         Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
-        Profile profile = profileService.get(memberId, quiz.getEvent().getId().toString());
+        Profile profile = profileService.get(memberId, quiz.getEvent().getId());
         if (!profile.getIsAdmin()) {
             throw new NotFoundQuizPermissionException();
         }
@@ -143,11 +143,11 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     @Transactional
-    public List<Question> participant(String memberId, String quizId) {
+    public List<Question> participant(Long memberId, Long quizId) {
         Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
-        Profile profile = profileService.get(memberId, quiz.getEvent().getId().toString());
+        Profile profile = profileService.get(memberId, quiz.getEvent().getId());
 
-        quizParticipantsRepository.getByProfileIdAndQuizId(profile.getId().toString(), quizId)
+        quizParticipantsRepository.getByProfileIdAndQuizId(profile.getId(), quizId)
             .ifPresent(it -> {
                 throw new AlreadyParticipantedQuizException();
             });
@@ -165,7 +165,7 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     @Transactional
-    public Boolean check(String memberId, QuestionCheckRequest request) {
+    public Boolean check(Long memberId, QuestionCheckRequest request) {
         Quiz quiz = quizRepository.getById(request.getQuizId())
             .orElseThrow(NotFoundQuizException::new);
         Question question = questionRepository.getById(request.getQuestionId())
@@ -174,10 +174,10 @@ public class QuizServiceImpl implements QuizService {
             throw new QuestionAndQuizRelationshipException();
         }
 
-        Profile profile = profileService.get(memberId, quiz.getEvent().getId().toString());
+        Profile profile = profileService.get(memberId, quiz.getEvent().getId());
         QuizParticipants quizParticipants = quizParticipantsRepository.getByProfileIdAndQuizId(
-            profile.getId().toString(),
-            question.getQuiz().getId().toString()
+            profile.getId(),
+            question.getQuiz().getId()
         ).orElseThrow(NotFoundQuizParticipantsException::new);
 
         if (securityUtilService.protectInputValue(request.getAnswer())
@@ -190,11 +190,11 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public QuizParticipants myResult(String memberId, String quizId) {
+    public QuizParticipants myResult(Long memberId, Long quizId) {
         Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
-        Profile profile = profileService.get(memberId, quiz.getEvent().getId().toString());
+        Profile profile = profileService.get(memberId, quiz.getEvent().getId());
         QuizParticipants quizParticipants = quizParticipantsRepository.getByProfileIdAndQuizId(
-            profile.getId().toString(),
+            profile.getId(),
             quizId
         ).orElseThrow(NotFoundQuizParticipantsException::new);
 
@@ -205,13 +205,13 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<QuizParticipants> result(String memberId, String quizId) {
+    public List<QuizParticipants> result(Long memberId, Long quizId) {
         Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
 
-        Profile profile = profileService.get(memberId, quiz.getEvent().getId().toString());
+        Profile profile = profileService.get(memberId, quiz.getEvent().getId());
         if (!profile.getIsAdmin()) {
             quizParticipantsRepository.getByProfileIdAndQuizId(
-                profile.getId().toString(),
+                profile.getId(),
                 quizId
             ).orElseThrow(NotParticipantQuizException::new);
         }
@@ -220,9 +220,9 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public Long count(String memberId, String quizId) {
+    public Long count(Long memberId, Long quizId) {
         Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
-        if (!profileService.isEventMember(memberId, quiz.getEvent().getId().toString())) {
+        if (!profileService.isEventMember(memberId, quiz.getEvent().getId())) {
             throw new NotFoundProfileException();
         }
 
@@ -231,10 +231,10 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     @Transactional
-    public void delete(String memberId, String quizId) {
+    public void delete(Long memberId, Long quizId) {
         Quiz quiz = quizRepository.getById(quizId).orElseThrow(NotFoundQuizException::new);
 
-        Profile profile = profileService.get(memberId, quiz.getEvent().getId().toString());
+        Profile profile = profileService.get(memberId, quiz.getEvent().getId());
         if (!profile.getIsAdmin()) {
             throw new NotFoundQuizPermissionException();
         }
@@ -246,12 +246,12 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     @Transactional
-    public void deleteByEventId(String eventId) {
+    public void deleteByEventId(Long eventId) {
         quizRepository.getByEventId(eventId)
             .forEach(
                 (quiz) -> {
-                    quizParticipantsRepository.delete(quiz.getId().toString());
-                    questionRepository.delete(quiz.getId().toString());
+                    quizParticipantsRepository.delete(quiz.getId());
+                    questionRepository.delete(quiz.getId());
                     quizRepository.delete(quiz);
                 }
             );

@@ -13,26 +13,26 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface QuizService {
 
-    Quiz create(String memberId, QuizCreateRequest request);
+    Quiz create(Long memberId, QuizCreateRequest request);
 
-    Quiz update(String memberId, String quizId, QuizUpdateRequest request);
+    Quiz update(Long memberId, Long quizId, QuizUpdateRequest request);
 
-    List<QuizResponse> getList(String memberId, String eventId);
+    List<QuizResponse> getList(Long memberId, Long eventId);
 
-    QuestionsResponse get(String memberId, String quizId);
+    QuestionsResponse get(Long memberId, Long quizId);
 
-    List<Question> participant(String memberId, String quizId);
+    List<Question> participant(Long memberId, Long quizId);
 
-    Boolean check(String memberId, QuestionCheckRequest request);
+    Boolean check(Long memberId, QuestionCheckRequest request);
 
-    QuizParticipants myResult(String memberId, String quizId);
+    QuizParticipants myResult(Long memberId, Long quizId);
 
-    List<QuizParticipants> result(String memberId, String quizId);
+    List<QuizParticipants> result(Long memberId, Long quizId);
 
-    Long count(String memberId, String quizId);
+    Long count(Long memberId, Long quizId);
 
-    void delete(String memberId, String quizId);
+    void delete(Long memberId, Long quizId);
 
     @Transactional
-    void deleteByEventId(String eventId);
+    void deleteByEventId(Long eventId);
 }

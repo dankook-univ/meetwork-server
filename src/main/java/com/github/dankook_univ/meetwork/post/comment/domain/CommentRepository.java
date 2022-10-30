@@ -6,7 +6,7 @@ public interface CommentRepository {
 
     Comment save(Comment comment);
 
-    Optional<Comment> getById(String commentId);
+    Optional<Comment> getById(Long commentId);
 
     void delete(Comment comment);
 }

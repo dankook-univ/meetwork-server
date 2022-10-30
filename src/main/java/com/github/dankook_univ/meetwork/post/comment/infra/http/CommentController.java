@@ -31,27 +31,28 @@ public class CommentController {
         @RequestBody @Valid CommentCreateRequest request
     ) {
         return ResponseEntity.ok().body(
-            commentService.create(authentication.getName(), request).toResponse()
+            commentService.create(Long.getLong(authentication.getName()), request).toResponse()
         );
     }
 
     @PatchMapping("/{commentId}")
     public ResponseEntity<CommentResponse> update(
         @ApiIgnore Authentication authentication,
-        @PathVariable("commentId") @NotBlank String commentId,
+        @PathVariable("commentId") @NotBlank Long commentId,
         @RequestBody @Valid CommentUpdateRequest request
     ) {
         return ResponseEntity.ok().body(
-            commentService.update(authentication.getName(), commentId, request).toResponse()
+            commentService.update(Long.getLong(authentication.getName()), commentId, request)
+                .toResponse()
         );
     }
 
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Boolean> delete(
         @ApiIgnore Authentication authentication,
-        @PathVariable("commentId") @Valid @NotBlank String commentId
+        @PathVariable("commentId") @Valid @NotBlank Long commentId
     ) {
-        commentService.delete(authentication.getName(), commentId);
+        commentService.delete(Long.getLong(authentication.getName()), commentId);
         return ResponseEntity.ok().body(true);
     }
 }

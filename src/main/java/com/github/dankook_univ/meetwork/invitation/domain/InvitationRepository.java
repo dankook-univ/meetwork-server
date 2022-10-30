@@ -7,11 +7,11 @@ public interface InvitationRepository {
 
     Invitation save(Invitation invitation);
 
-    List<Invitation> getList(String guestId);
+    List<Invitation> getList(Long guestId);
 
-    Optional<Invitation> getByGuestIdAndEventId(String guestId, String eventId);
+    Optional<Invitation> getByGuestIdAndEventId(Long guestId, Long eventId);
 
     void delete(Invitation invitation);
 
-    void deleteByEventId(String eventId);
+    void deleteByEventId(Long eventId);
 }

@@ -5,13 +5,13 @@ import java.util.Optional;
 
 public interface FileRepository {
 
-    Optional<File> getById(String id);
+    Optional<File> getById(Long id);
 
-    List<File> getByUploaderId(String uploaderId);
+    List<File> getByUploaderId(Long uploaderId);
 
     File save(File file);
 
-    void delete(String fileId);
+    void delete(Long fileId);
 
     void delete(File file);
 }

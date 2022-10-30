@@ -70,7 +70,7 @@ public class QuizServiceImplTest {
 
     private Event createEvent(Member member) {
         return eventService.create(
-            member.getId().toString(),
+            member.getId(),
             EventCreateRequest.builder()
                 .name("eventName")
                 .organizerNickname("nickname")
@@ -100,13 +100,13 @@ public class QuizServiceImplTest {
             .build());
 
         Quiz quiz = quizService.create(
-            member.getId().toString(),
+            member.getId(),
             QuizCreateRequest.builder()
                 .name("quizName")
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .questions(list)
                 .build());
-        List<Question> questions = questionRepository.getByQuizId(quiz.getId().toString());
+        List<Question> questions = questionRepository.getByQuizId(quiz.getId());
 
         assertThat(quiz).isNotNull().isInstanceOf(Quiz.class);
         assertThat(quiz.getEvent()).isEqualTo(event);
@@ -122,10 +122,10 @@ public class QuizServiceImplTest {
         Event event = createEvent(member);
 
         Quiz quiz = quizService.create(
-            member.getId().toString(),
+            member.getId(),
             QuizCreateRequest.builder()
                 .name("quizName1")
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .questions(
                     List.of(QuestionCreateRequest.builder()
                         .content("question1")
@@ -135,20 +135,20 @@ public class QuizServiceImplTest {
                     )
                 )
                 .build());
-        List<Question> question = questionRepository.getByQuizId(quiz.getId().toString());
+        List<Question> question = questionRepository.getByQuizId(quiz.getId());
 
         assertThat(quiz).isNotNull();
         assertThat(quiz.getName()).isEqualTo("quizName1");
         assertThat(question.get(0).getContent()).isEqualTo("question1");
 
         Quiz updatedQuiz = quizService.update(
-            member.getId().toString(),
-            quiz.getId().toString(),
+            member.getId(),
+            quiz.getId(),
             QuizUpdateRequest.builder()
                 .name("quizName2")
                 .questions(
                     List.of(QuestionUpdateRequest.builder()
-                        .questionId(question.get(0).getId().toString())
+                        .questionId(question.get(0).getId())
                         .content("question1-1")
                         .answer("answer1-1")
                         .choice(Arrays.asList("choice1", "choice2", "answer1-1", "choice3"))
@@ -157,7 +157,7 @@ public class QuizServiceImplTest {
                 )
                 .build()
         );
-        List<Question> updatedQuestion = questionRepository.getByQuizId(quiz.getId().toString());
+        List<Question> updatedQuestion = questionRepository.getByQuizId(quiz.getId());
 
         assertThat(updatedQuiz.getName()).isEqualTo("quizName2");
         assertThat(updatedQuestion.get(0).getContent()).isEqualTo("question1-1");
@@ -171,10 +171,10 @@ public class QuizServiceImplTest {
         Event event = createEvent(member);
 
         quizService.create(
-            member.getId().toString(),
+            member.getId(),
             QuizCreateRequest.builder()
                 .name("quizName1")
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .questions(
                     List.of(QuestionCreateRequest.builder()
                         .content("question1")
@@ -184,10 +184,10 @@ public class QuizServiceImplTest {
                 .build());
 
         quizService.create(
-            member.getId().toString(),
+            member.getId(),
             QuizCreateRequest.builder()
                 .name("quizName2")
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .questions(
                     List.of(QuestionCreateRequest.builder()
                         .content("question2")
@@ -197,8 +197,8 @@ public class QuizServiceImplTest {
                 .build());
 
         List<QuizResponse> list = quizService.getList(
-            member.getId().toString(),
-            event.getId().toString()
+            member.getId(),
+            event.getId()
         );
 
         assertThat(list.size()).isEqualTo(2);
@@ -213,8 +213,8 @@ public class QuizServiceImplTest {
 
         Member participant = createMember("name", "meetwork@meetwork.kr");
         eventService.join(
-            participant.getId().toString(),
-            event.getId().toString(),
+            participant.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("nickname123")
                 .bio("bio")
@@ -222,10 +222,10 @@ public class QuizServiceImplTest {
             false);
 
         Quiz quiz = quizService.create(
-            organizer.getId().toString(),
+            organizer.getId(),
             QuizCreateRequest.builder()
                 .name("quizName2")
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .questions(
                     List.of(QuestionCreateRequest.builder()
                         .content("question2")
@@ -235,8 +235,8 @@ public class QuizServiceImplTest {
                 .build());
 
         List<QuizResponse> list = quizService.getList(
-            participant.getId().toString(),
-            event.getId().toString()
+            participant.getId(),
+            event.getId()
         );
 
         assertThat(list.size()).isEqualTo(1);
@@ -244,11 +244,11 @@ public class QuizServiceImplTest {
 
         assertThat(list.get(0).getIsFinished()).isFalse();
 
-        quizService.participant(participant.getId().toString(), quiz.getId().toString());
+        quizService.participant(participant.getId(), quiz.getId());
 
         List<QuizResponse> participantList = quizService.getList(
-            participant.getId().toString(),
-            event.getId().toString()
+            participant.getId(),
+            event.getId()
         );
 
         assertThat(participantList.get(0).getIsFinished()).isTrue();
@@ -261,10 +261,10 @@ public class QuizServiceImplTest {
         Event event = createEvent(member);
 
         Quiz quiz = quizService.create(
-            member.getId().toString(),
+            member.getId(),
             QuizCreateRequest.builder()
                 .name("quizName")
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .questions(
                     List.of(QuestionCreateRequest.builder()
                         .content("question")
@@ -274,17 +274,17 @@ public class QuizServiceImplTest {
                 .build());
 
         List<Question> question = quizService.participant(
-            member.getId().toString(),
-            quiz.getId().toString()
+            member.getId(),
+            quiz.getId()
         );
 
         assertThat(question.size()).isEqualTo(1);
         assertThat(question.get(0).getAnswer()).isEqualTo("answer");
 
-        Profile profile = profileService.get(member.getId().toString(), event.getId().toString());
+        Profile profile = profileService.get(member.getId(), event.getId());
         QuizParticipants quizParticipants = quizParticipantsRepository.getByProfileIdAndQuizId(
-            profile.getId().toString(),
-            quiz.getId().toString()
+            profile.getId(),
+            quiz.getId()
         ).orElseThrow(NotParticipantQuizException::new);
 
         assertThat(quizParticipants).isNotNull().isInstanceOf(QuizParticipants.class);
@@ -301,10 +301,10 @@ public class QuizServiceImplTest {
         Event event = createEvent(member);
 
         Quiz quiz = quizService.create(
-            member.getId().toString(),
+            member.getId(),
             QuizCreateRequest.builder()
                 .name("quizName")
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .questions(
                     List.of(QuestionCreateRequest.builder()
                         .content("question")
@@ -314,14 +314,14 @@ public class QuizServiceImplTest {
                 .build());
 
         quizService.participant(
-            member.getId().toString(),
-            quiz.getId().toString()
+            member.getId(),
+            quiz.getId()
         );
 
         Assertions.assertThrows(AlreadyParticipantedQuizException.class, () -> {
             quizService.participant(
-                member.getId().toString(),
-                quiz.getId().toString()
+                member.getId(),
+                quiz.getId()
             );
         });
     }
@@ -333,10 +333,10 @@ public class QuizServiceImplTest {
         Event event = createEvent(member);
 
         Quiz quiz = quizService.create(
-            member.getId().toString(),
+            member.getId(),
             QuizCreateRequest.builder()
                 .name("quizName")
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .questions(
                     List.of(QuestionCreateRequest.builder()
                         .content("question")
@@ -346,25 +346,25 @@ public class QuizServiceImplTest {
                 .build());
 
         List<Question> question = quizService.participant(
-            member.getId().toString(),
-            quiz.getId().toString()
+            member.getId(),
+            quiz.getId()
         );
 
         Boolean check = quizService.check(
-            member.getId().toString(),
+            member.getId(),
             QuestionCheckRequest.builder()
-                .quizId(quiz.getId().toString())
-                .questionId(question.get(0).getId().toString())
+                .quizId(quiz.getId())
+                .questionId(question.get(0).getId())
                 .answer("answer").build()
         );
 
         assertThat(question.size()).isEqualTo(1);
         assertThat(question.get(0)).isNotNull();
 
-        Profile profile = profileService.get(member.getId().toString(), event.getId().toString());
+        Profile profile = profileService.get(member.getId(), event.getId());
         QuizParticipants quizParticipants = quizParticipantsRepository.getByProfileIdAndQuizId(
-            profile.getId().toString(),
-            quiz.getId().toString()
+            profile.getId(),
+            quiz.getId()
         ).orElseThrow(NotParticipantQuizException::new);
 
         assertThat(quizParticipants).isNotNull().isInstanceOf(QuizParticipants.class);
@@ -379,10 +379,10 @@ public class QuizServiceImplTest {
         Event event = createEvent(member);
 
         Quiz quiz = quizService.create(
-            member.getId().toString(),
+            member.getId(),
             QuizCreateRequest.builder()
                 .name("quizName")
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .questions(
                     List.of(QuestionCreateRequest.builder()
                         .content("question")
@@ -392,25 +392,25 @@ public class QuizServiceImplTest {
                 .build());
 
         List<Question> question = quizService.participant(
-            member.getId().toString(),
-            quiz.getId().toString()
+            member.getId(),
+            quiz.getId()
         );
 
         Boolean check = quizService.check(
-            member.getId().toString(),
+            member.getId(),
             QuestionCheckRequest.builder()
-                .quizId(quiz.getId().toString())
-                .questionId(question.get(0).getId().toString())
+                .quizId(quiz.getId())
+                .questionId(question.get(0).getId())
                 .answer("noAnswer").build()
         );
 
         assertThat(question.size()).isEqualTo(1);
         assertThat(question.get(0)).isNotNull();
 
-        Profile profile = profileService.get(member.getId().toString(), event.getId().toString());
+        Profile profile = profileService.get(member.getId(), event.getId());
         QuizParticipants quizParticipants = quizParticipantsRepository.getByProfileIdAndQuizId(
-            profile.getId().toString(),
-            quiz.getId().toString()
+            profile.getId(),
+            quiz.getId()
         ).orElseThrow(NotParticipantQuizException::new);
 
         assertThat(quizParticipants).isNotNull().isInstanceOf(QuizParticipants.class);
@@ -426,8 +426,8 @@ public class QuizServiceImplTest {
 
         Member participant = createMember("name", "meetwork@meetwork.kr");
         eventService.join(
-            participant.getId().toString(),
-            event.getId().toString(),
+            participant.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant")
                 .bio("bio")
@@ -436,10 +436,10 @@ public class QuizServiceImplTest {
         );
 
         Quiz quiz = quizService.create(
-            admin.getId().toString(),
+            admin.getId(),
             QuizCreateRequest.builder()
                 .name("quizName")
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .questions(
                     List.of(QuestionCreateRequest.builder()
                         .content("question")
@@ -448,33 +448,33 @@ public class QuizServiceImplTest {
                         .build()))
                 .build());
         List<Question> question = quizService.participant(
-            admin.getId().toString(),
-            quiz.getId().toString()
+            admin.getId(),
+            quiz.getId()
         );
         quizService.participant(
-            participant.getId().toString(),
-            quiz.getId().toString()
+            participant.getId(),
+            quiz.getId()
         );
 
         Boolean checkTrue = quizService.check(
-            admin.getId().toString(),
+            admin.getId(),
             QuestionCheckRequest.builder()
-                .quizId(quiz.getId().toString())
-                .questionId(question.get(0).getId().toString())
+                .quizId(quiz.getId())
+                .questionId(question.get(0).getId())
                 .answer("answer").build()
         );
 
         Boolean checkFalse = quizService.check(
-            participant.getId().toString(),
+            participant.getId(),
             QuestionCheckRequest.builder()
-                .quizId(quiz.getId().toString())
-                .questionId(question.get(0).getId().toString())
+                .quizId(quiz.getId())
+                .questionId(question.get(0).getId())
                 .answer("noAnswer").build()
         );
 
         QuizParticipants result = quizService.myResult(
-            participant.getId().toString(),
-            quiz.getId().toString()
+            participant.getId(),
+            quiz.getId()
         );
 
         assertThat(result).isNotNull();
@@ -492,8 +492,8 @@ public class QuizServiceImplTest {
 
         Member participant = createMember("name", "meetwork@meetwork.kr");
         eventService.join(
-            participant.getId().toString(),
-            event.getId().toString(),
+            participant.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant")
                 .bio("bio")
@@ -502,10 +502,10 @@ public class QuizServiceImplTest {
         );
 
         Quiz quiz = quizService.create(
-            admin.getId().toString(),
+            admin.getId(),
             QuizCreateRequest.builder()
                 .name("quizName")
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .questions(
                     List.of(QuestionCreateRequest.builder()
                         .content("question")
@@ -514,33 +514,33 @@ public class QuizServiceImplTest {
                         .build()))
                 .build());
         List<Question> question = quizService.participant(
-            admin.getId().toString(),
-            quiz.getId().toString()
+            admin.getId(),
+            quiz.getId()
         );
         quizService.participant(
-            participant.getId().toString(),
-            quiz.getId().toString()
+            participant.getId(),
+            quiz.getId()
         );
 
         Boolean checkTrue = quizService.check(
-            admin.getId().toString(),
+            admin.getId(),
             QuestionCheckRequest.builder()
-                .quizId(quiz.getId().toString())
-                .questionId(question.get(0).getId().toString())
+                .quizId(quiz.getId())
+                .questionId(question.get(0).getId())
                 .answer("answer").build()
         );
 
         Boolean checkFalse = quizService.check(
-            participant.getId().toString(),
+            participant.getId(),
             QuestionCheckRequest.builder()
-                .quizId(quiz.getId().toString())
-                .questionId(question.get(0).getId().toString())
+                .quizId(quiz.getId())
+                .questionId(question.get(0).getId())
                 .answer("noAnswer").build()
         );
 
         List<QuizParticipants> result = quizService.result(
-            participant.getId().toString(),
-            quiz.getId().toString()
+            participant.getId(),
+            quiz.getId()
         );
 
         assertThat(result).isNotNull();
@@ -561,8 +561,8 @@ public class QuizServiceImplTest {
 
         Member participant1 = createMember("participant1", "meetwork@meetwork.kr");
         eventService.join(
-            participant1.getId().toString(),
-            event.getId().toString(),
+            participant1.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant1")
                 .bio("bio")
@@ -571,8 +571,8 @@ public class QuizServiceImplTest {
         );
         Member participant2 = createMember("participant2", "meetwork@meetwork.kr");
         eventService.join(
-            participant2.getId().toString(),
-            event.getId().toString(),
+            participant2.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant2")
                 .bio("bio")
@@ -581,10 +581,10 @@ public class QuizServiceImplTest {
         );
 
         Quiz quiz = quizService.create(
-            admin.getId().toString(),
+            admin.getId(),
             QuizCreateRequest.builder()
                 .name("quizName")
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .questions(
                     List.of(
                         QuestionCreateRequest.builder()
@@ -601,51 +601,51 @@ public class QuizServiceImplTest {
                 )
                 .build());
         List<Question> question = quizService.participant(
-            admin.getId().toString(),
-            quiz.getId().toString()
+            admin.getId(),
+            quiz.getId()
         );
 
         quizService.participant(
-            participant1.getId().toString(),
-            quiz.getId().toString()
+            participant1.getId(),
+            quiz.getId()
         );
         quizService.participant(
-            participant2.getId().toString(),
-            quiz.getId().toString()
+            participant2.getId(),
+            quiz.getId()
         );
 
         quizService.check(
-            participant1.getId().toString(),
+            participant1.getId(),
             QuestionCheckRequest.builder()
-                .quizId(quiz.getId().toString())
-                .questionId(question.get(0).getId().toString())
+                .quizId(quiz.getId())
+                .questionId(question.get(0).getId())
                 .answer("answer").build()
         );
         quizService.check(
-            participant2.getId().toString(),
+            participant2.getId(),
             QuestionCheckRequest.builder()
-                .quizId(quiz.getId().toString())
-                .questionId(question.get(0).getId().toString())
+                .quizId(quiz.getId())
+                .questionId(question.get(0).getId())
                 .answer("noAnswer").build()
         );
         quizService.check(
-            participant1.getId().toString(),
+            participant1.getId(),
             QuestionCheckRequest.builder()
-                .quizId(quiz.getId().toString())
-                .questionId(question.get(1).getId().toString())
+                .quizId(quiz.getId())
+                .questionId(question.get(1).getId())
                 .answer("answer").build()
         );
         quizService.check(
-            participant2.getId().toString(),
+            participant2.getId(),
             QuestionCheckRequest.builder()
-                .quizId(quiz.getId().toString())
-                .questionId(question.get(1).getId().toString())
+                .quizId(quiz.getId())
+                .questionId(question.get(1).getId())
                 .answer("answer").build()
         );
 
         List<QuizParticipants> result = quizService.result(
-            admin.getId().toString(),
-            quiz.getId().toString()
+            admin.getId(),
+            quiz.getId()
         );
 
         assertThat(result).isNotNull();
@@ -664,8 +664,8 @@ public class QuizServiceImplTest {
 
         Member participant = createMember("name", "meetwork@meetwork.kr");
         eventService.join(
-            participant.getId().toString(),
-            event.getId().toString(),
+            participant.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant")
                 .bio("bio")
@@ -674,10 +674,10 @@ public class QuizServiceImplTest {
         );
 
         Quiz quiz = quizService.create(
-            admin.getId().toString(),
+            admin.getId(),
             QuizCreateRequest.builder()
                 .name("quizName")
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .questions(
                     List.of(QuestionCreateRequest.builder()
                         .content("question")
@@ -686,34 +686,34 @@ public class QuizServiceImplTest {
                         .build()))
                 .build());
         List<Question> question = quizService.participant(
-            admin.getId().toString(),
-            quiz.getId().toString()
+            admin.getId(),
+            quiz.getId()
         );
 
         quizService.participant(
-            participant.getId().toString(),
-            quiz.getId().toString()
+            participant.getId(),
+            quiz.getId()
         );
 
-        quizService.delete(admin.getId().toString(), quiz.getId().toString());
+        quizService.delete(admin.getId(), quiz.getId());
 
         Assertions.assertThrows(NotFoundQuizParticipantsException.class, () -> {
             Profile participantProfile = profileService.get(
-                participant.getId().toString(),
-                event.getId().toString());
+                participant.getId(),
+                event.getId());
             QuizParticipants participants = quizParticipantsRepository.getByProfileIdAndQuizId(
-                participantProfile.getId().toString(),
-                quiz.getId().toString()
+                participantProfile.getId(),
+                quiz.getId()
             ).orElseThrow(NotFoundQuizParticipantsException::new);
         });
 
         Assertions.assertThrows(NotFoundQuestionException.class, () -> {
-            questionRepository.getById(question.get(0).getId().toString())
+            questionRepository.getById(question.get(0).getId())
                 .orElseThrow(NotFoundQuestionException::new);
         });
 
         Assertions.assertThrows(NotFoundQuizException.class, () -> {
-            quizService.get(admin.getId().toString(), quiz.getId().toString());
+            quizService.get(admin.getId(), quiz.getId());
         });
 
     }

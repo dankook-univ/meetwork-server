@@ -9,7 +9,6 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +25,7 @@ public class QuizRepositoryImpl implements QuizRepository {
 
     @Override
     @Transactional
-    public List<QuizResponse> getQuizListWithJoin(String profileId, String eventId) {
+    public List<QuizResponse> getQuizListWithJoin(Long profileId, Long eventId) {
         return queryFactory
             .select(
                 Projections.constructor(QuizResponse.class,
@@ -37,9 +36,9 @@ public class QuizRepositoryImpl implements QuizRepository {
                     quizParticipants.isFinished
                 ))
             .from(quizParticipants)
-            .where(quiz.event.id.eq(UUID.fromString(eventId)))
+            .where(quiz.event.id.eq(eventId))
             .rightJoin(quizParticipants.quiz, quiz)
-            .on(quizParticipants.profile.id.eq(UUID.fromString(profileId)))
+            .on(quizParticipants.profile.id.eq(profileId))
             .fetch();
     }
 
@@ -49,13 +48,13 @@ public class QuizRepositoryImpl implements QuizRepository {
     }
 
     @Override
-    public Optional<Quiz> getById(String quizId) {
-        return quizRepository.findById(UUID.fromString(quizId));
+    public Optional<Quiz> getById(Long quizId) {
+        return quizRepository.findById(quizId);
     }
 
     @Override
-    public List<Quiz> getByEventId(String eventId) {
-        return quizRepository.getByEventId(UUID.fromString(eventId));
+    public List<Quiz> getByEventId(Long eventId) {
+        return quizRepository.getByEventId(eventId);
     }
 
     @Override

@@ -9,24 +9,24 @@ import org.springframework.data.domain.Pageable;
 
 public interface ProfileService {
 
-    Profile get(String memberId, String eventId);
+    Profile get(Long memberId, Long eventId);
 
-    Profile getById(String profileId);
+    Profile getById(Long profileId);
 
-    Profile create(String memberId, Event event, ProfileCreateRequest request, Boolean isAdmin);
+    Profile create(Long memberId, Event event, ProfileCreateRequest request, Boolean isAdmin);
 
-    Profile update(String memberId, ProfileUpdateRequest request);
+    Profile update(Long memberId, ProfileUpdateRequest request);
 
-    void delete(String memberId, String eventId);
+    void delete(Long memberId, Long eventId);
 
     void delete(Profile profile);
 
-    void deleteByEventId(String eventId);
+    void deleteByEventId(Long eventId);
 
-    List<Profile> getListByMemberId(String memberId, Pageable pageable);
+    List<Profile> getListByMemberId(Long memberId, Pageable pageable);
 
-    List<Profile> getListByEventIdAndAdminOnly(String eventId, Boolean adminOnly,
+    List<Profile> getListByEventIdAndAdminOnly(Long eventId, Boolean adminOnly,
         Pageable pageable);
 
-    Boolean isEventMember(String memberId, String eventId);
+    Boolean isEventMember(Long memberId, Long eventId);
 }

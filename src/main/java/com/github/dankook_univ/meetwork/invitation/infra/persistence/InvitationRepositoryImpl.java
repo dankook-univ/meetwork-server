@@ -4,7 +4,6 @@ import com.github.dankook_univ.meetwork.invitation.domain.Invitation;
 import com.github.dankook_univ.meetwork.invitation.domain.InvitationRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -20,15 +19,15 @@ public class InvitationRepositoryImpl implements InvitationRepository {
     }
 
     @Override
-    public List<Invitation> getList(String guestId) {
-        return invitationRepository.getByGuestIdOrderByUpdatedAtDesc(UUID.fromString(guestId));
+    public List<Invitation> getList(Long guestId) {
+        return invitationRepository.getByGuestIdOrderByUpdatedAtDesc(guestId);
     }
 
     @Override
-    public Optional<Invitation> getByGuestIdAndEventId(String guestId, String eventId) {
+    public Optional<Invitation> getByGuestIdAndEventId(Long guestId, Long eventId) {
         return invitationRepository.getByGuestIdAndEventId(
-            UUID.fromString(guestId),
-            UUID.fromString(eventId)
+            guestId,
+            eventId
         );
     }
 
@@ -38,7 +37,7 @@ public class InvitationRepositoryImpl implements InvitationRepository {
     }
 
     @Override
-    public void deleteByEventId(String eventId) {
-        invitationRepository.deleteAllByEventId(UUID.fromString(eventId));
+    public void deleteByEventId(Long eventId) {
+        invitationRepository.deleteAllByEventId(eventId);
     }
 }

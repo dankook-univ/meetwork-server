@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 public class ProfileReleaseRequest {
 
     @NotBlank
-    String profileId;
+    Long profileId;
 
     @NotBlank
-    String eventId;
+    Long eventId;
 }

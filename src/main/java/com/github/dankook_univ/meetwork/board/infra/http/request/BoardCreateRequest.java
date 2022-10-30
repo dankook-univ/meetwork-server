@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class BoardCreateRequest {
 
     @NotBlank
-    String eventId;
+    Long eventId;
 
     @NotBlank
     String name;

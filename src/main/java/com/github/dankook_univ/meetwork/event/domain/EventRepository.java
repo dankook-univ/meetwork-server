@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public interface EventRepository {
 
-    Optional<Event> getById(String eventId);
+    Optional<Event> getById(Long eventId);
 
     Event save(Event event);
 

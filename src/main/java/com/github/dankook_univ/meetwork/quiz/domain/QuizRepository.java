@@ -6,13 +6,13 @@ import java.util.Optional;
 
 public interface QuizRepository {
 
-    List<QuizResponse> getQuizListWithJoin(String profileId, String eventId);
+    List<QuizResponse> getQuizListWithJoin(Long profileId, Long eventId);
 
     Quiz save(Quiz quiz);
 
-    Optional<Quiz> getById(String quizId);
+    Optional<Quiz> getById(Long quizId);
 
-    List<Quiz> getByEventId(String eventId);
+    List<Quiz> getByEventId(Long eventId);
 
     Optional<Quiz> getByName(String name);
 

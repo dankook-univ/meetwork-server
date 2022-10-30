@@ -40,10 +40,10 @@ public class EventController {
     @GetMapping("/{eventId}")
     public ResponseEntity<EventResponse> get(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotBlank String eventId
+        @PathVariable("eventId") @Valid @NotBlank Long eventId
     ) {
         return ResponseEntity.ok().body(
-            eventService.get(authentication.getName(), eventId).toResponse()
+            eventService.get(Long.getLong(authentication.getName()), eventId).toResponse()
         );
     }
 
@@ -54,7 +54,7 @@ public class EventController {
         @RequestParam(value = "page", required = false, defaultValue = "1") int page
     ) {
         return ResponseEntity.ok().body(
-            eventService.getList(authentication.getName(), page)
+            eventService.getList(Long.getLong(authentication.getName()), page)
                 .stream().map(Event::toResponse)
                 .collect(Collectors.toList())
         );
@@ -64,10 +64,10 @@ public class EventController {
     @GetMapping("/me/{eventId}")
     public ResponseEntity<ProfileResponse> getMyProfile(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotBlank String eventId
+        @PathVariable("eventId") @Valid @NotBlank Long eventId
     ) {
         return ResponseEntity.ok().body(
-            eventService.getMyProfile(authentication.getName(), eventId).toResponse()
+            eventService.getMyProfile(Long.getLong(authentication.getName()), eventId).toResponse()
         );
     }
 
@@ -75,12 +75,13 @@ public class EventController {
     @GetMapping("/members/{eventId}")
     public ResponseEntity<List<ProfileResponse>> getMemberList(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotBlank String eventId,
+        @PathVariable("eventId") @Valid @NotBlank Long eventId,
         @RequestParam(value = "adminOnly", required = false) Boolean adminOnly,
         @RequestParam(value = "page", required = false, defaultValue = "1") int page
     ) {
         return ResponseEntity.ok().body(
-            eventService.getMemberList(authentication.getName(), eventId, adminOnly, page)
+            eventService.getMemberList(Long.getLong(authentication.getName()), eventId, adminOnly,
+                    page)
                 .stream().map(Profile::toResponse)
                 .collect(Collectors.toList())
         );
@@ -90,11 +91,12 @@ public class EventController {
     @GetMapping("/member/{eventId}/{memberId}")
     public ResponseEntity<ProfileResponse> getMember(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotBlank String eventId,
-        @PathVariable("memberId") @Valid @NotBlank String memberId
+        @PathVariable("eventId") @Valid @NotBlank Long eventId,
+        @PathVariable("memberId") @Valid @NotBlank Long memberId
     ) {
         return ResponseEntity.ok().body(
-            eventService.getMember(authentication.getName(), eventId, memberId).toResponse()
+            eventService.getMember(Long.getLong(authentication.getName()), eventId, memberId)
+                .toResponse()
         );
     }
 
@@ -106,7 +108,7 @@ public class EventController {
         @Valid EventCreateRequest request
     ) {
         return ResponseEntity.ok().body(
-            eventService.create(authentication.getName(), request).toResponse()
+            eventService.create(Long.getLong(authentication.getName()), request).toResponse()
         );
     }
 
@@ -128,7 +130,8 @@ public class EventController {
         @Valid ProfileCreateRequest request
     ) {
         return ResponseEntity.ok().body(
-            eventService.codeJoin(authentication.getName(), code, request).toResponse()
+            eventService.codeJoin(Long.getLong(authentication.getName()), code, request)
+                .toResponse()
         );
     }
 
@@ -136,11 +139,12 @@ public class EventController {
     @PatchMapping("/{eventId}")
     public ResponseEntity<EventResponse> update(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotBlank String eventId,
+        @PathVariable("eventId") @Valid @NotBlank Long eventId,
         @RequestBody @Valid EventUpdateRequest request
     ) {
         return ResponseEntity.ok().body(
-            eventService.update(authentication.getName(), eventId, request).toResponse()
+            eventService.update(Long.getLong(authentication.getName()), eventId, request)
+                .toResponse()
         );
     }
 
@@ -151,7 +155,7 @@ public class EventController {
         @RequestBody @Valid UpdateAdminRequest request
     ) {
         return ResponseEntity.ok().body(
-            eventService.updateAdmin(authentication.getName(), request)
+            eventService.updateAdmin(Long.getLong(authentication.getName()), request)
         );
     }
 
@@ -159,9 +163,9 @@ public class EventController {
     @DeleteMapping("/secession/{eventId}")
     public ResponseEntity<Boolean> secession(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotBlank String eventId
+        @PathVariable("eventId") @Valid @NotBlank Long eventId
     ) {
-        eventService.secession(authentication.getName(), eventId);
+        eventService.secession(Long.getLong(authentication.getName()), eventId);
         return ResponseEntity.ok().body(true);
     }
 
@@ -171,7 +175,7 @@ public class EventController {
         @ApiIgnore Authentication authentication,
         @RequestBody @Valid ProfileReleaseRequest request
     ) {
-        eventService.release(authentication.getName(), request);
+        eventService.release(Long.getLong(authentication.getName()), request);
         return ResponseEntity.ok().body(true);
     }
 
@@ -180,9 +184,9 @@ public class EventController {
     @DeleteMapping("/{eventId}")
     public ResponseEntity<Boolean> delete(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotBlank String eventId
+        @PathVariable("eventId") @Valid @NotBlank Long eventId
     ) {
-        eventService.delete(authentication.getName(), eventId);
+        eventService.delete(Long.getLong(authentication.getName()), eventId);
         return ResponseEntity.ok().body(true);
     }
 }

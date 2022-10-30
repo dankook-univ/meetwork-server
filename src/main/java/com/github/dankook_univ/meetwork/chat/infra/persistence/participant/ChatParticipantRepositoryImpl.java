@@ -4,7 +4,6 @@ import com.github.dankook_univ.meetwork.chat.domain.participant.ChatParticipant;
 import com.github.dankook_univ.meetwork.chat.domain.participant.ChatParticipantRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -15,22 +14,22 @@ public class ChatParticipantRepositoryImpl implements ChatParticipantRepository 
     private final ChatParticipantJpaRepository chatParticipantJpaRepository;
 
     @Override
-    public List<ChatParticipant> getByRoomId(String roomId) {
-        return chatParticipantJpaRepository.findByRoomId(UUID.fromString(roomId));
+    public List<ChatParticipant> getByRoomId(Long roomId) {
+        return chatParticipantJpaRepository.findByRoomId(roomId);
     }
 
     @Override
-    public List<ChatParticipant> getByParticipantId(String participantId) {
-        return chatParticipantJpaRepository.findByMemberId(UUID.fromString(participantId));
+    public List<ChatParticipant> getByParticipantId(Long participantId) {
+        return chatParticipantJpaRepository.findByMemberId(participantId);
     }
 
     @Override
     public Optional<ChatParticipant> getByParticipantIdAndRoomId(
-        String participantId, String roomId
+        Long participantId, Long roomId
     ) {
         return chatParticipantJpaRepository.findByMemberIdAndRoomId(
-            UUID.fromString(participantId),
-            UUID.fromString(roomId)
+            participantId,
+            roomId
         );
     }
 
@@ -40,7 +39,7 @@ public class ChatParticipantRepositoryImpl implements ChatParticipantRepository 
     }
 
     @Override
-    public void deleteByMemberId(String memberId) {
-        chatParticipantJpaRepository.deleteAllByMemberId(UUID.fromString(memberId));
+    public void deleteByMemberId(Long memberId) {
+        chatParticipantJpaRepository.deleteAllByMemberId(memberId);
     }
 }

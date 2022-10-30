@@ -36,28 +36,29 @@ public class PostController {
         @RequestBody @Valid PostCreateRequest request
     ) {
         return ResponseEntity.ok().body(
-            postService.create(authentication.getName(), request).toResponse()
+            postService.create(Long.getLong(authentication.getName()), request).toResponse()
         );
     }
 
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> get(
         @ApiIgnore Authentication authentication,
-        @PathVariable("postId") @Valid @NotBlank String postId
+        @PathVariable("postId") @Valid @NotBlank Long postId
     ) {
         return ResponseEntity.ok().body(
-            postService.get(authentication.getName(), postId).toResponse()
+            postService.get(Long.getLong(authentication.getName()), postId)
+                .toResponse()
         );
     }
 
     @GetMapping("/list/{boardId}")
     public ResponseEntity<List<PostResponse>> getList(
         @ApiIgnore Authentication authentication,
-        @PathVariable("boardId") @Valid @NotBlank String boardId,
+        @PathVariable("boardId") @Valid @NotBlank Long boardId,
         @RequestParam(value = "page", required = false, defaultValue = "1") int page
     ) {
         return ResponseEntity.ok().body(
-            postService.getList(authentication.getName(), boardId, page)
+            postService.getList(Long.getLong(authentication.getName()), boardId, page)
                 .stream().map(Post::toResponse)
                 .collect(Collectors.toList())
         );
@@ -66,20 +67,21 @@ public class PostController {
     @PatchMapping("/{postId}")
     public ResponseEntity<PostResponse> update(
         @ApiIgnore Authentication authentication,
-        @PathVariable("postId") @Valid @NotBlank String postId,
+        @PathVariable("postId") @Valid @NotBlank Long postId,
         @RequestBody @Valid PostUpdateRequest request
     ) {
         return ResponseEntity.ok().body(
-            postService.update(authentication.getName(), postId, request).toResponse()
+            postService.update(Long.getLong(authentication.getName()), postId,
+                request).toResponse()
         );
     }
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<Boolean> delete(
         @ApiIgnore Authentication authentication,
-        @PathVariable("postId") @Valid @NotBlank String postId
+        @PathVariable("postId") @Valid @NotBlank Long postId
     ) {
-        postService.delete(authentication.getName(), postId);
+        postService.delete(Long.getLong(authentication.getName()), postId);
         return ResponseEntity.ok().body(true);
     }
 }

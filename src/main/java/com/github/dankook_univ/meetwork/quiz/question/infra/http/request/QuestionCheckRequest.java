@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 public class QuestionCheckRequest {
 
     @NotBlank
-    String quizId;
+    Long quizId;
 
     @NotBlank
-    String questionId;
+    Long questionId;
 
     @NotBlank
     String answer;

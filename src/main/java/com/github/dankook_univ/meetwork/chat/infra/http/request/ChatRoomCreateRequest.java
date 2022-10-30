@@ -16,5 +16,5 @@ public class ChatRoomCreateRequest {
     @NotNull
     Boolean isPrivate;
 
-    List<String> participantIds;
+    List<Long> participantIds;
 }

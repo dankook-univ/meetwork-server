@@ -4,7 +4,6 @@ import com.github.dankook_univ.meetwork.quiz.question.domain.Question;
 import com.github.dankook_univ.meetwork.quiz.question.domain.QuestionRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -20,22 +19,22 @@ public class QuestionRepositoryImpl implements QuestionRepository {
     }
 
     @Override
-    public Optional<Question> getById(String id) {
-        return questionRepository.findById(UUID.fromString(id));
+    public Optional<Question> getById(Long id) {
+        return questionRepository.findById(id);
     }
 
     @Override
-    public List<Question> getByQuizId(String quizId) {
-        return questionRepository.findByQuizId(UUID.fromString(quizId));
+    public List<Question> getByQuizId(Long quizId) {
+        return questionRepository.findByQuizId(quizId);
     }
 
     @Override
-    public Long countByQuizId(String quizId) {
-        return questionRepository.countByQuizId(UUID.fromString(quizId));
+    public Long countByQuizId(Long quizId) {
+        return questionRepository.countByQuizId(quizId);
     }
 
     @Override
-    public void delete(String quizId) {
-        questionRepository.deleteAllByQuizId(UUID.fromString(quizId));
+    public void delete(Long quizId) {
+        questionRepository.deleteAllByQuizId(quizId);
     }
 }

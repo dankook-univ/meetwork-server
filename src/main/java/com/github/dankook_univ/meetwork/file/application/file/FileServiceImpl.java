@@ -35,7 +35,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
-    public File upload(String memberId, FileType fileType, MultipartFile multipartFile) {
+    public File upload(Long memberId, FileType fileType, MultipartFile multipartFile) {
         File file = null;
         try {
             String mime = tika.detect(multipartFile.getInputStream());
@@ -63,7 +63,7 @@ public class FileServiceImpl implements FileService {
             throw new FailedToFileUploadException();
         } catch (FailedToFileUploadException e) {
             if (file != null) {
-                fileRepository.delete(file.getId().toString());
+                fileRepository.delete(file.getId());
             }
         }
 
@@ -72,14 +72,14 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
-    public void delete(String fileId) {
+    public void delete(Long fileId) {
         fileRepository.getById(fileId).ifPresent((file) -> storageService.delete(file.getKey()));
         fileRepository.delete(fileId);
     }
 
     @Override
     @Transactional
-    public void deleteByUploaderId(String uploaderId) {
+    public void deleteByUploaderId(Long uploaderId) {
         fileRepository.getByUploaderId(uploaderId)
             .forEach(
                 file -> {

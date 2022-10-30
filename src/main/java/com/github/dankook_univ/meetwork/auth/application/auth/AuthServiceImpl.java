@@ -16,8 +16,6 @@ import com.github.dankook_univ.meetwork.auth.infra.persistence.AuthRepositoryImp
 import com.github.dankook_univ.meetwork.common.service.SecurityUtilService;
 import com.github.dankook_univ.meetwork.member.domain.Member;
 import com.github.dankook_univ.meetwork.member.infra.persistence.MemberRepositoryImpl;
-import com.github.dankook_univ.meetwork.slack.application.SlackServiceImpl;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthServiceImpl implements AuthService {
 
     private final SecurityUtilService securityUtilService;
-    private final SlackServiceImpl slackService;
     private final TokenProviderImpl tokenProvider;
     private final AuthRepositoryImpl authRepository;
     private final MemberRepositoryImpl memberRepository;
@@ -60,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
                 .build()
         );
 
-        TokenResponse token = tokenProvider.create(
+        return tokenProvider.create(
             authRepository.save(
                 Auth.builder()
                     .type(request.getType())
@@ -69,10 +66,6 @@ public class AuthServiceImpl implements AuthService {
                     .build()
             )
         );
-
-        slackService.sendMessage(member.getName() + "(" + member.getEmail() + ") 님이 가입하셨습니다.");
-
-        return token;
     }
 
     @Override
@@ -85,8 +78,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean signOut(String memberId) {
-        Auth auth = authRepository.getByMemberId(UUID.fromString(memberId))
+    public boolean signOut(Long memberId) {
+        Auth auth = authRepository.getByMemberId(memberId)
             .orElseThrow(NotFoundAuthException::new);
 
         return tokenProvider.remove(auth);

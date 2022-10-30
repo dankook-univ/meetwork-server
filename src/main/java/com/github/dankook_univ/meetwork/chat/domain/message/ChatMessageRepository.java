@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface ChatMessageRepository {
 
-    List<ChatMessage> getByRoomId(String roomId);
+    List<ChatMessage> getByRoomId(Long roomId);
 
     ChatMessage save(ChatMessage message);
 
-    void deleteBySenderId(String senderId);
+    void deleteBySenderId(Long senderId);
 }

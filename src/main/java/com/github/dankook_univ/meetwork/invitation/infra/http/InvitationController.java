@@ -37,7 +37,7 @@ public class InvitationController {
         @RequestBody @Valid InvitationCreateRequest request
     ) {
         return ResponseEntity.ok().body(
-            invitationService.create(authentication.getName(), request)
+            invitationService.create(Long.getLong(authentication.getName()), request)
         );
     }
 
@@ -47,7 +47,7 @@ public class InvitationController {
         @ApiIgnore Authentication authentication
     ) {
         return ResponseEntity.ok().body(
-            invitationService.getList(authentication.getName())
+            invitationService.getList(Long.getLong(authentication.getName()))
                 .stream().map(Invitation::toResponse)
                 .collect(Collectors.toList())
         );
@@ -57,11 +57,11 @@ public class InvitationController {
     @PatchMapping("/join/{eventId}")
     public ResponseEntity<Boolean> join(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotBlank String eventId,
+        @PathVariable("eventId") @Valid @NotBlank Long eventId,
         @Valid ProfileCreateRequest request
     ) {
         return ResponseEntity.ok().body(
-            invitationService.join(authentication.getName(), eventId, request)
+            invitationService.join(Long.getLong(authentication.getName()), eventId, request)
         );
     }
 
@@ -69,10 +69,10 @@ public class InvitationController {
     @DeleteMapping("/refuse/{eventId}")
     public ResponseEntity<Boolean> refuse(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotBlank String eventId
+        @PathVariable("eventId") @Valid @NotBlank Long eventId
     ) {
         return ResponseEntity.ok().body(
-            invitationService.delete(authentication.getName(), eventId)
+            invitationService.delete(Long.getLong(authentication.getName()), eventId)
         );
     }
 }

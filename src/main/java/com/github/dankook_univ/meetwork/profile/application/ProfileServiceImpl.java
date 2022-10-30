@@ -30,27 +30,27 @@ public class ProfileServiceImpl implements ProfileService {
     private final FileServiceImpl fileService;
 
     @Override
-    public Profile get(String memberId, String eventId) {
+    public Profile get(Long memberId, Long eventId) {
         return profileRepository.getByMemberIdAndEventId(memberId, eventId)
             .orElseThrow(NotFoundProfileException::new);
     }
 
     @Override
-    public Profile getById(String profileId) {
+    public Profile getById(Long profileId) {
         return profileRepository.getById(profileId).orElseThrow(NotFoundProfileException::new);
     }
 
     @Override
     @Transactional
     public Profile create(
-        String memberId,
+        Long memberId,
         Event event,
         ProfileCreateRequest request,
         Boolean isAdmin
     ) {
         if (
             profileRepository.getByEventIdAndNickname(
-                event.getId().toString(),
+                event.getId(),
                 securityUtilService.protectInputValue(request.getNickname())
             ).isPresent()
         ) {
@@ -78,10 +78,10 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public Profile update(String memberId, ProfileUpdateRequest request) {
+    public Profile update(Long memberId, ProfileUpdateRequest request) {
         Profile profile = profileRepository.getById(request.getProfileId())
             .orElseThrow(NotFoundProfileException::new);
-        if (!profile.getMember().getId().toString().equals(memberId)) {
+        if (!profile.getMember().getId().equals(memberId)) {
             throw new NotFoundProfilePermissionException();
         }
 
@@ -93,7 +93,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         if (request.getProfileImage() != null) {
             if (profile.getProfileImage() != null) {
-                fileService.delete(profile.getProfileImage().getId().toString());
+                fileService.delete(profile.getProfileImage().getId());
             }
 
             File file = fileService.upload(memberId, FileType.profile, request.getProfileImage());
@@ -101,7 +101,7 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         if (request.getIsProfileImageDeleted() && profile.getProfileImage() != null) {
-            fileService.delete(profile.getProfileImage().getId().toString());
+            fileService.delete(profile.getProfileImage().getId());
         }
 
         return profile;
@@ -109,7 +109,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public void delete(String memberId, String eventId) {
+    public void delete(Long memberId, Long eventId) {
         profileRepository.delete(memberId, eventId);
     }
 
@@ -120,23 +120,23 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public void deleteByEventId(String eventId) {
+    public void deleteByEventId(Long eventId) {
         profileRepository.deleteAllByEventId(eventId);
     }
 
     @Override
-    public List<Profile> getListByMemberId(String memberId, Pageable pageable) {
+    public List<Profile> getListByMemberId(Long memberId, Pageable pageable) {
         return profileRepository.getByMemberId(memberId, pageable);
     }
 
     @Override
-    public List<Profile> getListByEventIdAndAdminOnly(String eventId, Boolean adminOnly,
+    public List<Profile> getListByEventIdAndAdminOnly(Long eventId, Boolean adminOnly,
         Pageable pageable) {
         return profileRepository.getByEventIdAndAdminOnly(eventId, adminOnly, pageable);
     }
 
     @Override
-    public Boolean isEventMember(String memberId, String eventId) {
+    public Boolean isEventMember(Long memberId, Long eventId) {
         return profileRepository.getByMemberIdAndEventId(memberId, eventId).isPresent();
     }
 }

@@ -6,21 +6,21 @@ import org.springframework.data.domain.Pageable;
 
 public interface ProfileRepository {
 
-    Optional<Profile> getById(String profileId);
+    Optional<Profile> getById(Long profileId);
 
-    Optional<Profile> getByMemberIdAndEventId(String memberId, String eventId);
+    Optional<Profile> getByMemberIdAndEventId(Long memberId, Long eventId);
 
-    Optional<Profile> getByEventIdAndNickname(String eventId, String nickname);
+    Optional<Profile> getByEventIdAndNickname(Long eventId, String nickname);
 
-    List<Profile> getByMemberId(String memberId, Pageable pageable);
+    List<Profile> getByMemberId(Long memberId, Pageable pageable);
 
-    List<Profile> getByEventIdAndAdminOnly(String eventId, Boolean adminOnly, Pageable pageable);
+    List<Profile> getByEventIdAndAdminOnly(Long eventId, Boolean adminOnly, Pageable pageable);
 
     Profile save(Profile profile);
 
-    void delete(String memberId, String eventId);
+    void delete(Long memberId, Long eventId);
 
     void delete(Profile profile);
 
-    void deleteAllByEventId(String eventId);
+    void deleteAllByEventId(Long eventId);
 }

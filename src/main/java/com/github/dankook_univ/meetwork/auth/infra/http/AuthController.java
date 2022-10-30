@@ -43,7 +43,12 @@ public class AuthController {
     }
 
     @PutMapping("/logout")
-    public ResponseEntity<Boolean> signOut(@ApiIgnore Authentication authentication) {
-        return ResponseEntity.ok().body(authService.signOut(authentication.getName()));
+    public ResponseEntity<Boolean> signOut(
+        @ApiIgnore Authentication authentication
+    ) {
+        return ResponseEntity.ok()
+            .body(
+                authService.signOut(Long.getLong(authentication.getName()))
+            );
     }
 }

@@ -5,17 +5,17 @@ import java.util.Optional;
 
 public interface ChatRoomRepository {
 
-    List<ChatRoom> getAll(String eventId);
+    List<ChatRoom> getAll(Long eventId);
 
-    Optional<ChatRoom> getById(String roomId);
+    Optional<ChatRoom> getById(Long roomId);
 
-    Optional<ChatRoom> getByEventIdAndName(String EventId, String name);
+    Optional<ChatRoom> getByEventIdAndName(Long eventId, String name);
 
     ChatRoom save(ChatRoom room);
 
-    void deleteById(String roomId);
+    void deleteById(Long roomId);
 
-    void deleteByEventId(String eventId);
+    void deleteByEventId(Long eventId);
 
-    void deleteByOrganizerId(String organizerId);
+    void deleteByOrganizerId(Long organizerId);
 }

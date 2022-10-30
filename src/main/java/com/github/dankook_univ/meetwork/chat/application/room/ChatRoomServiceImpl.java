@@ -15,7 +15,7 @@ import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.domain.Profile;
 import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfileException;
 import java.util.List;
-import java.util.UUID;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,12 +33,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public List<ChatRoom> getChatRoomList(
-        String memberId, String eventId
+        Long memberId, Long eventId
     ) throws NotFoundProfileException {
         Profile profile = profileService.get(memberId, eventId);
 
-        List<UUID> joinedRoomIds = chatParticipantRepository.getByParticipantId(
-                profile.getId().toString()
+        List<Long> joinedRoomIds = chatParticipantRepository.getByParticipantId(
+                profile.getId()
             ).stream()
             .map(ChatParticipant::getRoom)
             .map(ChatRoom::getId)
@@ -51,18 +51,18 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public List<ChatRoom> getParticipatedChatRoomList(
-        String memberId, String eventId
+        Long memberId, Long eventId
     ) throws NotFoundProfileException {
         Profile profile = profileService.get(memberId, eventId);
 
-        return chatParticipantRepository.getByParticipantId(profile.getId().toString()).stream()
+        return chatParticipantRepository.getByParticipantId(profile.getId()).stream()
             .map(ChatParticipant::getRoom)
             .collect(Collectors.toList());
     }
 
     @Override
     public ChatRoom getChatRoom(
-        String memberId, String roomId
+        Long memberId, Long roomId
     ) throws NotParticipatedMemberException {
         shouldParticipating(memberId, roomId);
 
@@ -71,7 +71,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public List<Profile> getParticipants(
-        String memberId, String roomId
+        Long memberId, Long roomId
     ) throws NotParticipatedMemberException {
         shouldParticipating(memberId, roomId);
 
@@ -82,7 +82,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     @Transactional
-    public ChatRoom create(String memberId, String eventId, ChatRoomCreateRequest request) {
+    public ChatRoom create(Long memberId, Long eventId, ChatRoomCreateRequest request) {
         if (chatRoomRepository.getByEventIdAndName(eventId, request.getName()).isPresent()) {
             throw new AlreadyChatRoomNameException();
         }
@@ -129,9 +129,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     @Transactional
     public ChatRoom update(
-        String memberId,
-        String eventId,
-        String roomId,
+        Long memberId,
+        Long eventId,
+        Long roomId,
         ChatRoomUpdateRequest request
     ) throws NotParticipatedMemberException, NotFoundChatRoomPermissionException {
         shouldParticipating(memberId, roomId);
@@ -152,10 +152,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     @Transactional
-    public ChatRoom join(String memberId, String roomId) {
+    public ChatRoom join(Long memberId, Long roomId) {
         ChatRoom room = chatRoomRepository.getById(roomId)
             .orElseThrow(NotFoundChatRoomException::new);
-        Profile profile = profileService.get(memberId, room.getEvent().getId().toString());
+        Profile profile = profileService.get(memberId, room.getEvent().getId());
 
         if (
             room.getParticipants().stream()
@@ -176,7 +176,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     @Transactional
-    public Boolean delete(String memberId, String eventId, String roomId)
+    public Boolean delete(Long memberId, Long eventId, Long roomId)
         throws NotParticipatedMemberException, NotFoundChatRoomPermissionException {
         shouldParticipating(memberId, roomId);
 
@@ -184,25 +184,26 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             .orElseThrow(NotFoundChatRoomException::new);
         Profile profile = profileService.get(memberId, eventId);
 
-        if (!(profile.getIsAdmin() || room.getOrganizer().getId() == profile.getId())) {
+        if (!(profile.getIsAdmin() || Objects.equals(room.getOrganizer().getId(),
+            profile.getId()))) {
             throw new NotFoundChatRoomPermissionException();
         }
 
-        chatRoomRepository.deleteById(room.getId().toString());
+        chatRoomRepository.deleteById(room.getId());
 
         return true;
     }
 
     public void shouldParticipating(
-        String memberId, String roomId
+        Long memberId, Long roomId
     ) throws NotParticipatedMemberException {
         ChatRoom room = chatRoomRepository.getById(roomId)
             .orElseThrow(NotFoundChatRoomException::new);
-        Profile participant = profileService.get(memberId, room.getEvent().getId().toString());
+        Profile participant = profileService.get(memberId, room.getEvent().getId());
 
         if (
             chatParticipantRepository.getByParticipantIdAndRoomId(
-                participant.getId().toString(),
+                participant.getId(),
                 roomId
             ).isEmpty()
         ) {

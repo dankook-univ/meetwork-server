@@ -4,7 +4,6 @@ import com.github.dankook_univ.meetwork.quiz.quiz_participants.domain.QuizPartic
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.domain.QuizParticipantsRepository;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -20,25 +19,25 @@ public class QuizParticipantsRepositoryImpl implements QuizParticipantsRepositor
     }
 
     @Override
-    public Optional<QuizParticipants> getByProfileIdAndQuizId(String profileId, String quizId) {
+    public Optional<QuizParticipants> getByProfileIdAndQuizId(Long profileId, Long quizId) {
         return quizParticipantsRepository.findByProfileIdAndQuizId(
-            UUID.fromString(profileId),
-            UUID.fromString(quizId)
+            profileId,
+            quizId
         );
     }
 
     @Override
-    public List<QuizParticipants> getByQuizId(String quizId) {
-        return quizParticipantsRepository.findByQuizIdOrderByCountDesc(UUID.fromString(quizId));
+    public List<QuizParticipants> getByQuizId(Long quizId) {
+        return quizParticipantsRepository.findByQuizIdOrderByCountDesc(quizId);
     }
 
     @Override
-    public void delete(String quizId) {
-        quizParticipantsRepository.deleteAllByQuizId(UUID.fromString(quizId));
+    public void delete(Long quizId) {
+        quizParticipantsRepository.deleteAllByQuizId(quizId);
     }
 
     @Override
-    public void deleteByProfileId(String profileId) {
-        quizParticipantsRepository.deleteAllByProfileId(UUID.fromString(profileId));
+    public void deleteByProfileId(Long profileId) {
+        quizParticipantsRepository.deleteAllByProfileId(profileId);
     }
 }

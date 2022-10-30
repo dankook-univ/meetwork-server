@@ -37,7 +37,7 @@ public class InvitationServiceImpl implements InvitationService {
 
     @Override
     @Transactional
-    public Boolean create(String memberId, InvitationCreateRequest request) {
+    public Boolean create(Long memberId, InvitationCreateRequest request) {
         Profile profile = profileService.get(memberId, request.getEventId());
         if (!profile.getIsAdmin()) {
             throw new NotFoundEventPermissionException();
@@ -63,7 +63,7 @@ public class InvitationServiceImpl implements InvitationService {
                 invitationMemberInformation -> {
                     if (
                         invitationRepository.getByGuestIdAndEventId(
-                            invitationMemberInformation.getMember().getId().toString(),
+                            invitationMemberInformation.getMember().getId(),
                             request.getEventId()
                         ).isEmpty()
                     ) {
@@ -82,15 +82,15 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public List<Invitation> getList(String memberId) {
+    public List<Invitation> getList(Long memberId) {
         Member member = memberService.getById(memberId);
 
-        return invitationRepository.getList(member.getId().toString());
+        return invitationRepository.getList(member.getId());
     }
 
     @Override
     @Transactional
-    public Boolean join(String memberId, String eventId, ProfileCreateRequest request) {
+    public Boolean join(Long memberId, Long eventId, ProfileCreateRequest request) {
         Invitation invitation = invitationRepository.getByGuestIdAndEventId(memberId, eventId)
             .orElseThrow(NotFoundInvitationException::new);
         invitationRepository.delete(invitation);
@@ -115,7 +115,7 @@ public class InvitationServiceImpl implements InvitationService {
 
     @Override
     @Transactional
-    public Boolean delete(String memberId, String eventId) {
+    public Boolean delete(Long memberId, Long eventId) {
         Invitation invitation = invitationRepository.getByGuestIdAndEventId(memberId, eventId)
             .orElseThrow(NotFoundInvitationException::new);
         invitationRepository.delete(invitation);

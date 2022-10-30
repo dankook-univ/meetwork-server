@@ -20,7 +20,6 @@ import com.github.dankook_univ.meetwork.member.infra.persistence.MemberRepositor
 import com.github.dankook_univ.meetwork.profile.application.ProfileServiceImpl;
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.Assertions;
@@ -60,7 +59,7 @@ class ChatRoomServiceImplTest {
 
     private Event createEvent(Member member) {
         return eventService.create(
-            member.getId().toString(),
+            member.getId(),
             EventCreateRequest.builder()
                 .name("name")
                 .code("code")
@@ -78,8 +77,8 @@ class ChatRoomServiceImplTest {
         Event event = createEvent(member);
 
         ChatRoom room = chatRoomService.create(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ChatRoomCreateRequest.builder()
                 .name("name")
                 .isPrivate(true)
@@ -92,8 +91,8 @@ class ChatRoomServiceImplTest {
         assertThat(room.getParticipants().size()).isEqualTo(1);
 
         ChatRoom newRoom = chatRoomService.create(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ChatRoomCreateRequest.builder()
                 .name("new name")
                 .isPrivate(true)
@@ -113,8 +112,8 @@ class ChatRoomServiceImplTest {
         Event event = createEvent(member);
 
         chatRoomService.create(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ChatRoomCreateRequest.builder()
                 .name("name")
                 .isPrivate(true)
@@ -122,8 +121,8 @@ class ChatRoomServiceImplTest {
         );
 
         Assertions.assertThrows(AlreadyChatRoomNameException.class, () -> chatRoomService.create(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ChatRoomCreateRequest.builder()
                 .name("name")
                 .isPrivate(true)
@@ -131,8 +130,8 @@ class ChatRoomServiceImplTest {
         ));
 
         Assertions.assertThrows(AlreadyChatRoomNameException.class, () -> chatRoomService.create(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ChatRoomCreateRequest.builder()
                 .name("name")
                 .isPrivate(false)
@@ -148,8 +147,8 @@ class ChatRoomServiceImplTest {
         Event event = createEvent(member);
 
         ChatRoom room = chatRoomService.create(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ChatRoomCreateRequest.builder()
                 .name("name")
                 .isPrivate(true)
@@ -157,9 +156,9 @@ class ChatRoomServiceImplTest {
         );
 
         ChatRoom newRoom = chatRoomService.update(
-            member.getId().toString(),
-            event.getId().toString(),
-            room.getId().toString(),
+            member.getId(),
+            event.getId(),
+            room.getId(),
             ChatRoomUpdateRequest.builder()
                 .name("new name")
                 .isPrivate(false)
@@ -179,8 +178,8 @@ class ChatRoomServiceImplTest {
         Event event = createEvent(member);
 
         ChatRoom room = chatRoomService.create(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ChatRoomCreateRequest.builder()
                 .name("name")
                 .isPrivate(true)
@@ -191,8 +190,8 @@ class ChatRoomServiceImplTest {
 
         Member other = createMember("other", "other@meetwork.kr");
         eventService.join(
-            other.getId().toString(),
-            event.getId().toString(),
+            other.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("other_nickname")
                 .bio("other_bio")
@@ -201,8 +200,8 @@ class ChatRoomServiceImplTest {
         );
 
         ChatRoom joinedRoom = chatRoomService.join(
-            other.getId().toString(),
-            room.getId().toString()
+            other.getId(),
+            room.getId()
         );
 
         assertThat(joinedRoom).isNotNull().isInstanceOf(ChatRoom.class);
@@ -218,15 +217,15 @@ class ChatRoomServiceImplTest {
         Member member = createMember("name", "meetwork@meetwork.kr");
         Event event = createEvent(member);
 
-        List<String> memberIds = IntStream.range(0, 10).mapToObj(
+        List<Long> memberIds = IntStream.range(0, 10).mapToObj(
             index -> createMember("name-" + index, "meetwork-" + index + "@meetwork.kr").getId()
-                .toString()
+
         ).collect(Collectors.toList());
 
-        List<String> participantIds = IntStream.range(0, 10).peek(
+        List<Long> participantIds = IntStream.range(0, 10).peek(
                 index -> eventService.join(
                     memberIds.get(index),
-                    event.getId().toString(),
+                    event.getId(),
                     ProfileCreateRequest.builder()
                         .nickname("nickname-" + index)
                         .bio("bio-" + index)
@@ -236,14 +235,14 @@ class ChatRoomServiceImplTest {
             ).mapToObj(
                 (index) -> profileService.get(
                     memberIds.get(index),
-                    event.getId().toString()
-                ).getId().toString()
+                    event.getId()
+                ).getId()
             )
             .collect(Collectors.toList());
 
         ChatRoom room = chatRoomService.create(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ChatRoomCreateRequest.builder()
                 .name("name")
                 .participantIds(participantIds)
@@ -266,8 +265,8 @@ class ChatRoomServiceImplTest {
         Event event = createEvent(member);
 
         eventService.join(
-            participant.getId().toString(),
-            event.getId().toString(),
+            participant.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant")
                 .bio("bio")
@@ -276,35 +275,35 @@ class ChatRoomServiceImplTest {
         );
 
         ChatRoom room = chatRoomService.create(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ChatRoomCreateRequest.builder()
                 .name("name")
                 .isPrivate(true)
                 .build()
         );
 
-        chatRoomService.join(participant.getId().toString(), room.getId().toString());
+        chatRoomService.join(participant.getId(), room.getId());
 
         ChatMessage message = chatMessageService.send(
-            member.getId().toString(),
-            room.getId().toString(),
+            member.getId(),
+            room.getId(),
             "message"
         );
 
         ChatMessage message1 = chatMessageService.send(
-            participant.getId().toString(),
-            room.getId().toString(),
+            participant.getId(),
+            room.getId(),
             "message"
         );
 
         assertThat(chatRoomService.delete(
-            member.getId().toString(),
-            event.getId().toString(),
-            room.getId().toString()
+            member.getId(),
+            event.getId(),
+            room.getId()
         )).isTrue();
 
-        assertThat(chatRoomRepository.getById(room.getId().toString()).isPresent()).isFalse();
+        assertThat(chatRoomRepository.getById(room.getId()).isPresent()).isFalse();
     }
 
     @Test
@@ -314,8 +313,8 @@ class ChatRoomServiceImplTest {
         Event event = createEvent(member);
 
         IntStream.range(0, 10).forEach(index -> chatRoomService.create(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ChatRoomCreateRequest.builder()
                 .name("name-" + index)
                 .isPrivate(index % 2 == 0)
@@ -323,8 +322,8 @@ class ChatRoomServiceImplTest {
         ));
 
         List<ChatRoom> rooms = chatRoomService.getChatRoomList(
-            member.getId().toString(),
-            event.getId().toString()
+            member.getId(),
+            event.getId()
         );
 
         assertThat(rooms).isNotNull().isInstanceOf(List.class);
@@ -332,8 +331,8 @@ class ChatRoomServiceImplTest {
 
         Member other = createMember("other", "other@meetwork.kr");
         eventService.join(
-            other.getId().toString(),
-            event.getId().toString(),
+            other.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("other_nickname")
                 .bio("other_bio")
@@ -342,8 +341,8 @@ class ChatRoomServiceImplTest {
         );
 
         rooms = chatRoomService.getChatRoomList(
-            other.getId().toString(),
-            event.getId().toString()
+            other.getId(),
+            event.getId()
         );
 
         assertThat(rooms).isNotNull().isInstanceOf(List.class);
@@ -357,8 +356,8 @@ class ChatRoomServiceImplTest {
         Event event = createEvent(member);
 
         IntStream.range(0, 10).forEach(index -> chatRoomService.create(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ChatRoomCreateRequest.builder()
                 .name("name-" + index)
                 .isPrivate(index % 2 == 0)
@@ -366,8 +365,8 @@ class ChatRoomServiceImplTest {
         ));
 
         List<ChatRoom> rooms = chatRoomService.getParticipatedChatRoomList(
-            member.getId().toString(),
-            event.getId().toString()
+            member.getId(),
+            event.getId()
         );
 
         assertThat(rooms).isNotNull().isInstanceOf(List.class);
@@ -375,8 +374,8 @@ class ChatRoomServiceImplTest {
 
         Member other = createMember("other", "other@meetwork.kr");
         eventService.join(
-            other.getId().toString(),
-            event.getId().toString(),
+            other.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("other_nickname")
                 .bio("other_bio")
@@ -385,8 +384,8 @@ class ChatRoomServiceImplTest {
         );
 
         rooms = chatRoomService.getParticipatedChatRoomList(
-            other.getId().toString(),
-            event.getId().toString()
+            other.getId(),
+            event.getId()
         );
 
         assertThat(rooms).isNotNull().isInstanceOf(List.class);
@@ -400,8 +399,8 @@ class ChatRoomServiceImplTest {
         Event event = createEvent(member);
 
         ChatRoom room = chatRoomService.create(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ChatRoomCreateRequest.builder()
                 .name("name")
                 .isPrivate(true)
@@ -409,8 +408,8 @@ class ChatRoomServiceImplTest {
         );
 
         ChatRoom findRoom = chatRoomService.getChatRoom(
-            member.getId().toString(),
-            room.getId().toString()
+            member.getId(),
+            room.getId()
         );
 
         assertThat(findRoom).isNotNull().isInstanceOf(ChatRoom.class);
@@ -424,8 +423,8 @@ class ChatRoomServiceImplTest {
         Event event = createEvent(member);
 
         ChatRoom room = chatRoomService.create(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ChatRoomCreateRequest.builder()
                 .name("name")
                 .isPrivate(true)
@@ -434,8 +433,8 @@ class ChatRoomServiceImplTest {
 
         Member other = createMember("other", "other@meetwork.kr");
         eventService.join(
-            other.getId().toString(),
-            event.getId().toString(),
+            other.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("other_nickname")
                 .bio("other_bio")
@@ -445,14 +444,14 @@ class ChatRoomServiceImplTest {
 
         Assertions.assertThrows(NotFoundChatRoomException.class,
             () -> chatRoomService.getChatRoom(
-                other.getId().toString(),
-                UUID.randomUUID().toString()
+                other.getId(),
+                1000L
             ));
 
         Assertions.assertThrows(NotParticipatedMemberException.class,
             () -> chatRoomService.getChatRoom(
-                other.getId().toString(),
-                room.getId().toString()
+                other.getId(),
+                room.getId()
             ));
     }
 }

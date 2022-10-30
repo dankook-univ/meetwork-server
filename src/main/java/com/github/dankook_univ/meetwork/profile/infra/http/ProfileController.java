@@ -26,7 +26,7 @@ public class ProfileController {
         @Valid ProfileUpdateRequest request
     ) {
         return ResponseEntity.ok().body(
-            profileService.update(authentication.getName(), request).toResponse()
+            profileService.update(Long.getLong(authentication.getName()), request).toResponse()
         );
     }
 }

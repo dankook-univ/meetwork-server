@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProfileUpdateRequest {
 
-    String profileId;
+    Long profileId;
     String nickname;
     String bio;
     MultipartFile profileImage;

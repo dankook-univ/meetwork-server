@@ -7,11 +7,11 @@ public interface QuizParticipantsRepository {
 
     QuizParticipants save(QuizParticipants quizParticipants);
 
-    Optional<QuizParticipants> getByProfileIdAndQuizId(String quizId, String profileId);
+    Optional<QuizParticipants> getByProfileIdAndQuizId(Long quizId, Long profileId);
 
-    List<QuizParticipants> getByQuizId(String quizId);
+    List<QuizParticipants> getByQuizId(Long quizId);
 
-    void delete(String quizId);
+    void delete(Long quizId);
 
-    void deleteByProfileId(String profileId);
+    void deleteByProfileId(Long profileId);
 }

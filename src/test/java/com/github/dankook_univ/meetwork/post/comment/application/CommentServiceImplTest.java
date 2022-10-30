@@ -52,7 +52,7 @@ public class CommentServiceImplTest {
 
     private Event createEvent(Member member) {
         return eventService.create(
-            member.getId().toString(),
+            member.getId(),
             EventCreateRequest.builder()
                 .name("eventName")
                 .organizerNickname("nickname")
@@ -64,11 +64,11 @@ public class CommentServiceImplTest {
 
     private Board createBoard(Member member, Event event, String name, Boolean isAdmin) {
         return boardService.create(
-            member.getId().toString(),
+            member.getId(),
             BoardCreateRequest.builder()
                 .name(name)
                 .adminOnly(isAdmin)
-                .eventId(event.getId().toString())
+                .eventId(event.getId())
                 .build());
     }
 
@@ -80,18 +80,18 @@ public class CommentServiceImplTest {
         Board adminOnlyBoard = createBoard(member, event, "소통방", true);
 
         Post post = postService.create(
-            member.getId().toString(),
+            member.getId(),
             PostCreateRequest.builder()
                 .content("content")
-                .boardId(adminOnlyBoard.getId().toString())
+                .boardId(adminOnlyBoard.getId())
                 .build()
         );
 
         Comment comment = commentService.create(
-            member.getId().toString(),
+            member.getId(),
             CommentCreateRequest.builder()
                 .content("comment")
-                .postId(post.getId().toString())
+                .postId(post.getId())
                 .build()
         );
 
@@ -111,24 +111,24 @@ public class CommentServiceImplTest {
         Board adminOnlyBoard = createBoard(member, event, "소통방", true);
 
         Post post = postService.create(
-            member.getId().toString(),
+            member.getId(),
             PostCreateRequest.builder()
                 .content("content")
-                .boardId(adminOnlyBoard.getId().toString())
+                .boardId(adminOnlyBoard.getId())
                 .build()
         );
 
         Comment comment = commentService.create(
-            member.getId().toString(),
+            member.getId(),
             CommentCreateRequest.builder()
                 .content("comment")
-                .postId(post.getId().toString())
+                .postId(post.getId())
                 .build()
         );
 
         commentService.update(
-            member.getId().toString(),
-            comment.getId().toString(),
+            member.getId(),
+            comment.getId(),
             CommentUpdateRequest.builder()
                 .content("updated comment")
                 .build()
@@ -147,25 +147,25 @@ public class CommentServiceImplTest {
         Board adminOnlyBoard = createBoard(member, event, "소통방", true);
 
         Post post = postService.create(
-            member.getId().toString(),
+            member.getId(),
             PostCreateRequest.builder()
                 .content("content")
-                .boardId(adminOnlyBoard.getId().toString())
+                .boardId(adminOnlyBoard.getId())
                 .build()
         );
 
         Comment comment = commentService.create(
-            member.getId().toString(),
+            member.getId(),
             CommentCreateRequest.builder()
                 .content("comment")
-                .postId(post.getId().toString())
+                .postId(post.getId())
                 .build()
         );
 
         assertThat(comment).isNotNull().isInstanceOf(Comment.class);
         assertThat(post.getComments().size()).isEqualTo(1);
 
-        commentService.delete(member.getId().toString(), comment.getId().toString());
+        commentService.delete(member.getId(), comment.getId());
 
         assertThat(post.getComments().size()).isEqualTo(0);
     }

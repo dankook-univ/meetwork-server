@@ -3,16 +3,15 @@ package com.github.dankook_univ.meetwork.chat.infra.persistence.participant;
 import com.github.dankook_univ.meetwork.chat.domain.participant.ChatParticipant;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ChatParticipantJpaRepository extends JpaRepository<ChatParticipant, UUID> {
+public interface ChatParticipantJpaRepository extends JpaRepository<ChatParticipant, Long> {
 
-    List<ChatParticipant> findByRoomId(UUID roomId);
+    List<ChatParticipant> findByRoomId(Long roomId);
 
-    List<ChatParticipant> findByMemberId(UUID participantId);
+    List<ChatParticipant> findByMemberId(Long participantId);
 
-    Optional<ChatParticipant> findByMemberIdAndRoomId(UUID participantId, UUID roomId);
+    Optional<ChatParticipant> findByMemberIdAndRoomId(Long participantId, Long roomId);
 
-    void deleteAllByMemberId(UUID memberId);
+    void deleteAllByMemberId(Long memberId);
 }

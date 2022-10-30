@@ -35,28 +35,29 @@ public class BoardController {
         @RequestBody @Valid BoardCreateRequest request
     ) {
         return ResponseEntity.ok().body(
-            boardService.create(authentication.getName(), request).toResponse()
+            boardService.create(Long.getLong(authentication.getName()), request).toResponse()
         );
     }
 
     @PatchMapping("/{boardId}")
     public ResponseEntity<BoardResponse> update(
         @ApiIgnore Authentication authentication,
-        @PathVariable("boardId") @Valid @NotBlank String boardId,
+        @PathVariable("boardId") @Valid @NotBlank Long boardId,
         @RequestBody @Valid BoardUpdateRequest request
     ) {
         return ResponseEntity.ok().body(
-            boardService.update(authentication.getName(), boardId, request).toResponse()
+            boardService.update(Long.getLong(authentication.getName()), boardId, request)
+                .toResponse()
         );
     }
 
     @GetMapping("/{eventId}")
     public ResponseEntity<List<BoardResponse>> getList(
         @ApiIgnore Authentication authentication,
-        @PathVariable("eventId") @Valid @NotBlank String eventId
+        @PathVariable("eventId") @Valid @NotBlank Long eventId
     ) {
         return ResponseEntity.ok().body(
-            boardService.getList(authentication.getName(), eventId)
+            boardService.getList(Long.getLong(authentication.getName()), eventId)
                 .stream()
                 .map(Board::toResponse)
                 .collect(Collectors.toList())
@@ -66,9 +67,9 @@ public class BoardController {
     @DeleteMapping("/{boardId}")
     public ResponseEntity<Boolean> delete(
         @ApiIgnore Authentication authentication,
-        @PathVariable("boardId") @Valid @NotBlank String boardId
+        @PathVariable("boardId") @Valid @NotBlank Long boardId
     ) {
-        boardService.delete(authentication.getName(), boardId);
+        boardService.delete(Long.getLong(authentication.getName()), boardId);
         return ResponseEntity.ok().body(true);
     }
 

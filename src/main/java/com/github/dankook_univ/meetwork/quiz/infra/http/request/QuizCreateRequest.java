@@ -20,7 +20,7 @@ public class QuizCreateRequest {
     String name;
 
     @NotBlank
-    String eventId;
+    Long eventId;
 
     @NotNull
     List<QuestionCreateRequest> questions;

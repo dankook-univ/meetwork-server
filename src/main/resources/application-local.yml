@@ -35,21 +35,13 @@ spring:
   redis:
     host: localhost
     port: 6379
-    password: password
-
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
 
 jwt:
   secret: ZGFua29vay11bml2LmFza3VwLXNlcnZlci5qd3Quc2VjcmV0c3xkYW5rb29rLXVuaXYuYXNrdXAtc2VydmVyLmp3dC5zZWNyZXRzCg==
 
-slack:
-  token: xoxb-4018209014944-3994438468883-FfgGSNFanGaAkRiT6jRdED6N
-  channel-id: C040J807KUG
+storage:
+  bucket: meetwork
+  end-point: https://kr.object.ncloudstorage.com
+  region: kr-standard
+  access-key: accessKey
+  secret-key: secretKey

@@ -27,11 +27,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public Comment create(String memberId, CommentCreateRequest request) {
+    public Comment create(Long memberId, CommentCreateRequest request) {
         Post post = postService.get(memberId, request.getPostId());
         Profile profile = profileService.get(
             memberId,
-            post.getBoard().getEvent().getId().toString()
+            post.getBoard().getEvent().getId()
         );
 
         Comment comment = commentRepository.save(
@@ -49,12 +49,12 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public Comment update(String memberId, String commentId, CommentUpdateRequest request) {
+    public Comment update(Long memberId, Long commentId, CommentUpdateRequest request) {
         Comment comment = commentRepository.getById(commentId)
             .orElseThrow(NotFoundCommentException::new);
         Profile profile = profileService.get(
             memberId,
-            comment.getPost().getBoard().getEvent().getId().toString()
+            comment.getPost().getBoard().getEvent().getId()
         );
 
         if (!profile.getId().equals(comment.getWriter().getId())) {
@@ -66,12 +66,12 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void delete(String memberId, String commentId) {
+    public void delete(Long memberId, Long commentId) {
         Comment comment = commentRepository.getById(commentId)
             .orElseThrow(NotFoundCommentException::new);
         Profile profile = profileService.get(
             memberId,
-            comment.getPost().getBoard().getEvent().getId().toString()
+            comment.getPost().getBoard().getEvent().getId()
         );
 
         if (!(profile == comment.getWriter() || profile.getIsAdmin())) {

@@ -51,7 +51,7 @@ class EventServiceImplTest {
         Member member = createMember("name", "meetwork@meetwork.kr");
 
         Event event = eventService.create(
-            member.getId().toString(),
+            member.getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -73,7 +73,7 @@ class EventServiceImplTest {
     @DisplayName("이벤트에 참여할 수 있어요.")
     public void join() {
         Event event = eventService.create(
-            createMember("name", "meetwork@meetwork.kr").getId().toString(),
+            createMember("name", "meetwork@meetwork.kr").getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -85,8 +85,8 @@ class EventServiceImplTest {
         Member member = createMember("participant_name", "participant@meetwork.kr");
 
         Event joinedEvent = eventService.join(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
@@ -94,7 +94,7 @@ class EventServiceImplTest {
             false
         );
 
-        Profile profile = profileService.get(member.getId().toString(), event.getId().toString());
+        Profile profile = profileService.get(member.getId(), event.getId());
 
         assertThat(joinedEvent).isNotNull();
         assertThat(joinedEvent).isInstanceOf(Event.class);
@@ -114,7 +114,7 @@ class EventServiceImplTest {
         Member member = createMember("name", "meetwork@meetwork.kr");
 
         Event event = eventService.create(
-            member.getId().toString(),
+            member.getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -123,7 +123,7 @@ class EventServiceImplTest {
                 .build()
         );
 
-        Event findEvent = eventService.get(member.getId().toString(), event.getId().toString());
+        Event findEvent = eventService.get(member.getId(), event.getId());
 
         assertThat(findEvent).isNotNull();
         assertThat(findEvent).isInstanceOf(Event.class);
@@ -135,7 +135,7 @@ class EventServiceImplTest {
     @DisplayName("내가 참여한 이벤트 목록을 가져올 수 있어요.")
     public void getList() {
         Event eventToBeJoined = eventService.create(
-            createMember("name", "meetwork@meetwork.kr").getId().toString(),
+            createMember("name", "meetwork@meetwork.kr").getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -147,8 +147,8 @@ class EventServiceImplTest {
         Member member = createMember("participant_name", "participant@meetwork.kr");
 
         Event joinedEvent = eventService.join(
-            member.getId().toString(),
-            eventToBeJoined.getId().toString(),
+            member.getId(),
+            eventToBeJoined.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
@@ -157,7 +157,7 @@ class EventServiceImplTest {
         );
 
         eventService.create(
-            member.getId().toString(),
+            member.getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -166,7 +166,7 @@ class EventServiceImplTest {
                 .build()
         );
 
-        List<Event> list = eventService.getList(member.getId().toString(), 1);
+        List<Event> list = eventService.getList(member.getId(), 1);
 
         assertThat(list).isNotNull();
         assertThat(list.size()).isEqualTo(2);
@@ -180,7 +180,7 @@ class EventServiceImplTest {
     @DisplayName("참여한 이벤트의 참여자 목록을 조회할 수 있어요.")
     public void getMemberList() {
         Event event = eventService.create(
-            createMember("name", "meetwork@meetwork.kr").getId().toString(),
+            createMember("name", "meetwork@meetwork.kr").getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -191,8 +191,8 @@ class EventServiceImplTest {
 
         Member member = createMember("participant_name", "participant@meetwork.kr");
         eventService.join(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname1")
                 .bio("participant")
@@ -202,8 +202,8 @@ class EventServiceImplTest {
 
         Member member2 = createMember("participant_name", "participant@meetwork.kr");
         eventService.join(
-            member2.getId().toString(),
-            event.getId().toString(),
+            member2.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname2")
                 .bio("participant")
@@ -212,20 +212,20 @@ class EventServiceImplTest {
         );
 
         List<Profile> profileList = eventService.getMemberList(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             null,
             1);
 
         List<Profile> adminList = eventService.getMemberList(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             true,
             1);
 
         List<Profile> participantList = eventService.getMemberList(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             false,
             1);
 
@@ -246,7 +246,7 @@ class EventServiceImplTest {
     @DisplayName("이벤트 참여자의 프로필을 조회할 수 있어요.")
     public void getMember() {
         Event event = eventService.create(
-            createMember("name", "meetwork@meetwork.kr").getId().toString(),
+            createMember("name", "meetwork@meetwork.kr").getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -257,8 +257,8 @@ class EventServiceImplTest {
 
         Member member = createMember("participant_name", "participant@meetwork.kr");
         eventService.join(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
@@ -266,12 +266,12 @@ class EventServiceImplTest {
             false
         );
 
-        Profile profile = profileService.get(member.getId().toString(), event.getId().toString());
+        Profile profile = profileService.get(member.getId(), event.getId());
 
         Profile findProfile = eventService.getMember(
-            member.getId().toString(),
-            event.getId().toString(),
-            profile.getId().toString()
+            member.getId(),
+            event.getId(),
+            profile.getId()
         );
 
         assertThat(findProfile).isNotNull().isInstanceOf(Profile.class);
@@ -284,7 +284,7 @@ class EventServiceImplTest {
         Member member = createMember("name", "meetwork@meetwork.kr");
 
         Event event = eventService.create(
-            member.getId().toString(),
+            member.getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -294,8 +294,8 @@ class EventServiceImplTest {
         );
 
         Event updatedEvent = eventService.update(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             EventUpdateRequest.builder()
                 .name("new_name")
                 .code("new_code")
@@ -315,7 +315,7 @@ class EventServiceImplTest {
     @DisplayName("이벤트를 수정에 실패해요.")
     public void failedUpdate() {
         Event event = eventService.create(
-            createMember("name", "meetwork@meetwork.kr").getId().toString(),
+            createMember("name", "meetwork@meetwork.kr").getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -327,8 +327,8 @@ class EventServiceImplTest {
         Member member = createMember("participant_name", "participant@meetwork.kr");
 
         eventService.join(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
@@ -339,8 +339,8 @@ class EventServiceImplTest {
         Assertions.assertThrows(
             NotFoundEventPermissionException.class,
             () -> eventService.update(
-                member.getId().toString(),
-                event.getId().toString(),
+                member.getId(),
+                event.getId(),
                 EventUpdateRequest.builder()
                     .name("new_name")
                     .code("new_code")
@@ -356,7 +356,7 @@ class EventServiceImplTest {
         Member organizer = createMember("organizer", "meetwork@meetwork.kr");
 
         Event event = eventService.create(
-            organizer.getId().toString(),
+            organizer.getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -367,8 +367,8 @@ class EventServiceImplTest {
 
         Member participant = createMember("participant", "meetwork@meetwork.kr");
         eventService.join(
-            participant.getId().toString(),
-            event.getId().toString(),
+            participant.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
@@ -376,25 +376,25 @@ class EventServiceImplTest {
             false);
 
         Profile participantProfile = profileService.get(
-            participant.getId().toString(),
-            event.getId().toString()
+            participant.getId(),
+            event.getId()
         );
 
         assertThat(participantProfile).isNotNull().isInstanceOf(Profile.class);
         assertThat(participantProfile.getIsAdmin()).isFalse();
 
         eventService.updateAdmin(
-            organizer.getId().toString(),
+            organizer.getId(),
             UpdateAdminRequest.builder()
-                .profileId(participantProfile.getId().toString())
-                .eventId(event.getId().toString())
+                .profileId(participantProfile.getId())
+                .eventId(event.getId())
                 .isAdmin(true)
                 .build()
         );
 
         Profile adminProfile = profileService.get(
-            participant.getId().toString(),
-            event.getId().toString()
+            participant.getId(),
+            event.getId()
         );
 
         assertThat(adminProfile).isNotNull().isInstanceOf(Profile.class);
@@ -407,7 +407,7 @@ class EventServiceImplTest {
         Member organizer = createMember("organizer", "meetwork@meetwork.kr");
 
         Event event = eventService.create(
-            organizer.getId().toString(),
+            organizer.getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -418,8 +418,8 @@ class EventServiceImplTest {
 
         Member participant = createMember("participant", "meetwork@meetwork.kr");
         eventService.join(
-            participant.getId().toString(),
-            event.getId().toString(),
+            participant.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
@@ -427,25 +427,25 @@ class EventServiceImplTest {
             true);
 
         Profile participantProfile = profileService.get(
-            participant.getId().toString(),
-            event.getId().toString()
+            participant.getId(),
+            event.getId()
         );
 
         assertThat(participantProfile).isNotNull().isInstanceOf(Profile.class);
         assertThat(participantProfile.getIsAdmin()).isTrue();
 
         eventService.updateAdmin(
-            organizer.getId().toString(),
+            organizer.getId(),
             UpdateAdminRequest.builder()
-                .profileId(participantProfile.getId().toString())
-                .eventId(event.getId().toString())
+                .profileId(participantProfile.getId())
+                .eventId(event.getId())
                 .isAdmin(false)
                 .build()
         );
 
         Profile adminProfile = profileService.get(
-            participant.getId().toString(),
-            event.getId().toString()
+            participant.getId(),
+            event.getId()
         );
 
         assertThat(adminProfile).isNotNull().isInstanceOf(Profile.class);
@@ -459,7 +459,7 @@ class EventServiceImplTest {
         String MEANINGLESS_EVENT_CODE = "event_code";
 
         eventService.create(
-            createMember("name", "meetwork@meetwork.kr").getId().toString(),
+            createMember("name", "meetwork@meetwork.kr").getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -481,7 +481,7 @@ class EventServiceImplTest {
         String EVENT_CODE = "code";
 
         Event event = eventService.create(
-            createMember("name", "meetwork@meetwork.kr").getId().toString(),
+            createMember("name", "meetwork@meetwork.kr").getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -493,7 +493,7 @@ class EventServiceImplTest {
         Member member = createMember("participant_name", "participant@meetwork.kr");
 
         Event joinedEvent = eventService.codeJoin(
-            member.getId().toString(),
+            member.getId(),
             EVENT_CODE,
             ProfileCreateRequest.builder()
                 .nickname("joinedMember")
@@ -501,7 +501,7 @@ class EventServiceImplTest {
                 .build()
         );
 
-        Profile profile = profileService.get(member.getId().toString(), event.getId().toString());
+        Profile profile = profileService.get(member.getId(), event.getId());
 
         assertThat(joinedEvent).isNotNull();
         assertThat(joinedEvent).isInstanceOf(Event.class);
@@ -523,7 +523,7 @@ class EventServiceImplTest {
         String MEANINGLESS_EVENT_CODE = "event_code";
 
         eventService.create(
-            createMember("name", "meetwork@meetwork.kr").getId().toString(),
+            createMember("name", "meetwork@meetwork.kr").getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -537,7 +537,7 @@ class EventServiceImplTest {
         Assertions.assertThrows(
             NotFoundEventException.class,
             () -> eventService.codeJoin(
-                member.getId().toString(),
+                member.getId(),
                 MEANINGLESS_EVENT_CODE,
                 ProfileCreateRequest.builder()
                     .nickname("joinedMember")
@@ -552,7 +552,7 @@ class EventServiceImplTest {
     public void getMyProfile() {
         Member member = createMember("name", "meetwork@meetwork.kr");
         Event event = eventService.create(
-            member.getId().toString(),
+            member.getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -562,8 +562,8 @@ class EventServiceImplTest {
         );
 
         Profile profile = eventService.getMyProfile(
-            member.getId().toString(),
-            event.getId().toString()
+            member.getId(),
+            event.getId()
         );
 
         assertThat(profile).isNotNull();
@@ -578,7 +578,7 @@ class EventServiceImplTest {
     public void secession() {
         Member organizer = createMember("name", "meetwork@meetwork.kr");
         Event event = eventService.create(
-            organizer.getId().toString(),
+            organizer.getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -589,8 +589,8 @@ class EventServiceImplTest {
 
         Member participant = createMember("participant_name", "participant@meetwork.kr");
         eventService.join(
-            participant.getId().toString(),
-            event.getId().toString(),
+            participant.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
@@ -598,15 +598,15 @@ class EventServiceImplTest {
             false
         );
         List<Profile> joinedList = eventService.getMemberList(
-            organizer.getId().toString(),
-            event.getId().toString(),
+            organizer.getId(),
+            event.getId(),
             null,
             1);
 
-        eventService.secession(participant.getId().toString(), event.getId().toString());
+        eventService.secession(participant.getId(), event.getId());
         List<Profile> secessionList = eventService.getMemberList(
-            organizer.getId().toString(),
-            event.getId().toString(),
+            organizer.getId(),
+            event.getId(),
             null,
             1);
 
@@ -619,7 +619,7 @@ class EventServiceImplTest {
     public void release() {
         Member organizer = createMember("name", "meetwork@meetwork.kr");
         Event event = eventService.create(
-            organizer.getId().toString(),
+            organizer.getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -630,8 +630,8 @@ class EventServiceImplTest {
 
         Member participant = createMember("participant_name", "participant@meetwork.kr");
         eventService.join(
-            participant.getId().toString(),
-            event.getId().toString(),
+            participant.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
@@ -639,25 +639,25 @@ class EventServiceImplTest {
             , true
         );
         List<Profile> joinedList = eventService.getMemberList(
-            organizer.getId().toString(),
-            event.getId().toString(),
+            organizer.getId(),
+            event.getId(),
             null,
             1);
 
         Profile participantProfile = profileService.get(
-            participant.getId().toString(),
-            event.getId().toString()
+            participant.getId(),
+            event.getId()
         );
         eventService.release(
-            organizer.getId().toString(),
+            organizer.getId(),
             ProfileReleaseRequest.builder()
-                .profileId(participantProfile.getId().toString())
-                .eventId(event.getId().toString())
+                .profileId(participantProfile.getId())
+                .eventId(event.getId())
                 .build());
 
         List<Profile> secessionList = eventService.getMemberList(
-            organizer.getId().toString(),
-            event.getId().toString(),
+            organizer.getId(),
+            event.getId(),
             null,
             1);
 
@@ -671,7 +671,7 @@ class EventServiceImplTest {
         Member member = createMember("name", "meetwork@meetwork.kr");
 
         Event event = eventService.create(
-            member.getId().toString(),
+            member.getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -682,11 +682,11 @@ class EventServiceImplTest {
 
         assertThat(event).isNotNull();
 
-        eventService.delete(member.getId().toString(), event.getId().toString());
+        eventService.delete(member.getId(), event.getId());
 
         Assertions.assertThrows(
             NotFoundProfileException.class,
-            () -> eventService.get(member.getId().toString(), event.getId().toString())
+            () -> eventService.get(member.getId(), event.getId())
         );
     }
 
@@ -694,7 +694,7 @@ class EventServiceImplTest {
     @DisplayName("이벤트를 삭제에 실패해요.")
     public void failed_delete() {
         Event event = eventService.create(
-            createMember("name", "meetwork@meetwork.kr").getId().toString(),
+            createMember("name", "meetwork@meetwork.kr").getId(),
             EventCreateRequest.builder()
                 .name("event")
                 .organizerNickname("nickname")
@@ -706,8 +706,8 @@ class EventServiceImplTest {
         Member member = createMember("participant_name", "participant@meetwork.kr");
 
         eventService.join(
-            member.getId().toString(),
-            event.getId().toString(),
+            member.getId(),
+            event.getId(),
             ProfileCreateRequest.builder()
                 .nickname("participant_nickname")
                 .bio("participant")
@@ -718,8 +718,8 @@ class EventServiceImplTest {
         Assertions.assertThrows(
             NotFoundEventPermissionException.class,
             () -> eventService.delete(
-                member.getId().toString(),
-                event.getId().toString()
+                member.getId(),
+                event.getId()
             )
         );
     }

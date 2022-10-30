@@ -6,9 +6,9 @@ import com.github.dankook_univ.meetwork.post.comment.infra.http.request.CommentU
 
 public interface CommentService {
 
-    Comment create(String memberId, CommentCreateRequest request);
+    Comment create(Long memberId, CommentCreateRequest request);
 
-    Comment update(String memberId, String commentId, CommentUpdateRequest request);
+    Comment update(Long memberId, Long commentId, CommentUpdateRequest request);
 
-    void delete(String memberId, String commentId);
+    void delete(Long memberId, Long commentId);
 }

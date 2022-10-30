@@ -31,9 +31,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Post create(String memberId, PostCreateRequest request) {
+    public Post create(Long memberId, PostCreateRequest request) {
         Board board = boardService.get(request.getBoardId());
-        Profile profile = profileService.get(memberId, board.getEvent().getId().toString());
+        Profile profile = profileService.get(memberId, board.getEvent().getId());
         if (board.getAdminOnly() && !profile.getIsAdmin()) {
             throw new NotFoundBoardPermissionException();
         }
@@ -49,10 +49,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Post update(String memberId, String postId, PostUpdateRequest request) {
+    public Post update(Long memberId, Long postId, PostUpdateRequest request) {
         Post post = postRepository.getById(postId).orElseThrow(NotFoundPostException::new);
-        Board board = boardService.get(post.getBoard().getId().toString());
-        Profile profile = profileService.get(memberId, board.getEvent().getId().toString());
+        Board board = boardService.get(post.getBoard().getId());
+        Profile profile = profileService.get(memberId, board.getEvent().getId());
 
         if (board.getAdminOnly() && !profile.getIsAdmin()) {
             throw new NotFoundBoardPermissionException();
@@ -65,11 +65,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post get(String memberId, String postId) {
+    public Post get(Long memberId, Long postId) {
         Post post = postRepository.getById(postId).orElseThrow(NotFoundPostException::new);
 
         if (
-            !profileService.isEventMember(memberId, post.getBoard().getEvent().getId().toString())
+            !profileService.isEventMember(memberId, post.getBoard().getEvent().getId())
         ) {
             throw new NotFoundEventPermissionException();
         }
@@ -78,10 +78,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getList(String memberId, String boardId, int page) {
+    public List<Post> getList(Long memberId, Long boardId, int page) {
         Board board = boardService.get(boardId);
 
-        if (!profileService.isEventMember(memberId, board.getEvent().getId().toString())) {
+        if (!profileService.isEventMember(memberId, board.getEvent().getId())) {
             throw new NotFoundEventPermissionException();
         }
 
@@ -90,11 +90,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void delete(String memberId, String postId) {
+    public void delete(Long memberId, Long postId) {
         Post post = postRepository.getById(postId).orElseThrow(NotFoundPostException::new);
         Profile profile = profileService.get(
             memberId,
-            post.getBoard().getEvent().getId().toString()
+            post.getBoard().getEvent().getId()
         );
 
         if (!(post.getWriter() == profile || profile.getIsAdmin())) {

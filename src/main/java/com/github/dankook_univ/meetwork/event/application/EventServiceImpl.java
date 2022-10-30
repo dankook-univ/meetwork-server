@@ -24,7 +24,6 @@ import com.github.dankook_univ.meetwork.profile.exceptions.NotFoundProfileExcept
 import com.github.dankook_univ.meetwork.profile.infra.http.request.ProfileCreateRequest;
 import com.github.dankook_univ.meetwork.quiz.application.QuizServiceImpl;
 import com.github.dankook_univ.meetwork.quiz.quiz_participants.infra.persistence.QuizParticipantsRepositoryImpl;
-import com.github.dankook_univ.meetwork.slack.application.SlackServiceImpl;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +45,6 @@ public class EventServiceImpl implements EventService {
     private final ChatRoomRepositoryImpl chatRoomRepository;
     private final QuizServiceImpl quizService;
     private final FileServiceImpl fileService;
-    private final SlackServiceImpl slackService;
     private final PostRepositoryImpl postRepository;
     private final QuizParticipantsRepositoryImpl quizParticipantsRepository;
     private final ChatParticipantRepositoryImpl chatParticipantRepository;
@@ -54,7 +52,7 @@ public class EventServiceImpl implements EventService {
     private final InvitationRepositoryImpl invitationRepository;
 
     @Override
-    public Event get(String memberId, String eventId) {
+    public Event get(Long memberId, Long eventId) {
         if (!profileService.isEventMember(memberId, eventId)) {
             throw new NotFoundProfileException();
         }
@@ -63,7 +61,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<Event> getList(String memberId, int page) {
+    public List<Event> getList(Long memberId, int page) {
         return profileService.getListByMemberId(memberId, PageRequest.of(page - 1, 15))
             .stream()
             .map(Profile::getEvent)
@@ -72,8 +70,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<Profile> getMemberList(
-        String memberId,
-        String eventId,
+        Long memberId,
+        Long eventId,
         Boolean adminOnly,
         int page
     ) {
@@ -89,7 +87,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Profile getMember(String memberId, String eventId, String profileId) {
+    public Profile getMember(Long memberId, Long eventId, Long profileId) {
         if (!profileService.isEventMember(memberId, eventId)) {
             throw new NotFoundProfileException();
         }
@@ -99,7 +97,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public Event create(String memberId, EventCreateRequest request) {
+    public Event create(Long memberId, EventCreateRequest request) {
         if (checkExistingCode(request.getCode())) {
             throw new ExistingCodeException();
         }
@@ -132,13 +130,9 @@ public class EventServiceImpl implements EventService {
                 boardService.create(memberId, BoardCreateRequest.builder()
                     .name(securityUtilService.protectInputValue(name))
                     .adminOnly(isAdmin)
-                    .eventId(event.getId().toString())
+                    .eventId(event.getId())
                     .build()
                 )
-        );
-
-        slackService.sendMessage(
-            event.getOrganizer().getNickname() + "님이 " + event.getName() + "을 생성하였습니다."
         );
 
         return event;
@@ -146,7 +140,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public Event update(String memberId, String eventId, EventUpdateRequest request) {
+    public Event update(Long memberId, Long eventId, EventUpdateRequest request) {
         Event event = getById(eventId);
         if (!profileService.get(memberId, eventId).getIsAdmin()) {
             throw new NotFoundEventPermissionException();
@@ -165,10 +159,10 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public Boolean updateAdmin(String memberId, UpdateAdminRequest request) {
+    public Boolean updateAdmin(Long memberId, UpdateAdminRequest request) {
         Event event = getById(request.getEventId());
 
-        Profile organizer = profileService.get(memberId, event.getId().toString());
+        Profile organizer = profileService.get(memberId, event.getId());
         if (event.getOrganizer() != organizer) {
             throw new NotFoundEventPermissionException();
         }
@@ -187,13 +181,13 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public Event codeJoin(String memberId, String code, ProfileCreateRequest request) {
+    public Event codeJoin(Long memberId, String code, ProfileCreateRequest request) {
         Event event = eventRepository.getByCode(securityUtilService.protectInputValue(code))
             .orElseThrow(NotFoundEventException::new);
-        if (!profileService.isEventMember(memberId, event.getId().toString())) {
+        if (!profileService.isEventMember(memberId, event.getId())) {
             profileService.create(
                 memberId,
-                getById(event.getId().toString()),
+                getById(event.getId()),
                 request,
                 false
             );
@@ -205,8 +199,8 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public Event join(
-        String memberId,
-        String eventId,
+        Long memberId,
+        Long eventId,
         ProfileCreateRequest request,
         Boolean isAdmin
     ) {
@@ -221,19 +215,19 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Profile getMyProfile(String memberId, String eventId) {
+    public Profile getMyProfile(Long memberId, Long eventId) {
         return profileService.get(memberId, eventId);
     }
 
     @Override
     @Transactional
-    public void secession(String memberId, String eventId) {
+    public void secession(Long memberId, Long eventId) {
         deleteAll(profileService.get(memberId, eventId));
     }
 
     @Override
     @Transactional
-    public void release(String memberId, ProfileReleaseRequest request) {
+    public void release(Long memberId, ProfileReleaseRequest request) {
         Profile profile = profileService.get(memberId, request.getEventId());
         if (!profile.getIsAdmin()) {
             throw new NotFoundEventPermissionException();
@@ -244,9 +238,9 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public void delete(String memberId, String eventId) {
+    public void delete(Long memberId, Long eventId) {
         Event event = getById(eventId);
-        if (!event.getOrganizer().getMember().getId().toString().equals(memberId)) {
+        if (!event.getOrganizer().getMember().getId().equals(memberId)) {
             throw new NotFoundEventPermissionException();
         }
 
@@ -256,23 +250,19 @@ public class EventServiceImpl implements EventService {
         invitationRepository.deleteByEventId(eventId);
         eventRepository.delete(event);
         profileService.deleteByEventId(eventId);
-
-        slackService.sendMessage(
-            event.getOrganizer().getNickname() + "님이 " + event.getName() + "을 삭제하였습니다."
-        );
     }
 
-    private Event getById(String eventId) {
+    private Event getById(Long eventId) {
         return eventRepository.getById(eventId).orElseThrow(NotFoundEventException::new);
     }
 
     private void deleteAll(Profile profile) {
-        fileService.deleteByUploaderId(profile.getMember().getId().toString());
-        postRepository.deleteByWriterId(profile.getId().toString());
-        quizParticipantsRepository.deleteByProfileId(profile.getId().toString());
-        chatParticipantRepository.deleteByMemberId(profile.getId().toString());
-        chatMessageRepository.deleteBySenderId(profile.getId().toString());
-        chatRoomRepository.deleteByOrganizerId(profile.getId().toString());
+        fileService.deleteByUploaderId(profile.getMember().getId());
+        postRepository.deleteByWriterId(profile.getId());
+        quizParticipantsRepository.deleteByProfileId(profile.getId());
+        chatParticipantRepository.deleteByMemberId(profile.getId());
+        chatMessageRepository.deleteBySenderId(profile.getId());
+        chatRoomRepository.deleteByOrganizerId(profile.getId());
         profileService.delete(profile);
     }
 }

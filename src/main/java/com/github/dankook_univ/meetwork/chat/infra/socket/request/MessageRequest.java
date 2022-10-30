@@ -9,7 +9,7 @@ import lombok.Getter;
 public class MessageRequest {
 
     @NotBlank
-    String roomId;
+    Long roomId;
 
     @NotBlank
     String message;
