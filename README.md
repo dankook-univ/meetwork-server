@@ -1,5 +1,3 @@
-# meetwork server
-
 ![Meetwork Information 01](https://user-images.githubusercontent.com/65934968/186832772-868451b6-6d16-48d9-8dc1-25a2b204742d.png)
 <img alt="background" src="https://github.com/dankook-univ/meetwork-server/assets/81179951/97ab66f7-584c-4e59-a2f9-e06b73959741">
 <img alt="service 소개" src="https://github.com/dankook-univ/meetwork-server/assets/81179951/561a7dfe-b095-40f5-8117-293c966b339b">
@@ -66,6 +64,8 @@
 
 #### 행사 초대
 <img src="https://github.com/dankook-univ/meetwork-server/assets/81179951/0ff4a444-16a9-4a3c-bf5f-c1f1915b7432" width="260"/>
+<img width="260" alt="image" src="https://github.com/dankook-univ/meetwork-server/assets/81179951/83119775-ffc0-48ee-a994-4960e874beaa">
+<img width="260" alt="image" src="https://github.com/dankook-univ/meetwork-server/assets/81179951/37e299bb-9470-468d-b36a-c2070d3833ad">
 
 <br>
 
@@ -88,25 +88,3 @@
 
 <br>
 <br>
-
-## 시작하기
-
-#### 1. spring profile 설정하기
-
-```bash
---spring.profiles.active=local
-```
-
-#### 2. argument 설정하기
-
-```bash
---storage.bucket=${bucket}
---storage.end-point=${end_point}
---storage.region=${region}
---storage.access-key=${access-key}
---storage.secret-key=${secret-key}
---slack.token=${slack_token}
---slack.channel-id=${slack_channel_id}
---spring.mail.username=${mail_username}
---spring.mail.password=${mail_password}
-```
